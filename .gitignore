@@ -1,0 +1,29 @@
+# .NET (C#)
+    bin/
+    obj/
+    *.user
+    *.userosscache
+    *.sln.docstates
+
+    # Node.js (Angular)
+    node_modules/
+    dist/
+    .angular/
+
+    # Python
+    __pycache__/
+    *.py[cod]
+    venv/
+    .env
+
+    # Docker & OS
+    .DS_Store
+    Thumbs.db
+    ```
+  
+
+  
+    בתוך תיקיית `GazeConnect`, צרי את 3 התיקיות הבאות:
+    1. `apps/` - כאן יישבו האפליקציות של המשתמש (Angular).
+    2. `services/` - כאן יישבו המיקרו-סרוויסים (C# ו-Python).
+    3. `docs/` - כאן נשמור את האפיון ותוכנית העבודה שלך.
