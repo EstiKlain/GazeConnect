@@ -1,0 +1,136 @@
+version: '3.9'
+
+networks:
+  gazeconnect-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+
+services:
+
+  # ── Infrastructure ──────────────────────────
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: gazeconnect-db
+    environment:
+      POSTGRES_DB: gazeconnect
+      POSTGRES_USER: gazeuser
+      POSTGRES_PASSWORD: GazePass2025!
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - gazeconnect-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: gazeconnect-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - gazeconnect-network
+
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: gazeconnect-redisinsight
+    ports:
+      - "5540:5540"
+    networks:
+      - gazeconnect-network
+
+  # ── C# Services ─────────────────────────────
+  api-gateway:
+    image: alpine
+    container_name: gazeconnect-api-gateway
+    command: /bin/sh -c "while true; do sleep 3600; done"
+    ports:
+      - "5000:5000"
+    networks:
+      - gazeconnect-network
+
+  camerahub:
+    image: alpine
+    container_name: gazeconnect-camerahub
+    command: /bin/sh -c "while true; do sleep 3600; done"
+    ports:
+      - "5001:5001"
+    networks:
+      - gazeconnect-network
+
+  aac-board:
+    image: alpine
+    container_name: gazeconnect-aac-board
+    command: /bin/sh -c "while true; do sleep 3600; done"
+    ports:
+      - "5002:5002"
+    networks:
+      - gazeconnect-network
+
+  tts-voice:
+    image: alpine
+    container_name: gazeconnect-tts-voice
+    command: /bin/sh -c "while true; do sleep 3600; done"
+    ports:
+      - "5003:5003"
+    networks:
+      - gazeconnect-network
+
+  user-profile:
+    image: alpine
+    container_name: gazeconnect-user-profile
+    command: /bin/sh -c "while true; do sleep 3600; done"
+    ports:
+      - "5004:5004"
+    networks:
+      - gazeconnect-network
+
+  # ── Python / AI Services ────────────────────
+  face-recognition:
+    image: alpine
+    container_name: gazeconnect-face-recognition
+    command: /bin/sh -c "while true; do sleep 3600; done"
+    ports:
+      - "8001:8001"
+    networks:
+      - gazeconnect-network
+
+  object-detection:
+    image: alpine
+    container_name: gazeconnect-object-detection
+    command: /bin/sh -c "while true; do sleep 3600; done"
+    ports:
+      - "8002:8002"
+    networks:
+      - gazeconnect-network
+
+  smart-bundle:
+    image: alpine
+    container_name: gazeconnect-smart-bundle
+    command: /bin/sh -c "while true; do sleep 3600; done"
+    ports:
+      - "8003:8003"
+    networks:
+      - gazeconnect-network
+
+  visual-learning:
+    image: alpine
+    container_name: gazeconnect-visual-learning
+    command: /bin/sh -c "while true; do sleep 3600; done"
+    ports:
+      - "8004:8004"
+    networks:
+      - gazeconnect-network
+
+  ai-suggestion:
+    image: alpine
+    container_name: gazeconnect-ai-suggestion
+    command: /bin/sh -c "while true; do sleep 3600; done"
+    ports:
+      - "8005:8005"
+    networks:
+      - gazeconnect-network
