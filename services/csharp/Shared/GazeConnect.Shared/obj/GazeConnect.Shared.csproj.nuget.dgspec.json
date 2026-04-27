@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Shared\\GazeConnect.Shared\\GazeConnect.Shared.csproj": {}
+    "E:\\B\\Project\\GazeConnect\\services\\csharp\\Shared\\GazeConnect.Shared\\GazeConnect.Shared.csproj": {}
   },
   "projects": {
-    "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Shared\\GazeConnect.Shared\\GazeConnect.Shared.csproj": {
+    "E:\\B\\Project\\GazeConnect\\services\\csharp\\Shared\\GazeConnect.Shared\\GazeConnect.Shared.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Shared\\GazeConnect.Shared\\GazeConnect.Shared.csproj",
+        "projectUniqueName": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Shared\\GazeConnect.Shared\\GazeConnect.Shared.csproj",
         "projectName": "GazeConnect.Shared",
-        "projectPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Shared\\GazeConnect.Shared\\GazeConnect.Shared.csproj",
+        "projectPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Shared\\GazeConnect.Shared\\GazeConnect.Shared.csproj",
         "packagesPath": "C:\\Users\\This User\\.nuget\\packages\\",
-        "outputPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Shared\\GazeConnect.Shared\\obj\\",
+        "outputPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Shared\\GazeConnect.Shared\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

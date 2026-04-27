@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.UserProfile\\GazeConnect.UserProfile.Core\\GazeConnect.UserProfile.Core.csproj",
+      "projectUniqueName": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.UserProfile\\GazeConnect.UserProfile.Core\\GazeConnect.UserProfile.Core.csproj",
       "projectName": "GazeConnect.UserProfile.Core",
-      "projectPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.UserProfile\\GazeConnect.UserProfile.Core\\GazeConnect.UserProfile.Core.csproj",
+      "projectPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.UserProfile\\GazeConnect.UserProfile.Core\\GazeConnect.UserProfile.Core.csproj",
       "packagesPath": "C:\\Users\\This User\\.nuget\\packages\\",
-      "outputPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.UserProfile\\GazeConnect.UserProfile.Core\\obj\\",
+      "outputPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.UserProfile\\GazeConnect.UserProfile.Core\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

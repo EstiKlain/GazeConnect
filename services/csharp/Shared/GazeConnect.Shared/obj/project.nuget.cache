@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Xc9xSprvYgg=",
+  "dgSpecHash": "3yvK+bOHmQk=",
   "success": true,
-  "projectFilePath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Shared\\GazeConnect.Shared\\GazeConnect.Shared.csproj",
+  "projectFilePath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Shared\\GazeConnect.Shared\\GazeConnect.Shared.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\This User\\.nuget\\packages\\fluentvalidation\\12.1.1\\fluentvalidation.12.1.1.nupkg.sha512",
     "C:\\Users\\This User\\.nuget\\packages\\mapster\\10.0.7\\mapster.10.0.7.nupkg.sha512",

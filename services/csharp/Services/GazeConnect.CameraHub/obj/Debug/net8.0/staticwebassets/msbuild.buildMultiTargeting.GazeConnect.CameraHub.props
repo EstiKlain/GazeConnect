@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\GazeConnect.CameraHub.props" />
-</Project>

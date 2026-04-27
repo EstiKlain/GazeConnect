@@ -10,7 +10,7 @@ volumes:
 
 services:
 
-  # ── Infrastructure ──────────────────────────
+  # ── Infrastructure ──────────────────────────────────────────
   postgres:
     image: pgvector/pgvector:pg16
     container_name: gazeconnect-db
@@ -24,6 +24,23 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - gazeconnect-network
+    mem_limit: 1g
+    cpus: '1.0'
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: gazeconnect-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gazeconnect.com
+      PGADMIN_DEFAULT_PASSWORD: GazeAdmin2025!
+    ports:
+      - "5050:80"
+    networks:
+      - gazeconnect-network
+    mem_limit: 256m
+    cpus: '0.3'
+    restart: unless-stopped
 
   redis:
     image: redis:7-alpine
@@ -34,6 +51,9 @@ services:
       - redis_data:/data
     networks:
       - gazeconnect-network
+    mem_limit: 256m
+    cpus: '0.3'
+    restart: unless-stopped
 
   redisinsight:
     image: redis/redisinsight:latest
@@ -42,8 +62,11 @@ services:
       - "5540:5540"
     networks:
       - gazeconnect-network
+    mem_limit: 256m
+    cpus: '0.3'
+    restart: unless-stopped
 
-  # ── C# Services ─────────────────────────────
+  # ── C# Services ─────────────────────────────────────────────
   api-gateway:
     image: alpine
     container_name: gazeconnect-api-gateway
@@ -52,6 +75,9 @@ services:
       - "5000:5000"
     networks:
       - gazeconnect-network
+    mem_limit: 512m
+    cpus: '0.5'
+    restart: unless-stopped
 
   camerahub:
     image: alpine
@@ -61,6 +87,9 @@ services:
       - "5001:5001"
     networks:
       - gazeconnect-network
+    mem_limit: 512m
+    cpus: '0.5'
+    restart: unless-stopped
 
   aac-board:
     image: alpine
@@ -70,6 +99,9 @@ services:
       - "5002:5002"
     networks:
       - gazeconnect-network
+    mem_limit: 512m
+    cpus: '0.5'
+    restart: unless-stopped
 
   tts-voice:
     image: alpine
@@ -79,6 +111,9 @@ services:
       - "5003:5003"
     networks:
       - gazeconnect-network
+    mem_limit: 512m
+    cpus: '0.5'
+    restart: unless-stopped
 
   user-profile:
     image: alpine
@@ -88,8 +123,11 @@ services:
       - "5004:5004"
     networks:
       - gazeconnect-network
+    mem_limit: 512m
+    cpus: '0.5'
+    restart: unless-stopped
 
-  # ── Python / AI Services ────────────────────
+  # ── Python / AI Services ────────────────────────────────────
   face-recognition:
     image: alpine
     container_name: gazeconnect-face-recognition
@@ -98,6 +136,9 @@ services:
       - "8001:8001"
     networks:
       - gazeconnect-network
+    mem_limit: 1g
+    cpus: '1.0'
+    restart: unless-stopped
 
   object-detection:
     image: alpine
@@ -107,6 +148,9 @@ services:
       - "8002:8002"
     networks:
       - gazeconnect-network
+    mem_limit: 1g
+    cpus: '1.0'
+    restart: unless-stopped
 
   smart-bundle:
     image: alpine
@@ -116,6 +160,9 @@ services:
       - "8003:8003"
     networks:
       - gazeconnect-network
+    mem_limit: 1g
+    cpus: '1.0'
+    restart: unless-stopped
 
   visual-learning:
     image: alpine
@@ -125,6 +172,9 @@ services:
       - "8004:8004"
     networks:
       - gazeconnect-network
+    mem_limit: 1g
+    cpus: '1.0'
+    restart: unless-stopped
 
   ai-suggestion:
     image: alpine
@@ -134,3 +184,6 @@ services:
       - "8005:8005"
     networks:
       - gazeconnect-network
+    mem_limit: 1g
+    cpus: '1.0'
+    restart: unless-stopped

@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\GazeConnect.AACBoard.props" />
-</Project>

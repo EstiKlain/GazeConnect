@@ -1,28 +1,56 @@
-# .NET (C#)
-    bin/
-    obj/
-    *.user
-    *.userosscache
-    *.sln.docstates
+# ── Visual Studio ──────────────────────────
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+*.userprefs
 
-    # Node.js (Angular)
-    node_modules/
-    dist/
-    .angular/
+# ── .NET / C# ───────────────────────────────
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.cache
+project.lock.json
+project.fragment.lock.json
+artifacts/
 
-    # Python
-    __pycache__/
-    *.py[cod]
-    venv/
-    .env
-    *.pyc
+# ── Node.js / Angular ───────────────────────
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+yarn-error.log*
+*.tgz
 
-    # Docker & OS
-    .DS_Store
-    Thumbs.db
-    ```
-    # Docker
-    *.env.local
+# ── Python ──────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+*.pyc
 
-  
-   
+# ── Environment & Secrets ───────────────────
+.env
+.env.local
+.env.*.local
+*.env.local
+appsettings.Development.json
+secrets.json
+
+# ── Docker ──────────────────────────────────
+docker-compose.override.yml
+
+# ── OS ──────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Logs ────────────────────────────────────
+logs/
+*.log

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Service\\GazeConnect.TTS.Service.csproj": {}
+    "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Service\\GazeConnect.TTS.Service.csproj": {}
   },
   "projects": {
-    "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Core\\GazeConnect.TTS.Core.csproj": {
+    "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Core\\GazeConnect.TTS.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Core\\GazeConnect.TTS.Core.csproj",
+        "projectUniqueName": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Core\\GazeConnect.TTS.Core.csproj",
         "projectName": "GazeConnect.TTS.Core",
-        "projectPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Core\\GazeConnect.TTS.Core.csproj",
+        "projectPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Core\\GazeConnect.TTS.Core.csproj",
         "packagesPath": "C:\\Users\\This User\\.nuget\\packages\\",
-        "outputPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Core\\obj\\",
+        "outputPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -69,14 +69,14 @@
         }
       }
     },
-    "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Service\\GazeConnect.TTS.Service.csproj": {
+    "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Service\\GazeConnect.TTS.Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Service\\GazeConnect.TTS.Service.csproj",
+        "projectUniqueName": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Service\\GazeConnect.TTS.Service.csproj",
         "projectName": "GazeConnect.TTS.Service",
-        "projectPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Service\\GazeConnect.TTS.Service.csproj",
+        "projectPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Service\\GazeConnect.TTS.Service.csproj",
         "packagesPath": "C:\\Users\\This User\\.nuget\\packages\\",
-        "outputPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Service\\obj\\",
+        "outputPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Service\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -98,8 +98,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Core\\GazeConnect.TTS.Core.csproj": {
-                "projectPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Core\\GazeConnect.TTS.Core.csproj"
+              "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Core\\GazeConnect.TTS.Core.csproj": {
+                "projectPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.TTS\\GazeConnect.TTS.Core\\GazeConnect.TTS.Core.csproj"
               }
             }
           }
@@ -118,6 +118,20 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "FluentValidation": {
+              "target": "Package",
+              "version": "[12.1.1, )"
+            },
+            "Mapster": {
+              "target": "Package",
+              "version": "[10.0.7, )"
+            },
+            "MediatR": {
+              "target": "Package",
+              "version": "[14.1.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Api\\GazeConnect.CameraHub.Api.csproj": {}
+    "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Api\\GazeConnect.CameraHub.Api.csproj": {}
   },
   "projects": {
-    "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Api\\GazeConnect.CameraHub.Api.csproj": {
+    "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Api\\GazeConnect.CameraHub.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Api\\GazeConnect.CameraHub.Api.csproj",
+        "projectUniqueName": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Api\\GazeConnect.CameraHub.Api.csproj",
         "projectName": "GazeConnect.CameraHub.Api",
-        "projectPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Api\\GazeConnect.CameraHub.Api.csproj",
+        "projectPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Api\\GazeConnect.CameraHub.Api.csproj",
         "packagesPath": "C:\\Users\\This User\\.nuget\\packages\\",
-        "outputPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Api\\obj\\",
+        "outputPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Api\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -33,11 +33,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\GazeConnect.CameraHub.Core.csproj": {
-                "projectPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\GazeConnect.CameraHub.Core.csproj"
+              "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\GazeConnect.CameraHub.Core.csproj": {
+                "projectPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\GazeConnect.CameraHub.Core.csproj"
               },
-              "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Service\\GazeConnect.CameraHub.Service.csproj": {
-                "projectPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Service\\GazeConnect.CameraHub.Service.csproj"
+              "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Service\\GazeConnect.CameraHub.Service.csproj": {
+                "projectPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Service\\GazeConnect.CameraHub.Service.csproj"
               }
             }
           }
@@ -57,9 +57,17 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "MediatR": {
+              "target": "Package",
+              "version": "[14.1.0, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.8, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[10.0.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -89,14 +97,14 @@
         }
       }
     },
-    "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\GazeConnect.CameraHub.Core.csproj": {
+    "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\GazeConnect.CameraHub.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\GazeConnect.CameraHub.Core.csproj",
+        "projectUniqueName": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\GazeConnect.CameraHub.Core.csproj",
         "projectName": "GazeConnect.CameraHub.Core",
-        "projectPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\GazeConnect.CameraHub.Core.csproj",
+        "projectPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\GazeConnect.CameraHub.Core.csproj",
         "packagesPath": "C:\\Users\\This User\\.nuget\\packages\\",
-        "outputPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\obj\\",
+        "outputPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -154,14 +162,14 @@
         }
       }
     },
-    "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Service\\GazeConnect.CameraHub.Service.csproj": {
+    "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Service\\GazeConnect.CameraHub.Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Service\\GazeConnect.CameraHub.Service.csproj",
+        "projectUniqueName": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Service\\GazeConnect.CameraHub.Service.csproj",
         "projectName": "GazeConnect.CameraHub.Service",
-        "projectPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Service\\GazeConnect.CameraHub.Service.csproj",
+        "projectPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Service\\GazeConnect.CameraHub.Service.csproj",
         "packagesPath": "C:\\Users\\This User\\.nuget\\packages\\",
-        "outputPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Service\\obj\\",
+        "outputPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Service\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -183,8 +191,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\GazeConnect.CameraHub.Core.csproj": {
-                "projectPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\GazeConnect.CameraHub.Core.csproj"
+              "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\GazeConnect.CameraHub.Core.csproj": {
+                "projectPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.CameraHub\\GazeConnect.CameraHub.Core\\GazeConnect.CameraHub.Core.csproj"
               }
             }
           }
@@ -203,6 +211,20 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "FluentValidation": {
+              "target": "Package",
+              "version": "[12.1.1, )"
+            },
+            "Mapster": {
+              "target": "Package",
+              "version": "[10.0.7, )"
+            },
+            "MediatR": {
+              "target": "Package",
+              "version": "[14.1.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

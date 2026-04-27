@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.AACBoard\\GazeConnect.AACBoard.Core\\GazeConnect.AACBoard.Core.csproj": {}
+    "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.AACBoard\\GazeConnect.AACBoard.Core\\GazeConnect.AACBoard.Core.csproj": {}
   },
   "projects": {
-    "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.AACBoard\\GazeConnect.AACBoard.Core\\GazeConnect.AACBoard.Core.csproj": {
+    "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.AACBoard\\GazeConnect.AACBoard.Core\\GazeConnect.AACBoard.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.AACBoard\\GazeConnect.AACBoard.Core\\GazeConnect.AACBoard.Core.csproj",
+        "projectUniqueName": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.AACBoard\\GazeConnect.AACBoard.Core\\GazeConnect.AACBoard.Core.csproj",
         "projectName": "GazeConnect.AACBoard.Core",
-        "projectPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.AACBoard\\GazeConnect.AACBoard.Core\\GazeConnect.AACBoard.Core.csproj",
+        "projectPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.AACBoard\\GazeConnect.AACBoard.Core\\GazeConnect.AACBoard.Core.csproj",
         "packagesPath": "C:\\Users\\This User\\.nuget\\packages\\",
-        "outputPath": "E:\\B\\c#\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.AACBoard\\GazeConnect.AACBoard.Core\\obj\\",
+        "outputPath": "E:\\B\\Project\\GazeConnect\\services\\csharp\\Services\\GazeConnect.AACBoard\\GazeConnect.AACBoard.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

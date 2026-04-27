@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\GazeConnect.UserProfile.props" />
-</Project>

@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = GazeConnect.UserProfile.Core
-build_property.ProjectDir = E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\
+build_property.ProjectDir = E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
