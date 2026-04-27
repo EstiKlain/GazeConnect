@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "GazeConnect.TTS.Data/1.0.0": {
+        "dependencies": {
+          "GazeConnect.TTS.Core": "1.0.0"
+        },
+        "runtime": {
+          "GazeConnect.TTS.Data.dll": {}
+        }
+      },
+      "GazeConnect.TTS.Core/1.0.0": {
+        "runtime": {
+          "GazeConnect.TTS.Core.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "GazeConnect.TTS.Data/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GazeConnect.TTS.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

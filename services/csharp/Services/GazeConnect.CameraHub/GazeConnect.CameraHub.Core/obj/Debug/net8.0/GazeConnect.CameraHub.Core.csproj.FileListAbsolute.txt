@@ -1,0 +1,11 @@
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.CameraHub\GazeConnect.CameraHub.Core\bin\Debug\net8.0\GazeConnect.CameraHub.Core.deps.json
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.CameraHub\GazeConnect.CameraHub.Core\bin\Debug\net8.0\GazeConnect.CameraHub.Core.dll
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.CameraHub\GazeConnect.CameraHub.Core\bin\Debug\net8.0\GazeConnect.CameraHub.Core.pdb
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.CameraHub\GazeConnect.CameraHub.Core\obj\Debug\net8.0\GazeConnect.CameraHub.Core.GeneratedMSBuildEditorConfig.editorconfig
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.CameraHub\GazeConnect.CameraHub.Core\obj\Debug\net8.0\GazeConnect.CameraHub.Core.AssemblyInfoInputs.cache
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.CameraHub\GazeConnect.CameraHub.Core\obj\Debug\net8.0\GazeConnect.CameraHub.Core.AssemblyInfo.cs
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.CameraHub\GazeConnect.CameraHub.Core\obj\Debug\net8.0\GazeConnect.CameraHub.Core.csproj.CoreCompileInputs.cache
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.CameraHub\GazeConnect.CameraHub.Core\obj\Debug\net8.0\GazeConnect.CameraHub.Core.dll
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.CameraHub\GazeConnect.CameraHub.Core\obj\Debug\net8.0\refint\GazeConnect.CameraHub.Core.dll
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.CameraHub\GazeConnect.CameraHub.Core\obj\Debug\net8.0\GazeConnect.CameraHub.Core.pdb
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.CameraHub\GazeConnect.CameraHub.Core\obj\Debug\net8.0\ref\GazeConnect.CameraHub.Core.dll

@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "GazeConnect.UserProfile.Data/1.0.0": {
+        "dependencies": {
+          "GazeConnect.UserProfile.Core": "1.0.0"
+        },
+        "runtime": {
+          "GazeConnect.UserProfile.Data.dll": {}
+        }
+      },
+      "GazeConnect.UserProfile.Core/1.0.0": {
+        "runtime": {
+          "GazeConnect.UserProfile.Core.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "GazeConnect.UserProfile.Data/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GazeConnect.UserProfile.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

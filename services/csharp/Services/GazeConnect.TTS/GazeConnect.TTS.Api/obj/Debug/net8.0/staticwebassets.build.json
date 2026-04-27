@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "pwLUKYueA5hkIrdyktxHvlxioqxQMk/odb5Dgb3nmgY=",
+  "Source": "GazeConnect.TTS.Api",
+  "BasePath": "_content/GazeConnect.TTS.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

@@ -1,0 +1,15 @@
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Data\bin\Debug\net8.0\GazeConnect.TTS.Data.deps.json
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Data\bin\Debug\net8.0\GazeConnect.TTS.Data.dll
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Data\bin\Debug\net8.0\GazeConnect.TTS.Data.pdb
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Data\bin\Debug\net8.0\GazeConnect.TTS.Core.dll
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Data\bin\Debug\net8.0\GazeConnect.TTS.Core.pdb
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Data\obj\Debug\net8.0\GazeConnect.TTS.Data.csproj.AssemblyReference.cache
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Data\obj\Debug\net8.0\GazeConnect.TTS.Data.GeneratedMSBuildEditorConfig.editorconfig
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Data\obj\Debug\net8.0\GazeConnect.TTS.Data.AssemblyInfoInputs.cache
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Data\obj\Debug\net8.0\GazeConnect.TTS.Data.AssemblyInfo.cs
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Data\obj\Debug\net8.0\GazeConnect.TTS.Data.csproj.CoreCompileInputs.cache
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Data\obj\Debug\net8.0\GazeConn.4C2B1B0F.Up2Date
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Data\obj\Debug\net8.0\GazeConnect.TTS.Data.dll
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Data\obj\Debug\net8.0\refint\GazeConnect.TTS.Data.dll
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Data\obj\Debug\net8.0\GazeConnect.TTS.Data.pdb
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Data\obj\Debug\net8.0\ref\GazeConnect.TTS.Data.dll

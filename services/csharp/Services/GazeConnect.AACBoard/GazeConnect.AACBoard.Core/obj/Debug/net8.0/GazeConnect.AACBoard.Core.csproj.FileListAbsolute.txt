@@ -1,0 +1,11 @@
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Core\bin\Debug\net8.0\GazeConnect.AACBoard.Core.deps.json
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Core\bin\Debug\net8.0\GazeConnect.AACBoard.Core.dll
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Core\bin\Debug\net8.0\GazeConnect.AACBoard.Core.pdb
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Core\obj\Debug\net8.0\GazeConnect.AACBoard.Core.GeneratedMSBuildEditorConfig.editorconfig
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Core\obj\Debug\net8.0\GazeConnect.AACBoard.Core.AssemblyInfoInputs.cache
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Core\obj\Debug\net8.0\GazeConnect.AACBoard.Core.AssemblyInfo.cs
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Core\obj\Debug\net8.0\GazeConnect.AACBoard.Core.csproj.CoreCompileInputs.cache
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Core\obj\Debug\net8.0\GazeConnect.AACBoard.Core.dll
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Core\obj\Debug\net8.0\refint\GazeConnect.AACBoard.Core.dll
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Core\obj\Debug\net8.0\GazeConnect.AACBoard.Core.pdb
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Core\obj\Debug\net8.0\ref\GazeConnect.AACBoard.Core.dll

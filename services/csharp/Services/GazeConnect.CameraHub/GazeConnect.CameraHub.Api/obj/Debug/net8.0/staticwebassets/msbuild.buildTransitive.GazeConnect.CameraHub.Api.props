@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\GazeConnect.CameraHub.Api.props" />
+</Project>

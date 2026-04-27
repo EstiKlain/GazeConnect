@@ -1,0 +1,11 @@
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Core\bin\Debug\net8.0\GazeConnect.TTS.Core.deps.json
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Core\bin\Debug\net8.0\GazeConnect.TTS.Core.dll
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Core\bin\Debug\net8.0\GazeConnect.TTS.Core.pdb
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Core\obj\Debug\net8.0\GazeConnect.TTS.Core.GeneratedMSBuildEditorConfig.editorconfig
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Core\obj\Debug\net8.0\GazeConnect.TTS.Core.AssemblyInfoInputs.cache
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Core\obj\Debug\net8.0\GazeConnect.TTS.Core.AssemblyInfo.cs
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Core\obj\Debug\net8.0\GazeConnect.TTS.Core.csproj.CoreCompileInputs.cache
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Core\obj\Debug\net8.0\GazeConnect.TTS.Core.dll
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Core\obj\Debug\net8.0\refint\GazeConnect.TTS.Core.dll
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Core\obj\Debug\net8.0\GazeConnect.TTS.Core.pdb
+E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.TTS\GazeConnect.TTS.Core\obj\Debug\net8.0\ref\GazeConnect.TTS.Core.dll

@@ -1,0 +1,6 @@
+@GazeConnect.AACBoard_HostAddress = http://localhost:5023
+
+GET {{GazeConnect.AACBoard_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
