@@ -9,3 +9,15 @@ E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\Gaz
 E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\refint\GazeConnect.UserProfile.Core.dll
 E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\GazeConnect.UserProfile.Core.pdb
 E:\B\c#\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\ref\GazeConnect.UserProfile.Core.dll
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\bin\Debug\net8.0\GazeConnect.UserProfile.Core.deps.json
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\bin\Debug\net8.0\GazeConnect.UserProfile.Core.dll
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\bin\Debug\net8.0\GazeConnect.UserProfile.Core.pdb
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\GazeConnect.UserProfile.Core.GeneratedMSBuildEditorConfig.editorconfig
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\GazeConnect.UserProfile.Core.AssemblyInfoInputs.cache
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\GazeConnect.UserProfile.Core.AssemblyInfo.cs
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\GazeConnect.UserProfile.Core.csproj.CoreCompileInputs.cache
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\GazeConnect.UserProfile.Core.sourcelink.json
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\GazeConnect.UserProfile.Core.dll
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\refint\GazeConnect.UserProfile.Core.dll
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\GazeConnect.UserProfile.Core.pdb
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\ref\GazeConnect.UserProfile.Core.dll
