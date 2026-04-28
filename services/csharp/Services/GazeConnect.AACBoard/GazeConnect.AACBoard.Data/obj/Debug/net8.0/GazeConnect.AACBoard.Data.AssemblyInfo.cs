@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GazeConnect.AACBoard.Data")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+093ddafa24343794ea2e602783e886f35d6c84f0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f2ff1f45c1550be9b339894fa56020eb9525c069")]
 [assembly: System.Reflection.AssemblyProductAttribute("GazeConnect.AACBoard.Data")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GazeConnect.AACBoard.Data")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
