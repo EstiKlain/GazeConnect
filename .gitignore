@@ -56,3 +56,6 @@ desktop.ini
 # ── Logs ────────────────────────────────────
 logs/
 *.log
+
+echo "**/obj/" >> .gitignore
+echo "**/bin/" >> .gitignore
