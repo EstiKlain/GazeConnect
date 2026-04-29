@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\GazeConnect.TTS.Api.props" />
-</Project>

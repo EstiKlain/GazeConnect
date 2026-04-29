@@ -6,6 +6,12 @@
 *.suo
 *.userprefs
 
+# Build outputs
+**/bin/
+**/obj/
+*.user
+appsettings.Development.json
+
 # ── .NET / C# ───────────────────────────────
 bin/
 obj/
