@@ -1,4 +1,4 @@
-version: '3.9'
+# version: '3.9'
 
 networks:
   gazeconnect-network:
@@ -69,7 +69,7 @@ services:
   # ── C# Services ─────────────────────────────────────────────
   api-gateway:
     build:
-      context: ./services/csharp/Gateway
+      context: ./services/csharp/Gateway/GazeConnect.ApiGateway
       dockerfile: Dockerfile
     container_name: gazeconnect-api-gateway
     ports:
