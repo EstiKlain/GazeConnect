@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GazeConnect.AACBoard.Core.Models;
+namespace GazeConnect.AACBoard.Core.Models;
 public class BoardTrigger : BaseModel
 {
 
@@ -21,7 +22,7 @@ public class BoardTrigger : BaseModel
     // למשל: { "person_id": "mom", "min_confidence": 0.8 }
     [Column(TypeName = "jsonb")]
     public string Condition { get; set; } = "{}";
-    
+
 
     // עוצמת הקשר (לצורך ה-AI): כמה הטריגר הזה חזק (0.0 עד 1.0)
     public double ConfidenceWeight { get; set; } = 1.0;

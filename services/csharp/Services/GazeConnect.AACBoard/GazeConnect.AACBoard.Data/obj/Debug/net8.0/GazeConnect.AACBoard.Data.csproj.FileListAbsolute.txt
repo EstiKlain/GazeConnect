@@ -31,3 +31,5 @@ E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConne
 E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Data\obj\Debug\net8.0\refint\GazeConnect.AACBoard.Data.dll
 E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Data\obj\Debug\net8.0\GazeConnect.AACBoard.Data.pdb
 E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Data\obj\Debug\net8.0\ref\GazeConnect.AACBoard.Data.dll
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Data\bin\Debug\net8.0\GazeConnect.AACBoard.Data.runtimeconfig.json
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.AACBoard\GazeConnect.AACBoard.Data\obj\Debug\net8.0\GazeConnect.AACBoard.Data.genruntimeconfig.cache

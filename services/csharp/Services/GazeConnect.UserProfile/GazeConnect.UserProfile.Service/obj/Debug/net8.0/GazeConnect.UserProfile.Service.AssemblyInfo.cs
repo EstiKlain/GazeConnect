@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GazeConnect.UserProfile.Service")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9dafbf7162562c374786184d059cd9395a6191b8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+86e5e7f320f42e12252083409f53cbe06c0639f7")]
 [assembly: System.Reflection.AssemblyProductAttribute("GazeConnect.UserProfile.Service")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GazeConnect.UserProfile.Service")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -5,7 +5,7 @@ namespace GazeConnect.AACBoard.Core.Models;
 
 public class AACBoard : BaseModel
 {
-    
+
     [Required]
     public Guid UserId { get; set; }
 
@@ -17,4 +17,6 @@ public class AACBoard : BaseModel
     public string Layout { get; set; } = "{}";
 
     public ICollection<Button> Buttons { get; set; } = new List<Button>();
+
+    public ICollection<BoardTrigger> Triggers { get; set; } = new List<BoardTrigger>();
 }
