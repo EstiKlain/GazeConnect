@@ -10,3 +10,16 @@ E:\B\c#\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\obj\Debug\
 E:\B\c#\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\obj\Debug\net8.0\refint\GazeConnect.Shared.dll
 E:\B\c#\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\obj\Debug\net8.0\GazeConnect.Shared.pdb
 E:\B\c#\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\obj\Debug\net8.0\ref\GazeConnect.Shared.dll
+E:\B\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\bin\Debug\net8.0\GazeConnect.Shared.deps.json
+E:\B\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\bin\Debug\net8.0\GazeConnect.Shared.dll
+E:\B\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\bin\Debug\net8.0\GazeConnect.Shared.pdb
+E:\B\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\obj\Debug\net8.0\GazeConnect.Shared.csproj.AssemblyReference.cache
+E:\B\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\obj\Debug\net8.0\GazeConnect.Shared.GeneratedMSBuildEditorConfig.editorconfig
+E:\B\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\obj\Debug\net8.0\GazeConnect.Shared.AssemblyInfoInputs.cache
+E:\B\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\obj\Debug\net8.0\GazeConnect.Shared.AssemblyInfo.cs
+E:\B\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\obj\Debug\net8.0\GazeConnect.Shared.csproj.CoreCompileInputs.cache
+E:\B\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\obj\Debug\net8.0\GazeConnect.Shared.sourcelink.json
+E:\B\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\obj\Debug\net8.0\GazeConnect.Shared.dll
+E:\B\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\obj\Debug\net8.0\refint\GazeConnect.Shared.dll
+E:\B\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\obj\Debug\net8.0\GazeConnect.Shared.pdb
+E:\B\Project\GazeConnect\services\csharp\Shared\GazeConnect.Shared\obj\Debug\net8.0\ref\GazeConnect.Shared.dll
