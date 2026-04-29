@@ -36,6 +36,19 @@
           "lib/netstandard2.0/Mapster.Core.dll": {}
         }
       },
+      "Mapster.DependencyInjection/10.0.7": {
+        "type": "package",
+        "dependencies": {
+          "Mapster": "10.0.7",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
+        },
+        "compile": {
+          "lib/net8.0/Mapster.DependencyInjection.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/Mapster.DependencyInjection.dll": {}
+        }
+      },
       "MediatR/14.1.0": {
         "type": "package",
         "dependencies": {
@@ -166,6 +179,34 @@
           }
         }
       },
+      "Npgsql/8.0.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
+        },
+        "compile": {
+          "lib/net8.0/Npgsql.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Npgsql.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Pgvector/0.3.0": {
+        "type": "package",
+        "dependencies": {
+          "Npgsql": "8.0.3"
+        },
+        "compile": {
+          "lib/net6.0/Pgvector.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Pgvector.dll": {}
+        }
+      },
       "System.Diagnostics.DiagnosticSource/10.0.0": {
         "type": "package",
         "compile": {
@@ -185,6 +226,11 @@
       "GazeConnect.UserProfile.Core/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Mapster": "10.0.7",
+          "Mapster.DependencyInjection": "10.0.7",
+          "Pgvector": "0.3.0"
+        },
         "compile": {
           "bin/placeholder/GazeConnect.UserProfile.Core.dll": {}
         },
@@ -237,6 +283,22 @@
         "lib/netstandard2.0/Mapster.Core.dll",
         "mapster.core.10.0.7.nupkg.sha512",
         "mapster.core.nuspec"
+      ]
+    },
+    "Mapster.DependencyInjection/10.0.7": {
+      "sha512": "jTLPkEH3Iii0N/dwyvpPhBPf1CdV3M4W6j8vkoLtoPZoE+LC403wBgzO8wnOZzZv+ih0l6NyVc3oNzCNxfH5vQ==",
+      "type": "package",
+      "path": "mapster.dependencyinjection/10.0.7",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "icon.png",
+        "lib/net10.0/Mapster.DependencyInjection.dll",
+        "lib/net8.0/Mapster.DependencyInjection.dll",
+        "lib/net9.0/Mapster.DependencyInjection.dll",
+        "lib/netstandard2.0/Mapster.DependencyInjection.dll",
+        "mapster.dependencyinjection.10.0.7.nupkg.sha512",
+        "mapster.dependencyinjection.nuspec"
       ]
     },
     "MediatR/14.1.0": {
@@ -476,6 +538,43 @@
         "microsoft.identitymodel.tokens.nuspec"
       ]
     },
+    "Npgsql/8.0.3": {
+      "sha512": "6WEmzsQJCZAlUG1pThKg/RmeF6V+I0DmBBBE/8YzpRtEzhyZzKcK7ulMANDm5CkxrALBEC8H+5plxHWtIL7xnA==",
+      "type": "package",
+      "path": "npgsql/8.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net6.0/Npgsql.dll",
+        "lib/net6.0/Npgsql.xml",
+        "lib/net7.0/Npgsql.dll",
+        "lib/net7.0/Npgsql.xml",
+        "lib/net8.0/Npgsql.dll",
+        "lib/net8.0/Npgsql.xml",
+        "lib/netstandard2.0/Npgsql.dll",
+        "lib/netstandard2.0/Npgsql.xml",
+        "lib/netstandard2.1/Npgsql.dll",
+        "lib/netstandard2.1/Npgsql.xml",
+        "npgsql.8.0.3.nupkg.sha512",
+        "npgsql.nuspec",
+        "postgresql.png"
+      ]
+    },
+    "Pgvector/0.3.0": {
+      "sha512": "asa5XkgE3rXCNi5qHGavWZ5w+pmqWjjM1T5vN5VuPaKqV52h4TLiOM9ZJFofYgYtfhReo1QWe4NeD+hbv7ydfw==",
+      "type": "package",
+      "path": "pgvector/0.3.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "README.md",
+        "lib/net6.0/Pgvector.dll",
+        "pgvector.0.3.0.nupkg.sha512",
+        "pgvector.nuspec"
+      ]
+    },
     "System.Diagnostics.DiagnosticSource/10.0.0": {
       "sha512": "0KdBK+h7G13PuOSC2R/DalAoFMvdYMznvGRuICtkdcUMXgl/gYXsG6z4yUvTxHSMACorWgHCU1Faq0KUHU6yAQ==",
       "type": "package",
@@ -515,6 +614,7 @@
       "FluentValidation >= 12.1.1",
       "GazeConnect.UserProfile.Core >= 1.0.0",
       "Mapster >= 10.0.7",
+      "Mapster.DependencyInjection >= 10.0.7",
       "MediatR >= 14.1.0"
     ]
   },
@@ -577,6 +677,10 @@
             "version": "[12.1.1, )"
           },
           "Mapster": {
+            "target": "Package",
+            "version": "[10.0.7, )"
+          },
+          "Mapster.DependencyInjection": {
             "target": "Package",
             "version": "[10.0.7, )"
           },

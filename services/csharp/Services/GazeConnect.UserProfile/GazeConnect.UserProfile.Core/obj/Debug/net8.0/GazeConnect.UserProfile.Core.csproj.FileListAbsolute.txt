@@ -21,3 +21,4 @@ E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeCo
 E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\refint\GazeConnect.UserProfile.Core.dll
 E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\GazeConnect.UserProfile.Core.pdb
 E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\ref\GazeConnect.UserProfile.Core.dll
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Core\obj\Debug\net8.0\GazeConnect.UserProfile.Core.csproj.AssemblyReference.cache

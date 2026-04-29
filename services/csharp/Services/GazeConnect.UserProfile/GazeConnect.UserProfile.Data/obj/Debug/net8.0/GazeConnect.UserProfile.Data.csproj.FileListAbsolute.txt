@@ -31,3 +31,5 @@ E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeCo
 E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Data\obj\Debug\net8.0\refint\GazeConnect.UserProfile.Data.dll
 E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Data\obj\Debug\net8.0\GazeConnect.UserProfile.Data.pdb
 E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Data\obj\Debug\net8.0\ref\GazeConnect.UserProfile.Data.dll
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Data\bin\Debug\net8.0\GazeConnect.UserProfile.Data.runtimeconfig.json
+E:\B\Project\GazeConnect\services\csharp\Services\GazeConnect.UserProfile\GazeConnect.UserProfile.Data\obj\Debug\net8.0\GazeConnect.UserProfile.Data.genruntimeconfig.cache

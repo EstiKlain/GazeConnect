@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GazeConnect.TTS.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7b8b40a9792e29d39d81a47f4e76caff51df013a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9dafbf7162562c374786184d059cd9395a6191b8")]
 [assembly: System.Reflection.AssemblyProductAttribute("GazeConnect.TTS.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GazeConnect.TTS.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
