@@ -1,0 +1,6 @@
+@GazeConnect.UserProfile.Api_HostAddress = http://localhost:5272
+
+GET {{GazeConnect.UserProfile.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

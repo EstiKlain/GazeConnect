@@ -6,9 +6,17 @@
 *.suo
 *.userprefs
 
+# Build outputs
+**/bin/
+**/obj/
+*.user
+appsettings.Development.json
+
 # ── .NET / C# ───────────────────────────────
 bin/
 obj/
+**/bin/
+**/obj/
 *.dll
 *.exe
 *.pdb
@@ -54,5 +62,6 @@ desktop.ini
 # ── Logs ────────────────────────────────────
 logs/
 *.log
-**/obj/
-**/bin/
+
+echo "**/obj/" >> .gitignore
+echo "**/bin/" >> .gitignore

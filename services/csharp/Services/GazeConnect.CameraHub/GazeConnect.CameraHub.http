@@ -1,0 +1,6 @@
+@GazeConnect.CameraHub_HostAddress = http://localhost:5008
+
+GET {{GazeConnect.CameraHub_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
