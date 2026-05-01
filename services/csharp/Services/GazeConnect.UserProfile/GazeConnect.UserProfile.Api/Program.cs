@@ -40,4 +40,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<UserProfileContext>();
+    db.Database.Migrate();
+}
+
+// --- Health Check ---
+app.MapGet("/health", () => Results.Ok(new { status = "Healthy", service = "UserProfile" }));
+
 app.Run();
