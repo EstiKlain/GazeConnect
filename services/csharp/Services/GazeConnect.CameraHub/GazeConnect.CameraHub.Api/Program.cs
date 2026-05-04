@@ -15,7 +15,7 @@ builder.Services.AddSignalR();
 builder.Services.AddSingleton<ICircularBuffer<TimeStampedFrame>>(
     _ => new CircularBuffer<TimeStampedFrame>(capacity: 15));
 
-// ── CircularBuffer לנקודות מבט (GazePoint) ───────────────────
+// ── CircularBuffer לנקודות מבט ────────────────────────────────
 builder.Services.AddSingleton<ICircularBuffer<GazePoint>>(
     _ => new CircularBuffer<GazePoint>(capacity: 15));
 
@@ -49,6 +49,16 @@ builder.Services.AddHttpClient<IFaceRecognitionClient, HttpFaceRecognitionClient
 // ── CameraWorker ──────────────────────────────────────────────
 builder.Services.AddHostedService<CameraWorker>();
 
+// ── Mouse Simulator — רק בפיתוח! ─────────────────────────────
+var mouseEnabled = builder.Configuration.GetValue<bool>("MouseSimulator:Enabled");
+if (mouseEnabled)
+{
+    // Singleton כדי שה-Hub וה-Worker יחלקו אותו instance
+    builder.Services.AddSingleton<MouseGazeSimulator>();
+    builder.Services.AddHostedService(
+        sp => sp.GetRequiredService<MouseGazeSimulator>());
+}
+
 // ── Health Check ──────────────────────────────────────────────
 builder.Services.AddHealthChecks();
 
@@ -56,6 +66,10 @@ var app = builder.Build();
 
 app.MapHealthChecks("/health");
 app.MapHub<CameraSignalRHub>("/hubs/camera");
+
+// Mouse Hub — רק כשהסימולטור פעיל
+if (mouseEnabled)
+    app.MapHub<MousePositionHub>("/hubs/mouse");
 
 if (app.Environment.IsDevelopment())
 {
