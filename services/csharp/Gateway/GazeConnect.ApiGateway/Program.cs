@@ -44,7 +44,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseCors("AllowAngular");
 app.UseMiddleware<CorrelationIdMiddleware>();
@@ -56,6 +56,11 @@ app.UseRateLimiter();
 app.MapHealthChecks("/health");
 
 // YARP מנתב את שאר הבקשות
+app.MapReverseProxy();
+app.Run();
+
+app.MapGet("/", () => "GazeConnect API Gateway is running!");
+app.MapHealthChecks("/health");
 app.MapReverseProxy();
 app.Run();
 

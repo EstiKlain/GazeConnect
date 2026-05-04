@@ -1,67 +1,87 @@
-# ── Visual Studio ──────────────────────────
+# ── Visual Studio / VS Code ─────────────────
 .vs/
+.vscode/
 *.user
 *.userosscache
 *.sln.docstates
 *.suo
 *.userprefs
+*.ide/
+.idea/
 
-# Build outputs
-**/bin/
-**/obj/
-*.user
-appsettings.Development.json
+*.env
+.env
 
-# ── .NET / C# ───────────────────────────────
+
+# ── Build & Output (General) ────────────────
 bin/
 obj/
 **/bin/
 **/obj/
+[Bb]in/
+[Oo]bj/
+dist/
+out/
+build/
+artifacts/
+
+# ── .NET / C# ───────────────────────────────
 *.dll
 *.exe
 *.pdb
 *.cache
+*.suo
 project.lock.json
 project.fragment.lock.json
-artifacts/
+appsettings.Development.json
+secrets.json
 
 # ── Node.js / Angular ───────────────────────
 node_modules/
-dist/
 .angular/
 npm-debug.log*
+yarn-debug.log*
 yarn-error.log*
 *.tgz
+coverage/
+.npm/
 
-# ── Python ──────────────────────────────────
+# ── Python / AI ─────────────────────────────
 __pycache__/
 *.py[cod]
 *.pyo
 .venv/
 venv/
+ENV/
+env/
 *.egg-info/
 .pytest_cache/
+.ipynb_checkpoints/
 *.pyc
+services/python/face_recognition/models/
+
 
 # ── Environment & Secrets ───────────────────
 .env
+*.env
 .env.local
 .env.*.local
 *.env.local
-appsettings.Development.json
-secrets.json
+*.secret
+*.pem
+*.key
 
 # ── Docker ──────────────────────────────────
 docker-compose.override.yml
+*.db
+*.sqlite
 
-# ── OS ──────────────────────────────────────
+# ── OS Specific ─────────────────────────────
 .DS_Store
 Thumbs.db
 desktop.ini
+ehthumbs.db
 
 # ── Logs ────────────────────────────────────
 logs/
 *.log
-
-echo "**/obj/" >> .gitignore
-echo "**/bin/" >> .gitignore

@@ -57,11 +57,11 @@ public class UserProfileContext : DbContext
             // רשומה חדשה – הגדר CreatedAt פעם אחת בלבד
             if (entity.State == EntityState.Added)
             {
-                ((BaseModel)entity.Entity).CreatedAt = DateTime.Now;
+                ((BaseModel)entity.Entity).CreatedAt = DateTime.UtcNow;
             }
 
             // כל שמירה – עדכן UpdatedAt אוטומטית
-            ((BaseModel)entity.Entity).UpdatedAt = DateTime.Now;
+            ((BaseModel)entity.Entity).UpdatedAt = DateTime.UtcNow;
         }
     }
 }
