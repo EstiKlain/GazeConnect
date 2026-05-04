@@ -9,6 +9,10 @@
 *.ide/
 .idea/
 
+*.env
+.env
+
+
 # ── Build & Output (General) ────────────────
 bin/
 obj/
@@ -54,9 +58,12 @@ env/
 .pytest_cache/
 .ipynb_checkpoints/
 *.pyc
+services/python/face_recognition/models/
+
 
 # ── Environment & Secrets ───────────────────
 .env
+*.env
 .env.local
 .env.*.local
 *.env.local

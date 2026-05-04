@@ -7,6 +7,7 @@ networks:
 volumes:
   postgres_data:
   redis_data:
+  face_photos:
 
 services:
 
@@ -27,6 +28,11 @@ services:
     mem_limit: 1g
     cpus: '1.0'
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gazeuser -d gazeconnect"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -146,16 +152,31 @@ services:
 
   # ── Python / AI Services ────────────────────────────────────
   face-recognition:
-    image: alpine
+    build:
+      context: ./services/python/face_recognition
+      dockerfile: Dockerfile
     container_name: gazeconnect-face-recognition
-    command: /bin/sh -c "while true; do sleep 3600; done"
     ports:
       - "8001:8001"
+    env_file:                                        # ← במקום environment
+      - ./services/python/face_recognition/.env  # ← קובץ env עם כל המשתנים (לשמור על סודיות)
+    volumes:
+      - face_photos:/app/photos
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - gazeconnect-network
     mem_limit: 1g
     cpus: '1.0'
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   object-detection:
     image: alpine
