@@ -1,0 +1,491 @@
+//  GazeConnect.CameraHub.Service/TemporalMatcher.cs
+// ✅ תוקן: משתמש ב-GetInTimeRange (לא GetSnapshot שלא קיים)
+// ✅ תוקן: מחפש את הGazePoint הקרוב ביותר בתוך הטווח (לא רק הראשון)
+// ✅ תוקן: FlushPending זורק פנים ישנות מ-500ms
+
+using GazeConnect.CameraHub.Core.Interfaces;
+using GazeConnect.Shared.DTOs;
+using Microsoft.Extensions.Logging;
+
+namespace GazeConnect.CameraHub.Service;
+
+public sealed class TemporalMatcher : ITemporalMatcher
+{
+    private readonly ICircularBuffer<GazePoint> _gazeBuffer;
+    private readonly ILogger<TemporalMatcher> _logger;
+    private readonly Queue<FaceDetectionResult> _pendingFaces = new();
+    private readonly object _lock = new();
+
+    public int ToleranceMs { get; }
+
+    public TemporalMatcher(
+        ICircularBuffer<GazePoint> gazeBuffer,
+        ILogger<TemporalMatcher> logger,
+        int toleranceMs = 50)
+    {
+        _gazeBuffer  = gazeBuffer;
+        _logger      = logger;
+        ToleranceMs  = toleranceMs;
+    }
+
+    /// מנסה למצוא GazePoint בטווח ±ToleranceMs מתוצאת הזיהוי.
+    /// אם נמצא → מחזיר GazeEvent. אם לא → שומר בQueue לניסיון מאוחר.
+    public GazeEvent? TryMatch(FaceDetectionResult face)
+    {
+        // ✅ משתמש ב-GetInTimeRange — הAPI הנכון של הBuffer שלך
+        var from = DateTimeOffset.FromUnixTimeMilliseconds(face.TimestampMs - ToleranceMs);
+        var to   = DateTimeOffset.FromUnixTimeMilliseconds(face.TimestampMs + ToleranceMs);
+        var candidates = _gazeBuffer.GetInTimeRange(from, to);
+
+        if (candidates.Count == 0)
+        {
+            // אין gaze בטווח — שמור לניסיון מאוחר
+            lock (_lock) _pendingFaces.Enqueue(face);
+            _logger.LogDebug(
+                "No gaze match for face {PersonId} at {Ts}ms — queued ({Count} pending)",
+                face.PersonId, face.TimestampMs, _pendingFaces.Count);
+            return null;
+        }
+
+        // בחר את הGazePoint הקרוב ביותר בזמן
+        var best = candidates
+            .OrderBy(g => Math.Abs(g.UtcTimestamp.ToUnixTimeMilliseconds() - face.TimestampMs))
+            .First();
+
+        var deltaMs = (int)Math.Abs(best.UtcTimestamp.ToUnixTimeMilliseconds() - face.TimestampMs);
+
+        _logger.LogDebug(
+            "Match: {PersonId} Δ={Delta}ms gaze=({X:F2},{Y:F2})",
+            face.PersonId, deltaMs, best.X, best.Y);
+
+        return new GazeEvent
+        {
+            Face       = face,
+            GazePoint  = best,
+            DeltaMs    = deltaMs,
+            OccurredAt = DateTimeOffset.UtcNow
+        };
+    }
+
+    /// מנסה שוב לחבר פנים שהיו ממתינות, כשמגיע GazePoint חדש.
+    /// פנים ישנות מ-500ms → נזרקות.
+    public IReadOnlyList<GazeEvent> FlushPending()
+    {
+        var matched = new List<GazeEvent>();
+        lock (_lock)
+        {
+            int count = _pendingFaces.Count;
+            for (int i = 0; i < count; i++)
+            {
+                var face = _pendingFaces.Dequeue();
+
+                long ageMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - face.TimestampMs;
+                if (ageMs > 500)
+                {
+                    _logger.LogDebug("Dropping stale face {PersonId} (age {Age}ms)", face.PersonId, ageMs);
+                    continue;  // זרוק — ישן מדי
+                }
+
+                var from = DateTimeOffset.FromUnixTimeMilliseconds(face.TimestampMs - ToleranceMs);
+                var to   = DateTimeOffset.FromUnixTimeMilliseconds(face.TimestampMs + ToleranceMs);
+                var candidates = _gazeBuffer.GetInTimeRange(from, to);
+
+                if (candidates.Count == 0)
+                {
+                    _pendingFaces.Enqueue(face);  // עדיין לא נמצא — החזר לQueue
+                    continue;
+                }
+
+                var best = candidates
+                    .OrderBy(g => Math.Abs(g.UtcTimestamp.ToUnixTimeMilliseconds() - face.TimestampMs))
+                    .First();
+
+                matched.Add(new GazeEvent
+                {
+                    Face       = face,
+                    GazePoint  = best,
+                    DeltaMs    = (int)Math.Abs(best.UtcTimestamp.ToUnixTimeMilliseconds() - face.TimestampMs),
+                    OccurredAt = DateTimeOffset.UtcNow
+                });
+            }
+        }
+        return matched;
+    }
+}
+using GazeConnect.CameraHub.Core.Interfaces;
+using GazeConnect.CameraHub.Core.Models;
+using GazeConnect.Shared.DTOs;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+namespace GazeConnect.CameraHub.Service;
+
+/// <summary>
+/// ה-IHostedService הראשי — "הלב הדופק" של CameraHub.
+///
+/// הסדר בכל iteration של ה-loop:
+/// 1. קרא frame מהמצלמה (33ms = 30fps)
+/// 2. שמור ב-CircularBuffer (תמיד — גם בלי זיהוי)
+/// 3. כל 3 frames — שלח לPython לזיהוי (10fps = חיסכון ב-CPU)
+/// 4. תוצאה חזרה → שלח SignalR event לAngular
+/// 5. המתן את יתרת ה-33ms
+///
+/// Fire-and-forget לזיהוי: ה-loop לא חוסם עד שPython מחזיר.
+/// </summary>
+public sealed class CameraWorker : BackgroundService
+{
+    private const int FrameIntervalMs = 33;       // 30fps
+    private const int RecognitionSamplingRate = 3; // שלח לזיהוי כל frame שלישי = 10fps
+
+    private readonly ICameraSource _camera;
+    private readonly ICircularBuffer<TimeStampedFrame> _buffer;
+    private readonly IFaceRecognitionClient _recognitionClient;
+    private readonly IHubContext<CameraSignalRHub> _hubContext;
+    private readonly ILogger<CameraWorker> _logger;
+    private int _frameCount;
+
+    public CameraWorker(
+        ICameraSource camera,
+        ICircularBuffer<TimeStampedFrame> buffer,
+        IFaceRecognitionClient recognitionClient,
+        IHubContext<CameraSignalRHub> hubContext,
+        ILogger<CameraWorker> logger)
+    {
+        _camera = camera;
+        _buffer = buffer;
+        _recognitionClient = recognitionClient;
+        _hubContext = hubContext;
+        _logger = logger;
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        _logger.LogInformation("CameraWorker starting for camera: {CameraId}", _camera.CameraId);
+
+        await _camera.OpenAsync(stoppingToken);
+
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            var loopStart = DateTimeOffset.UtcNow;
+
+            try
+            {
+                await ProcessFrameAsync(stoppingToken);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                // שגיאה בframe בודד לא עוצרת את כל המערכת
+                _logger.LogError(ex, "Error processing frame from {CameraId}", _camera.CameraId);
+            }
+
+            // שמירה על קצב קבוע של 30fps
+            var elapsed = DateTimeOffset.UtcNow - loopStart;
+            var delay = FrameIntervalMs - (int)elapsed.TotalMilliseconds;
+            if (delay > 0)
+                await Task.Delay(delay, stoppingToken);
+        }
+
+        await _camera.DisposeAsync();
+        _logger.LogInformation("CameraWorker stopped");
+    }
+
+    private async Task ProcessFrameAsync(CancellationToken ct)
+    {
+        var frame = await _camera.ReadFrameAsync(ct);
+        if (frame is null) return;
+
+        // שמור תמיד — Buffer צריך להיות מלא לTemporalMatching
+        _buffer.Add(frame);
+        _frameCount++;
+
+        // זיהוי רק כל N frames
+        if (_frameCount % RecognitionSamplingRate != 0) return;
+
+        // Fire-and-forget — לא חוסמים את ה-loop הראשי
+        _ = Task.Run(async () =>
+        {
+            var results = await _recognitionClient.RecognizeAsync(frame, ct);
+
+            foreach (var result in results)
+            {
+                // שלח event לAngular דרך SignalR
+                // FaceDetectionResult מגיע מ-Shared — Angular מכיר את המבנה הזה
+                await _hubContext.Clients.All.SendAsync(
+                    "FaceDetected", result, ct);
+
+                _logger.LogDebug(
+                    "Face detected: PersonId={PersonId} ({Confidence:P0}) IsKnown={IsKnown}",
+                    result.PersonId,
+                    result.Confidence,
+                    result.IsKnown);
+            }
+        }, ct);
+    }
+}
+using GazeConnect.CameraHub.Core.Interfaces;
+using GazeConnect.CameraHub.Core.Models;
+
+namespace GazeConnect.CameraHub.Service;
+
+/// <summary>
+/// Buffer מעגלי thread-safe ששומר frames מהמצלמה בזיכרון.
+///
+/// איך עובד:
+/// - שומר עד [capacity] פריטים
+/// - כשמלא → הפריט הכי ישן נמחק אוטומטית
+/// - GetInTimeRange: "תן לי את כל ה-frames שצולמו בין X ל-Y"
+///
+/// למה 500ms / 15 frames?
+/// 30fps × 0.5s = 15 frames — מספיק ל-TemporalMatching של ±50ms
+/// עם מרווח בטיחות x5.
+/// </summary>
+public sealed class CircularBuffer<T> : ICircularBuffer<T> where T : ITimestamped
+{
+    private readonly T[] _buffer;
+    private int _head;   // מצביע על המקום הבא לכתיבה
+    private int _count;  // כמה פריטים יש כרגע
+ private readonly object _lock = new();
+    public CircularBuffer(int capacity)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(capacity, 1);
+        _buffer = new T[capacity];
+    }
+
+    public int Count
+    {
+        get { lock (_lock) return _count; }
+    }
+
+    /// <summary>
+    /// מוסיף frame ל-Buffer.
+    /// אם מלא — דורס את הישן ביותר (לא זורק exception).
+    /// </summary>
+    public void Add(T item)
+    {
+        lock (_lock)
+        {
+            _buffer[_head] = item;
+            _head = (_head + 1) % _buffer.Length;
+            if (_count < _buffer.Length) _count++;
+        }
+    }
+
+    /// <summary>
+    /// מחזיר את כל ה-frames שצולמו בין [from] ל-[to].
+    /// מחזיר רשימה ריקה אם אין frames בטווח.
+    /// </summary>
+    public IReadOnlyList<T> GetInTimeRange(DateTimeOffset from, DateTimeOffset to)
+    {
+        lock (_lock)
+        {
+            var results = new List<T>(_count);
+            for (var i = 0; i < _count; i++)
+            {
+                var idx = (_head - _count + i + _buffer.Length) % _buffer.Length;
+                var item = _buffer[idx];
+                if (item.UtcTimestamp >= from && item.UtcTimestamp <= to)
+                    results.Add(item);
+            }
+            return results;
+        }
+    }
+}
+using System.Net.Http.Json;
+using GazeConnect.CameraHub.Core.Interfaces;
+using GazeConnect.CameraHub.Core.Models;
+using GazeConnect.Shared.DTOs;
+using Microsoft.Extensions.Logging;
+
+namespace GazeConnect.CameraHub.Service;
+
+/// <summary>
+/// שולח frame ל-Python FastAPI (port 8001) ומקבל תוצאות זיהוי.
+/// </summary>
+public sealed class HttpFaceRecognitionClient : IFaceRecognitionClient
+{
+    private readonly HttpClient _httpClient;
+    private readonly ILogger<HttpFaceRecognitionClient> _logger;
+
+    public HttpFaceRecognitionClient(
+        HttpClient httpClient,
+        ILogger<HttpFaceRecognitionClient> logger)
+    {
+        _httpClient = httpClient;
+        _logger = logger;
+    }
+
+    public async Task<IReadOnlyList<FaceDetectionResult>> RecognizeAsync(
+        TimeStampedFrame frame,
+        CancellationToken ct)
+    {
+        try
+        {
+            using var content = new MultipartFormDataContent();
+
+            using var imageContent = new ByteArrayContent(frame.ImageData);
+            imageContent.Headers.ContentType =
+                new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
+
+            content.Add(imageContent, "file", "frame.jpg");
+            content.Add(
+                new StringContent(frame.UtcTimestamp.ToUnixTimeMilliseconds().ToString()),
+                "timestamp_ms");
+
+            var response = await _httpClient.PostAsync("/recognize", content, ct);
+            response.EnsureSuccessStatusCode();
+
+            var results = await response.Content
+                .ReadFromJsonAsync<List<FaceDetectionDto>>(ct);
+
+            if (results is null) return [];
+
+            return results.Select(r => new FaceDetectionResult(
+                PersonId:    r.PersonId,
+                PersonName:  r.PersonName,
+                Confidence:  r.Confidence,        // float → float ✅
+                BoundingBox: r.BoundingBox,        // BoundingBox → BoundingBox ✅
+                TimestampMs: frame.UtcTimestamp.ToUnixTimeMilliseconds(),
+                IsKnown:     r.IsKnown
+            )).ToList();
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogWarning(ex,
+                "Face recognition service unavailable for frame {Timestamp}",
+                frame.UtcTimestamp);
+            return [];
+        }
+    }
+
+    // DTO פנימי — בדיוק מה שPython שולח ב-JSON
+    private sealed record FaceDetectionDto(
+        Guid?       PersonId,
+        string?     PersonName,
+        float       Confidence,      // ← float (לא double) כמו FaceDetectionResult
+        BoundingBox BoundingBox,     // ← חייב להיות כאן כי Python שולח את זה
+        bool        IsKnown
+    );
+}
+// נתיב: services\csharp\Services\GazeConnect.CameraHub\
+//        GazeConnect.CameraHub.Core\Interfaces\ITemporalMatcher.cs
+// ✅ חדש — Interface בלבד, ללא תלות במימוש ספציפי
+
+using GazeConnect.Shared.DTOs;
+
+namespace GazeConnect.CameraHub.Core.Interfaces;
+
+public interface ITemporalMatcher
+{
+    /// כמה מילישניות מרווח מותר בין זיהוי פנים לנקודת מבט
+    int ToleranceMs { get; }
+
+    /// מנסה לחבר תוצאת זיהוי פנים לנקודת מבט קרובה בזמן.
+    /// מחזיר GazeEvent אם נמצאה התאמה, null אם הפנים נכנסות לqueue להמתנה.
+    GazeEvent? TryMatch(FaceDetectionResult face);
+
+    /// מנסה שוב לחבר פנים שהמתינו ללא match.
+    /// קוראים לזה כשמגיע GazePoint חדש לBuffer.
+    IReadOnlyList<GazeEvent> FlushPending();
+}
+namespace GazeConnect.CameraHub.Core.Interfaces;
+
+/// <summary>
+/// אינטרפייס ל-Buffer מעגלי — שומר N פריטים אחרונים בזיכרון.
+/// כשה-Buffer מלא, הפריט הישן ביותר נמחק אוטומטית.
+/// 
+/// למה אינטרפייס? כדי שאפשר להחליף מימוש (thread-safe, lock-free וכו').
+/// </summary>
+public interface ICircularBuffer<T> where T : ITimestamped
+{
+    /// <summary>מוסיף פריט ל-Buffer</summary>
+    void Add(T item);
+
+    /// <summary>
+    /// מחזיר את כל הפריטים בטווח זמן נתון.
+    /// משמש ל-TemporalMatching: "תן לי frames מהרגע הזה ±50ms"
+    /// </summary>
+    IReadOnlyList<T> GetInTimeRange(DateTimeOffset from, DateTimeOffset to);
+
+    /// <summary>מספר הפריטים הנוכחי ב-Buffer</summary>
+    int Count { get; }
+}
+using GazeConnect.CameraHub.Core.Models;
+using GazeConnect.Shared.DTOs;
+
+namespace GazeConnect.CameraHub.Core.Interfaces;
+
+/// <summary>
+/// אינטרפייס לתקשורת עם Python Face Recognition Service (port 8001).
+///
+/// האבסטרקציה מאפשרת:
+/// - Mock בבדיקות (ללא Python אמיתי)
+/// - החלפת מימוש בעתיד (HTTP → gRPC)
+///
+/// FaceDetectionResult מגיע מ-GazeConnect.Shared כי
+/// גם ה-Frontend וגם שירותים אחרים צריכים לדעת מה זה.
+/// </summary>
+public interface IFaceRecognitionClient
+{
+    /// <summary>
+    /// שולח frame לשירות Python ומקבל רשימת פנים שזוהו.
+    /// מחזיר רשימה ריקה אם לא נמצאו פנים או אם Python לא זמין.
+    /// </summary>
+    Task<IReadOnlyList<FaceDetectionResult>> RecognizeAsync(
+        TimeStampedFrame frame,
+        CancellationToken ct);
+}
+using GazeConnect.CameraHub.Core.Interfaces;
+namespace GazeConnect.CameraHub.Core.Models;
+
+/// <summary>
+/// מייצג frame בודד שצולם מהמצלמה.
+/// record = immutable, value-based equality (C# 9+)
+///
+/// למה רק המודל הזה נשאר ב-CameraHub.Core?
+/// כי TimeStampedFrame ייחודי לCameraHub בלבד.
+/// GazePoint ו-FaceDetectionResult נמצאים ב-GazeConnect.Shared
+/// כי שירותים אחרים (AACBoard, Frontend) גם משתמשים בהם.
+/// </summary>
+/// <param name="ImageData">תמונה גולמית בפורמט JPEG כ-bytes</param>
+/// <param name="UtcTimestamp">מתי בדיוק צולמה התמונה (UTC) — קריטי ל-TemporalMatching</param>
+/// <param name="CameraId">זיהוי המצלמה: "environment" | "eye-tracking"</param>
+public record TimeStampedFrame(
+    byte[] ImageData,
+    DateTimeOffset UtcTimestamp,
+    string CameraId
+): ITimestamped;
+namespace GazeConnect.Shared.DTOs;
+
+// Python מזהה פנים → שולח את זה ל-C# → C# יודע מי נמצא בחדר.
+public record FaceDetectionResult(
+    Guid? PersonId,        // מזהה האדם מה-DB (null אם לא מוכר)
+    string? PersonName,    // שם לתצוגה על הכפתור (null אם לא מוכר)
+    float Confidence,      // רמת ביטחון (0.0 עד 1.0) — סף: 0.5
+    BoundingBox BoundingBox, // איפה הפנים בתמונה — מיקום וגודל
+    long TimestampMs,      // מתי זוהה — לסנכרון עם מבט העיניים
+    bool IsKnown           // האם האדם מוכר במערכת
+);
+
+public record BoundingBox(
+    int X, int Y,          // נקודת התחלה של המלבן
+    int Width, int Height  // רוחב וגובה של המלבן סביב הפנים
+);
+using GazeConnect.CameraHub.Core.Interfaces;    
+namespace GazeConnect.Shared.DTOs;
+//מצלמת העיניים עוקבת → שולחת לאן הילד מסתכל.
+public record GazePoint(
+    float X,  // איפה על המסך — ציר אופקי
+    float Y,  // איפה על המסך — ציר אנכי
+    DateTimeOffset UtcTimestamp,// מתי נלכד מבט העיניים (בזמן אמת)
+    float Confidence //כמה בטוח במיקום המבט
+): ITimestamped; // כדי שנוכל לשמור את זה ב-CircularBuffer ולבצע TemporalMatching עם זיהוי הפנים (FaceDetectionResult)
+namespace GazeConnect.Shared.DTOs;
+
+//אוביקט שעובר בין הסרויסים כשהמצלמה לוכדת תמונה- מכיל את התמונה עצמה ואת המידע על התמונה (מתי נלכדה, מאיזו מצלמה וכו')
+public record CameraFrame(
+    Guid FrameId,// Unique identifier for the frame
+    string CameraId,// Identifier for the camera that captured the frame
+    DateTimeOffset UtcTimestamp,// Timestamp when the frame was captured (in UTC)
+    byte[] ImageData//התמונה בעצמה- מערך 
+);

@@ -1,29 +1,33 @@
 using GazeConnect.CameraHub.Core.Interfaces;
 using GazeConnect.CameraHub.Core.Models;
 using GazeConnect.CameraHub.Service;
+using GazeConnect.Shared.DTOs;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
-
 builder.Services.AddSignalR();
 
-
-// ── CircularBuffer ────────────────────────────────────────────
-// Singleton: חי כל חיי האפליקציה
-// 15 frames = 500ms ב-30fps
+// ── CircularBuffer לframes מהמצלמה ───────────────────────────
 builder.Services.AddSingleton<ICircularBuffer<TimeStampedFrame>>(
     _ => new CircularBuffer<TimeStampedFrame>(capacity: 15));
 
+// ── CircularBuffer לנקודות מבט (GazePoint) ───────────────────
+builder.Services.AddSingleton<ICircularBuffer<GazePoint>>(
+    _ => new CircularBuffer<GazePoint>(capacity: 15));
 
-   // ── Camera Source ─────────────────────────────────────────────
-// Simulation Mode: webcam רגילה (device 0)
-// בייצור: מחליפים ל-DualCameraSource ללא שינוי בשאר הקוד
+// ── TemporalMatcher ───────────────────────────────────────────
+builder.Services.AddSingleton<ITemporalMatcher>(sp =>
+{
+    var gazeBuffer = sp.GetRequiredService<ICircularBuffer<GazePoint>>();
+    var logger     = sp.GetRequiredService<ILogger<TemporalMatcher>>();
+    return new TemporalMatcher(gazeBuffer, logger, toleranceMs: 50);
+});
+
+// ── Camera Source ─────────────────────────────────────────────
 builder.Services.AddSingleton<ICameraSource>(sp =>
 {
     var logger = sp.GetRequiredService<ILogger<WebcamCameraSource>>();
@@ -42,7 +46,7 @@ builder.Services.AddHttpClient<IFaceRecognitionClient, HttpFaceRecognitionClient
     client.Timeout = TimeSpan.FromMilliseconds(500);
 });
 
-// ── CameraWorker (IHostedService) ─────────────────────────────
+// ── CameraWorker ──────────────────────────────────────────────
 builder.Services.AddHostedService<CameraWorker>();
 
 // ── Health Check ──────────────────────────────────────────────
@@ -50,11 +54,9 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-
 app.MapHealthChecks("/health");
 app.MapHub<CameraSignalRHub>("/hubs/camera");
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -62,6 +64,4 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.Run();
-

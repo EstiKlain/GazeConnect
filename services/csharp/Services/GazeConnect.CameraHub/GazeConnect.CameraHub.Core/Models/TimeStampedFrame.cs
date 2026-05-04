@@ -1,3 +1,4 @@
+using GazeConnect.Shared.Interfaces;
 namespace GazeConnect.CameraHub.Core.Models;
 
 /// <summary>
@@ -16,4 +17,4 @@ public record TimeStampedFrame(
     byte[] ImageData,
     DateTimeOffset UtcTimestamp,
     string CameraId
-);
+): ITimestamped;

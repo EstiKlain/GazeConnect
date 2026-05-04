@@ -91,21 +91,31 @@ public sealed class CameraWorker : BackgroundService
         // Fire-and-forget — לא חוסמים את ה-loop הראשי
         _ = Task.Run(async () =>
         {
-            var results = await _recognitionClient.RecognizeAsync(frame, ct);
-
-            foreach (var result in results)
+            try
             {
-                // שלח event לAngular דרך SignalR
-                // FaceDetectionResult מגיע מ-Shared — Angular מכיר את המבנה הזה
-                await _hubContext.Clients.All.SendAsync(
-                    "FaceDetected", result, ct);
+                var results = await _recognitionClient.RecognizeAsync(frame, ct);
 
-                _logger.LogDebug(
-                    "Face detected: PersonId={PersonId} ({Confidence:P0}) IsKnown={IsKnown}",
-                    result.PersonId,
-                    result.Confidence,
-                    result.IsKnown);
+                foreach (var result in results)
+                {
+                    // שלח event לAngular דרך SignalR
+                    // FaceDetectionResult מגיע מ-Shared — Angular מכיר את המבנה הזה
+                    await _hubContext.Clients.All.SendAsync(
+                        "FaceDetected", result, ct);
+
+                    _logger.LogDebug(
+                        "Face detected: PersonId={PersonId} ({Confidence:P0}) IsKnown={IsKnown}",
+                        result.PersonId,
+                        result.Confidence,
+                        result.IsKnown);
+                }
             }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                _logger.LogError(ex, "Recognition task failed for frame {Timestamp}", frame.UtcTimestamp);
+            }
+
+
+
         }, ct);
     }
 }

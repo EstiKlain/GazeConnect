@@ -1,5 +1,5 @@
+using GazeConnect.Shared.Interfaces;
 using GazeConnect.CameraHub.Core.Interfaces;
-using GazeConnect.CameraHub.Core.Models;
 
 namespace GazeConnect.CameraHub.Service;
 
@@ -15,8 +15,7 @@ namespace GazeConnect.CameraHub.Service;
 /// 30fps × 0.5s = 15 frames — מספיק ל-TemporalMatching של ±50ms
 /// עם מרווח בטיחות x5.
 /// </summary>
-public sealed class CircularBuffer<T> : ICircularBuffer<T>
-    where T : TimeStampedFrame
+public sealed class CircularBuffer<T> : ICircularBuffer<T> where T : ITimestamped
 {
     private readonly T[] _buffer;
     private int _head;   // מצביע על המקום הבא לכתיבה
