@@ -149,6 +149,11 @@ jobs:
       - name: Validate docker-compose.yml syntax
         run: docker compose config
 
+      - name: Create dummy model for CI
+        run: |
+          mkdir -p services/python/face_recognition/models
+          touch services/python/face_recognition/models/buffalo_sc.zip
+
       - name: Build Docker images
         run: docker compose build
 
