@@ -97,8 +97,8 @@ services:
 
   camerahub:
     build:
-      context: ./services/csharp/Services/GazeConnect.CameraHub
-      dockerfile: Dockerfile
+      context: ./services/csharp
+      dockerfile: Services/GazeConnect.CameraHub/Dockerfile
     container_name: gazeconnect-camerahub
     ports:
       - "5001:8080"
@@ -113,6 +113,7 @@ services:
     mem_limit: 512m
     cpus: '0.5'
     restart: unless-stopped
+    privileged: true  # נדרש לגישה למצלמה (אם נרצה להשתמש במצלמה פיזית דרך Docker)
 
   aac-board:
     image: alpine

@@ -1,37 +1,58 @@
 using GazeConnect.CameraHub.Core.Interfaces;
 using GazeConnect.CameraHub.Core.Models;
 using GazeConnect.CameraHub.Service;
+using GazeConnect.Shared.DTOs;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
-
 builder.Services.AddSignalR();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 
-// ── CircularBuffer ────────────────────────────────────────────
-// Singleton: חי כל חיי האפליקציה
-// 15 frames = 500ms ב-30fps
+// ── CircularBuffer לframes מהמצלמה ───────────────────────────
 builder.Services.AddSingleton<ICircularBuffer<TimeStampedFrame>>(
     _ => new CircularBuffer<TimeStampedFrame>(capacity: 15));
 
+// ── CircularBuffer לנקודות מבט ────────────────────────────────
+builder.Services.AddSingleton<ICircularBuffer<GazePoint>>(
+    _ => new CircularBuffer<GazePoint>(capacity: 15));
 
-   // ── Camera Source ─────────────────────────────────────────────
-// Simulation Mode: webcam רגילה (device 0)
-// בייצור: מחליפים ל-DualCameraSource ללא שינוי בשאר הקוד
-builder.Services.AddSingleton<ICameraSource>(sp =>
+// ── TemporalMatcher ───────────────────────────────────────────
+builder.Services.AddSingleton<ITemporalMatcher>(sp =>
 {
-    var logger = sp.GetRequiredService<ILogger<WebcamCameraSource>>();
-    return new WebcamCameraSource(
-        cameraId: "environment",
-        deviceIndex: 0,
-        logger: logger);
+    var gazeBuffer = sp.GetRequiredService<ICircularBuffer<GazePoint>>();
+    var logger     = sp.GetRequiredService<ILogger<TemporalMatcher>>();
+    return new TemporalMatcher(gazeBuffer, logger, toleranceMs: 50);
 });
+
+// ── Camera Source ─────────────────────────────────────────────
+// builder.Services.AddSingleton<ICameraSource>(sp =>
+// {
+//     var logger = sp.GetRequiredService<ILogger<WebcamCameraSource>>();
+//     return new WebcamCameraSource(
+//         cameraId: "environment",
+//         deviceIndex: 0,
+//         logger: logger);
+// });
+
+// ── Camera Source ─────────────────────────────────────────────
+// במקום WebcamCameraSource — BrowserCameraSource שמקבל frames מAngular
+builder.Services.AddSingleton<BrowserCameraSource>();
+builder.Services.AddSingleton<ICameraSource>(
+    sp => sp.GetRequiredService<BrowserCameraSource>());
 
 // ── Face Recognition HTTP Client ──────────────────────────────
 builder.Services.AddHttpClient<IFaceRecognitionClient, HttpFaceRecognitionClient>(client =>
@@ -42,19 +63,35 @@ builder.Services.AddHttpClient<IFaceRecognitionClient, HttpFaceRecognitionClient
     client.Timeout = TimeSpan.FromMilliseconds(500);
 });
 
-// ── CameraWorker (IHostedService) ─────────────────────────────
+// ── CameraWorker ──────────────────────────────────────────────
 builder.Services.AddHostedService<CameraWorker>();
+
+// ── Mouse Simulator — רק בפיתוח! ─────────────────────────────
+var mouseEnabled = builder.Configuration.GetValue<bool>("MouseSimulator:Enabled");
+if (mouseEnabled)
+{
+    // Singleton כדי שה-Hub וה-Worker יחלקו אותו instance
+    builder.Services.AddSingleton<MouseGazeSimulator>();
+    builder.Services.AddHostedService(
+        sp => sp.GetRequiredService<MouseGazeSimulator>());
+}
 
 // ── Health Check ──────────────────────────────────────────────
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
+app.UseCors();
 
 app.MapHealthChecks("/health");
 app.MapHub<CameraSignalRHub>("/hubs/camera");
+app.MapHub<BrowserFrameHub>("/hubs/frame");
 
-// Configure the HTTP request pipeline.
+
+// Mouse Hub — רק כשהסימולטור פעיל
+if (mouseEnabled)
+    app.MapHub<MousePositionHub>("/hubs/mouse");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -62,6 +99,4 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.Run();
-

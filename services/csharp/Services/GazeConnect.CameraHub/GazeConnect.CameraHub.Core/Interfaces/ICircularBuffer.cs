@@ -1,3 +1,5 @@
+using GazeConnect.Shared.Interfaces;
+
 namespace GazeConnect.CameraHub.Core.Interfaces;
 
 /// <summary>
@@ -6,7 +8,7 @@ namespace GazeConnect.CameraHub.Core.Interfaces;
 /// 
 /// למה אינטרפייס? כדי שאפשר להחליף מימוש (thread-safe, lock-free וכו').
 /// </summary>
-public interface ICircularBuffer<T>
+public interface ICircularBuffer<T> where T : ITimestamped
 {
     /// <summary>מוסיף פריט ל-Buffer</summary>
     void Add(T item);

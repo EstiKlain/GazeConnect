@@ -1,3 +1,4 @@
+using GazeConnect.Shared.Interfaces;
 namespace GazeConnect.Shared.DTOs;
 //מצלמת העיניים עוקבת → שולחת לאן הילד מסתכל.
 public record GazePoint(
@@ -5,4 +6,4 @@ public record GazePoint(
     float Y,  // איפה על המסך — ציר אנכי
     DateTimeOffset UtcTimestamp,// מתי נלכד מבט העיניים (בזמן אמת)
     float Confidence //כמה בטוח במיקום המבט
-);
+): ITimestamped; // כדי שנוכל לשמור את זה ב-CircularBuffer ולבצע TemporalMatching עם זיהוי הפנים (FaceDetectionResult)
