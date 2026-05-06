@@ -11,6 +11,17 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Services.AddSignalR();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 // ── CircularBuffer לframes מהמצלמה ───────────────────────────
 builder.Services.AddSingleton<ICircularBuffer<TimeStampedFrame>>(
     _ => new CircularBuffer<TimeStampedFrame>(capacity: 15));
@@ -28,14 +39,20 @@ builder.Services.AddSingleton<ITemporalMatcher>(sp =>
 });
 
 // ── Camera Source ─────────────────────────────────────────────
-builder.Services.AddSingleton<ICameraSource>(sp =>
-{
-    var logger = sp.GetRequiredService<ILogger<WebcamCameraSource>>();
-    return new WebcamCameraSource(
-        cameraId: "environment",
-        deviceIndex: 0,
-        logger: logger);
-});
+// builder.Services.AddSingleton<ICameraSource>(sp =>
+// {
+//     var logger = sp.GetRequiredService<ILogger<WebcamCameraSource>>();
+//     return new WebcamCameraSource(
+//         cameraId: "environment",
+//         deviceIndex: 0,
+//         logger: logger);
+// });
+
+// ── Camera Source ─────────────────────────────────────────────
+// במקום WebcamCameraSource — BrowserCameraSource שמקבל frames מAngular
+builder.Services.AddSingleton<BrowserCameraSource>();
+builder.Services.AddSingleton<ICameraSource>(
+    sp => sp.GetRequiredService<BrowserCameraSource>());
 
 // ── Face Recognition HTTP Client ──────────────────────────────
 builder.Services.AddHttpClient<IFaceRecognitionClient, HttpFaceRecognitionClient>(client =>
@@ -64,8 +81,12 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
+app.UseCors();
+
 app.MapHealthChecks("/health");
 app.MapHub<CameraSignalRHub>("/hubs/camera");
+app.MapHub<BrowserFrameHub>("/hubs/frame");
+
 
 // Mouse Hub — רק כשהסימולטור פעיל
 if (mouseEnabled)

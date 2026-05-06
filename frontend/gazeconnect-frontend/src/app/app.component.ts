@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CameraService } from './services/camera.service';
 
 @Component({
   selector: 'app-root',
@@ -7,6 +8,12 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'gazeconnect-frontend';
+
+  constructor(private cameraService: CameraService) {}
+
+  async ngOnInit(): Promise<void> {
+    await this.cameraService.startCamera();
+  }
 }
