@@ -142,6 +142,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      - name: Create .env file for CI
+        run: |
+          cp services/python/face_recognition/.env.example services/python/face_recognition/.env
+
       - name: Validate docker-compose.yml syntax
         run: docker compose config
 
