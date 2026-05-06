@@ -143,16 +143,22 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Create .env file for CI
-        run: |
-          cp services/python/face_recognition/.env.example services/python/face_recognition/.env
-
-      - name: Validate docker-compose.yml syntax
-        run: docker compose config
+        run: cp services/python/face_recognition/.env.example services/python/face_recognition/.env
 
       - name: Create dummy model for CI
         run: |
           mkdir -p services/python/face_recognition/models
-          touch services/python/face_recognition/models/buffalo_sc.zip
+          cd services/python/face_recognition/models
+          echo "PK" > buffalo_sc.zip
+          zip buffalo_sc.zip /dev/null || true
+          python3 -c "
+          import zipfile
+          with zipfile.ZipFile('buffalo_sc.zip', 'w') as z:
+              z.writestr('dummy.txt', 'ci placeholder')
+          "
+
+      - name: Validate docker-compose.yml syntax
+        run: docker compose config
 
       - name: Build Docker images
         run: docker compose build
