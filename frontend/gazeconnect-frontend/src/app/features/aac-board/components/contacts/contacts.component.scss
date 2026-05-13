@@ -1,0 +1,195 @@
+// contacts.component.scss
+// עיצוב: גדול, ניגודיות גבוהה, מותאם לילדים (3.2 באפיון)
+
+.contacts-page {
+  padding: 1rem;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+// ── Popup ──────────────────────────────────────────────────
+.person-popup {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: min(400px, 90vw);
+  animation: slideDown 0.3s ease;
+
+  &__card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    border: 3px solid #2563eb;
+  }
+
+  &__avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: #fff;
+    font-size: 1.75rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__name {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #1e293b;
+  }
+
+  &__label {
+    font-size: 1rem;
+    color: #64748b;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: #64748b;
+    padding: 0.5rem;
+    border-radius: 50%;
+
+    &:hover { background: #f1f5f9; }
+    &:focus-visible {
+      outline: 3px solid #2563eb;
+      outline-offset: 2px;
+    }
+  }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateX(-50%) translateY(-1rem); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+// ── Section ────────────────────────────────────────────────
+.contacts-section {
+  margin-bottom: 2rem;
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+}
+
+// ── Grid ───────────────────────────────────────────────────
+.contacts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+// ── כפתור איש קשר ──────────────────────────────────────────
+.contact-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0.75rem;
+  background: #fff;
+  border: 3px solid #e2e8f0;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: 120px;
+  position: relative;
+
+  // נוכח בחדר — צבע שונה
+  &--present {
+    border-color: #16a34a;
+    background: #f0fdf4;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    border-color: #2563eb;
+  }
+
+  &:active { transform: translateY(0); }
+
+  &:focus-visible {
+    outline: 4px solid #2563eb;
+    outline-offset: 2px;
+  }
+
+  // Avatar ──
+  &__avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--img {
+      object-fit: cover;
+      background: none;
+    }
+  }
+
+  &__name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+    text-align: center;
+  }
+
+  &__role {
+    font-size: 0.8rem;
+    color: #64748b;
+    text-align: center;
+  }
+
+  // נקודה ירוקה = נוכח בחדר
+  &__badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    color: #16a34a;
+    font-size: 0.75rem;
+  }
+}
+
+// ── סטטוס טעינה/שגיאה ──────────────────────────────────────
+.contacts-status {
+  padding: 1rem;
+  text-align: center;
+  color: #64748b;
+  font-size: 1rem;
+
+  &--error {
+    color: #dc2626;
+    background: #fef2f2;
+    border-radius: 0.5rem;
+    border: 1px solid #fecaca;
+  }
+}

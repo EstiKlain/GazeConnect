@@ -24,6 +24,11 @@ public class Button : BaseModel
 
     [ForeignKey(nameof(BoardId))]
     public AACBoard? Board { get; set; }
+
+    public bool IsContextual { get; set; }//כפתור הקשרי מזיהו פנים
+
+    public Guid? PersonId { get; set; }//מזהה אדם שמוכר
+
     public ICollection<UsageLog> UsageLogs { get; set; } = new List<UsageLog>();
 
 }

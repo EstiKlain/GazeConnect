@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { CameraService } from './services/camera.service';
+import { CameraService } from './features/camera/camera.service';
 
 @Component({
   selector: 'app-root',

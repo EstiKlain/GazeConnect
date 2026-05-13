@@ -1,0 +1,112 @@
+<!-- contacts.component.html -->
+<!-- 
+  מבנה הדף:
+  1. Popup — אוטומטי כשנכנס אדם חדש לחדר
+  2. "בחדר עכשיו" — רשימה קטנה של מי זוהה
+  3. "כל אנשי הקשר" — גריד מלא מה-UPS
+-->
+<div class="contacts-page" dir="rtl">
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- POPUP — קופץ כשנכנס אדם חדש                           -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  @if (popupPerson()) {
+    <div
+      class="person-popup"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="popupPerson()!.name + ' נכנס לחדר'"
+    >
+      <div class="person-popup__card">
+        <!-- Avatar — ראשית השם כ-placeholder -->
+        <div class="person-popup__avatar" aria-hidden="true">
+          {{ popupPerson()!.name.charAt(0) }}
+        </div>
+        <div class="person-popup__info">
+          <span class="person-popup__name">{{ popupPerson()!.name }}</span>
+          <span class="person-popup__label">נכנס לחדר 👋</span>
+        </div>
+        <button
+          class="person-popup__close"
+          aria-label="סגור"
+          (click)="closePopup()"
+        >✕</button>
+      </div>
+    </div>
+  }
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- "בחדר עכשיו" — מי נמצא כרגע                           -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  @if ((detectedPersons$ | async)?.length) {
+    <section class="contacts-section" aria-label="בחדר עכשיו">
+      <h2 class="contacts-section__title">בחדר עכשיו</h2>
+      <div class="contacts-grid" role="list">
+        @for (person of detectedPersons$ | async; track person.personId) {
+          <button
+            class="contact-btn contact-btn--present"
+            role="listitem"
+            [attr.aria-label]="'דבר עם ' + person.name"
+            (click)="speakPerson(person)"
+          >
+            <span class="contact-btn__avatar" aria-hidden="true">
+              {{ person.name.charAt(0) }}
+            </span>
+            <span class="contact-btn__name">{{ person.name }}</span>
+            <span class="contact-btn__badge" aria-label="נוכח">●</span>
+          </button>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- כל אנשי הקשר — מה-User Profile Service                 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <section class="contacts-section" aria-label="כל אנשי הקשר">
+    <h2 class="contacts-section__title">אנשי קשר</h2>
+
+    @if (loadingContacts()) {
+      <div class="contacts-status" role="status" aria-live="polite">
+        טוען אנשי קשר...
+      </div>
+    }
+
+    @if (loadError()) {
+      <div class="contacts-status contacts-status--error" role="alert">
+        {{ loadError() }}
+      </div>
+    }
+
+    @if (!loadingContacts() && !loadError()) {
+      <div class="contacts-grid" role="list">
+        @for (contact of allContacts(); track contact.id) {
+          <button
+            class="contact-btn"
+            role="listitem"
+            [attr.aria-label]="'דבר עם ' + contact.name"
+            (click)="speakContact(contact)"
+          >
+            <!-- תמונה אמיתית אם קיימת, אחרת ראשית שם -->
+            @if (contact.avatarUrl) {
+              <img
+                class="contact-btn__avatar contact-btn__avatar--img"
+                [src]="contact.avatarUrl"
+                [alt]="contact.name"
+              />
+            } @else {
+              <span class="contact-btn__avatar" aria-hidden="true">
+                {{ contact.name.charAt(0) }}
+              </span>
+            }
+            <span class="contact-btn__name">{{ contact.name }}</span>
+            @if (contact.role) {
+              <span class="contact-btn__role">{{ contact.role }}</span>
+            }
+          </button>
+        }
+      </div>
+    }
+  </section>
+
+</div>

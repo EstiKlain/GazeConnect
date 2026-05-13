@@ -113,19 +113,37 @@ services:
     mem_limit: 512m
     cpus: '0.5'
     restart: unless-stopped
-    privileged: true  # נדרש לגישה למצלמה (אם נרצה להשתמש במצלמה פיזית דרך Docker)
+    privileged: true
 
   aac-board:
-    image: alpine
+    build:
+      context: ./services/csharp             # root של כל ה-C# services
+      dockerfile: Services/GazeConnect.AACBoard/Dockerfile
     container_name: gazeconnect-aac-board
-    command: /bin/sh -c "while true; do sleep 3600; done"
     ports:
-      - "5002:5002"
+      - "5002:8080"
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=gazeconnect;Username=gazeuser;Password=GazePass2025!
+        - CameraHubSubscriber__HubUrl=http://camerahub:8080/hubs/camera
+        - CameraHubSubscriber__Enabled=true
+        - CameraHubSubscriber__BoardOwnerUserId=00000000-0000-0000-0000-000000000001
+        - CameraHubSubscriber__MinConfidence=0.5
+    depends_on:
+      postgres:
+        condition: service_healthy
+      camerahub:
+        condition: service_started  
     networks:
       - gazeconnect-network
     mem_limit: 512m
     cpus: '0.5'
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   tts-voice:
     image: alpine
@@ -159,8 +177,8 @@ services:
     container_name: gazeconnect-face-recognition
     ports:
       - "8001:8001"
-    env_file:                                        # ← במקום environment
-      - ./services/python/face_recognition/.env  # ← קובץ env עם כל המשתנים (לשמור על סודיות)
+    env_file:
+      - ./services/python/face_recognition/.env
     volumes:
       - face_photos:/app/photos
     depends_on:

@@ -1,0 +1,17 @@
+# Build outputs (Windows host paths in obj/project.assets.json break Linux Docker publish)
+**/bin/
+**/obj/
+**/out/
+
+# IDE / local tooling
+**/.vs/
+**/*.user
+**/*.suo
+
+# Test results / coverage
+**/TestResults/
+**/coverage/
+
+# Git (not needed in image)
+.git/
+.gitignore

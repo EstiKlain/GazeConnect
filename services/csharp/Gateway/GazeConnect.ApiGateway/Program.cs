@@ -57,7 +57,7 @@ app.MapHealthChecks("/health");
 
 // YARP מנתב את שאר הבקשות
 app.MapReverseProxy();
-app.Run();
+
 
 app.MapGet("/", () => "GazeConnect API Gateway is running!");
 app.MapHealthChecks("/health");
