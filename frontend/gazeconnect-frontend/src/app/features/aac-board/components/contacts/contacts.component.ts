@@ -33,7 +33,7 @@ const DEV_USER_ID = '00000000-0000-0000-0000-000000000001';
 const POPUP_DURATION_MS = 8000;
 
 @Component({
-  selector: 'app-contacts',
+  selector: 'gc-contacts  ',
   standalone: true,
   imports: [AsyncPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -43,7 +43,5 @@ export class BoardEffects {
                     })))
         )
     );
-
-    // ── עדכון לוח מ-SignalR → עדכון ב-store + TTS ─────────────
    
 }

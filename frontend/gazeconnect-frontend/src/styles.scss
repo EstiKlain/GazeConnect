@@ -1,1 +1,78 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==========================================================
+   GazeConnect – Global Styles
+   Design: רפואי-טכנולוגי, נגיש, גדול, ברור
+   ========================================================== */
+
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=JetBrains+Mono:wght@500&display=swap');
+
+/* ── Design Tokens ── */
+:root {
+  /* צבעים ראשיים */
+  --gc-bg:           #0f1117;
+  --gc-surface:      #181c27;
+  --gc-surface-2:    #1e2333;
+  --gc-border:       #2a3045;
+
+  /* צבעי מבטא */
+  --gc-primary:      #3b82f6;   /* כחול – כפתורים רגילים */
+  --gc-primary-glow: rgba(59, 130, 246, 0.25);
+  --gc-green:        #22c55e;   /* ירוק – אדם מוכר */
+  --gc-green-glow:   rgba(34, 197, 94, 0.25);
+  --gc-amber:        #f59e0b;   /* כתום – scanning */
+  --gc-amber-glow:   rgba(245, 158, 11, 0.3);
+  --gc-red:          #ef4444;   /* אדום – gaze dot */
+  --gc-red-glow:     rgba(239, 68, 68, 0.35);
+  --gc-purple:       #a78bfa;   /* סגול – contextual */
+
+  /* טיפוגרפיה */
+  --gc-font:         'Heebo', 'Arial Hebrew', sans-serif;
+  --gc-font-mono:    'JetBrains Mono', monospace;
+
+  /* ריווחים */
+  --gc-radius:       16px;
+  --gc-radius-sm:    10px;
+  --gc-radius-lg:    24px;
+
+  /* טקסט */
+  --gc-text:         #e8ecf4;
+  --gc-text-muted:   #6b7a99;
+  --gc-text-dim:     #3d4a66;
+
+  /* transitions */
+  --gc-transition:   200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--gc-bg);
+  color: var(--gc-text);
+  font-family: var(--gc-font);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  direction: rtl;
+  overflow: hidden; /* האפליקציה תופסת את המסך המלא */
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--gc-surface); }
+::-webkit-scrollbar-thumb { background: var(--gc-border); border-radius: 3px; }
+
+/* ── Focus Visible – נגישות ── */
+:focus-visible {
+  outline: 3px solid var(--gc-primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Utilities ── */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}

@@ -1,1 +1,37 @@
-<p>aac-button works!</p>
+<!-- aac-button.component.html -->
+<!--
+  כפתור AAC בודד.
+  @Input button: ButtonDto – כולל text, icon, ttsText, isContextual, category
+  @Input size: 'small' | 'medium' | 'large'
+  @Output buttonClick – נשלח ל-board.component → TTS + dispatch
+-->
+
+<button
+  class="aac-btn"
+  [class]="'aac-btn aac-btn--' + size"
+  [attr.aria-label]="button.text"
+  [attr.data-category]="button.category"
+  [attr.data-contextual]="button.isContextual"
+  (click)="buttonClick.emit(button)"
+  (keydown.enter)="buttonClick.emit(button)"
+  (keydown.space)="$event.preventDefault(); buttonClick.emit(button)"
+  type="button"
+>
+  <!-- אייקון – ARASAAC URL או placeholder ראשון תיבה -->
+  @if (button.icon) {
+    <img
+      class="aac-btn__icon"
+      [src]="button.icon"
+      [alt]="button.text"
+      loading="lazy"
+      draggable="false"
+    />
+  } @else {
+    <span class="aac-btn__icon-placeholder" aria-hidden="true">
+      {{ button.text.charAt(0) }}
+    </span>
+  }
+
+  <!-- טקסט תחתון -->
+  <span class="aac-btn__text">{{ button.text }}</span>
+</button>

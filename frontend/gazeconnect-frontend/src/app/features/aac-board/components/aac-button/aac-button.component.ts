@@ -10,31 +10,7 @@ import { BoardLayout } from '../../../../shared/models/board-layout.model';
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <button
-      class="aac-btn"
-      [class]="'aac-btn aac-btn--' + size"
-      [attr.aria-label]="button.text"
-      [attr.data-category]="button.category"
-      (click)="buttonClick.emit(button)"
-      (keydown.enter)="buttonClick.emit(button)"
-      (keydown.space)="buttonClick.emit(button)"
-    >
-      @if (button.icon) {
-        <img
-          class="aac-btn__icon"
-          [src]="button.icon"
-          [alt]="button.text"
-          loading="lazy"
-        />
-      } @else {
-        <span class="aac-btn__icon-placeholder" aria-hidden="true">
-          {{ button.text.charAt(0) }}
-        </span>
-      }
-      <span class="aac-btn__text">{{ button.text }}</span>
-    </button>
-  `,
+  templateUrl: './aac-button.component.html',
   styleUrl: './aac-button.component.scss',
 })
 export class AacButtonComponent {

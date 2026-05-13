@@ -1,0 +1,101 @@
+/* scanning-mode.component.scss */
+
+:host {
+  /* תמיד בפינה שמאל-עליונה, מעל הכל */
+  position: fixed;
+  top: 58px;
+  inset-inline-end: 16px;
+  z-index: 1000;
+  pointer-events: none; /* הילד מקבל events בנפרד */
+}
+
+/* ── פס Scanning פעיל ── */
+.scanning-bar {
+  pointer-events: all;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--gc-surface-2);
+  border: 1.5px solid var(--gc-amber);
+  border-radius: 100px;
+  box-shadow: 0 0 20px var(--gc-amber-glow);
+  position: relative;
+  overflow: hidden;
+  min-width: 180px;
+
+  /* progress bar מונפשת ברקע */
+  &__progress {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0;
+    bottom: 0;
+    width: 0%;
+    background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.15));
+    animation: scan-progress linear infinite;
+    pointer-events: none;
+  }
+
+  &__icon {
+    font-size: 1rem;
+    color: var(--gc-amber);
+    animation: spin-slow 1.5s linear infinite;
+    flex-shrink: 0;
+  }
+
+  &__label {
+    font-family: var(--gc-font);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--gc-amber);
+    flex: 1;
+    white-space: nowrap;
+  }
+
+  &__stop {
+    pointer-events: all;
+    background: transparent;
+    border: none;
+    color: var(--gc-text-muted);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 2px 4px;
+    border-radius: 4px;
+    line-height: 1;
+    transition: color var(--gc-transition);
+    flex-shrink: 0;
+
+    &:hover { color: var(--gc-red); }
+  }
+}
+
+@keyframes scan-progress {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+/* ── כפתור הפעלת Scanning (כשלא פעיל) ── */
+.scanning-trigger {
+  pointer-events: all;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px; height: 40px;
+  background: var(--gc-surface-2);
+  border: 1px solid var(--gc-border);
+  border-radius: 50%;
+  color: var(--gc-text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color var(--gc-transition), border-color var(--gc-transition), box-shadow var(--gc-transition);
+
+  &:hover {
+    color: var(--gc-amber);
+    border-color: var(--gc-amber);
+    box-shadow: 0 0 12px var(--gc-amber-glow);
+  }
+}

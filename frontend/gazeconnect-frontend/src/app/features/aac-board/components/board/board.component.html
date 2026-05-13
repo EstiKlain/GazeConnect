@@ -1,1 +1,77 @@
-<p>board works!</p>
+<!-- board.component.html -->
+<!--
+  פריסה:
+  ┌─────────────────────┬──────────────┐
+  │   Grid כפתורים AAC  │   Contacts   │
+  │  (לפי הגדרת קלינאית)│  (sidebar)  │
+  └─────────────────────┴──────────────┘
+
+  Header גלובלי → app.component.html (לא כאן!)
+  מספר עמודות + maxButtons → מגיעים מה-DB דרך ה-store
+-->
+
+<div class="board-shell" dir="rtl">
+
+  <!-- ── Body: Grid + Sidebar ── -->
+  <div class="board-body">
+
+    <!-- ── Grid כפתורים ── -->
+    <section
+      class="board-grid-wrap"
+      aria-label="לוח תקשורת"
+      role="region"
+    >
+
+      <!-- Loading State -->
+      @if (loading$ | async) {
+        <div class="board-state" role="status" aria-live="polite">
+          <div class="board-state__spinner" aria-hidden="true"></div>
+          <span>טוען לוח...</span>
+        </div>
+      }
+
+      <!-- Error State -->
+      @if (error$ | async; as error) {
+        <div class="board-state board-state--error" role="alert">
+          <span class="board-state__icon" aria-hidden="true">⚠️</span>
+          <span>{{ error }}</span>
+          <button class="board-state__retry" (click)="retry()">נסה שוב</button>
+        </div>
+      }
+
+      <!-- Grid – לפי layout שמגיע מה-DB -->
+      @if (layout$ | async; as layout) {
+        <div
+          class="board-grid"
+          [class.board-grid--scanning]="isScanningActive$ | async"
+          [style.--cols]="layout.columns"
+          [attr.aria-label]="'לוח תקשורת'"
+          role="grid"
+        >
+          @for (button of buttons$ | async; track button.id; let i = $index) {
+            <div
+              class="board-cell"
+              role="gridcell"
+              [class.board-cell--scanning-active]="(activeIndex$ | async) === i && (isScanningActive$ | async)"
+              [class.board-cell--contextual]="button.isContextual"
+            >
+              <gc-aac-button
+                [button]="button"
+                [size]="layout.buttonSize"
+                (buttonClick)="onButtonClick($event)"
+              />
+            </div>
+          }
+        </div>
+      }
+
+    </section>
+
+    <!-- ── Contacts Sidebar ── -->
+    <aside class="board-sidebar" aria-label="אנשי קשר">
+      <gc-contacts />
+    </aside>
+
+  </div>
+
+</div>

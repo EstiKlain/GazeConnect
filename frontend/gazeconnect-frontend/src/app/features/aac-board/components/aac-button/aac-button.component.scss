@@ -1,0 +1,129 @@
+/* aac-button.component.scss */
+
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+/* ── כפתור AAC ─────────────────────────────────────────────
+   גדול, ברור, נגיש. משתמש ב-ButtonDto.isContextual
+   לצבע שונה (כחול = רגיל, ירוק = contextual/אדם).
+   ────────────────────────────────────────────────────────── */
+.aac-btn {
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  padding: 12px 8px;
+
+  /* Visual */
+  background: var(--gc-surface-2);
+  border: 2px solid var(--gc-border);
+  border-radius: var(--gc-radius);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform     var(--gc-transition),
+    box-shadow    var(--gc-transition),
+    border-color  var(--gc-transition),
+    background    var(--gc-transition);
+
+  /* Shimmer overlay base */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+    opacity: 0;
+    transition: opacity var(--gc-transition);
+    pointer-events: none;
+  }
+
+  /* ── Hover ── */
+  &:hover {
+    transform: translateY(-3px) scale(1.02);
+    border-color: var(--gc-primary);
+    box-shadow:
+      0 8px 24px rgba(0,0,0,0.4),
+      0 0 0 1px var(--gc-primary-glow);
+    &::before { opacity: 1; }
+  }
+
+  /* ── Active / Press ── */
+  &:active {
+    transform: translateY(0) scale(0.97);
+    box-shadow: none;
+    transition-duration: 80ms;
+  }
+
+  /* ── גדלים ── */
+  &--small  { gap: 4px;  padding: 8px 4px;  border-radius: var(--gc-radius-sm); }
+  &--medium { gap: 6px;  padding: 10px 6px; }
+  &--large  { gap: 10px; padding: 14px 10px; }
+
+  /* ── Contextual (אדם מוכר / הקשר) ── */
+  &[data-category="person"],
+  &[data-contextual="true"] {
+    border-color: var(--gc-green);
+    background: rgba(34, 197, 94, 0.08);
+
+    &:hover {
+      border-color: var(--gc-green);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 1px var(--gc-green-glow);
+    }
+  }
+
+  /* ── אייקון ── */
+  &__icon {
+    width: 60%;
+    max-width: 80px;
+    max-height: 80px;
+    object-fit: contain;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  &__icon-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60%;
+    max-width: 80px;
+    aspect-ratio: 1;
+    background: var(--gc-border);
+    border-radius: 10px;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--gc-text-muted);
+    flex-shrink: 0;
+  }
+
+  /* ── טקסט ── */
+  &__text {
+    font-family: var(--gc-font);
+    font-weight: 700;
+    font-size: clamp(0.75rem, 2vw, 1.1rem);
+    color: var(--gc-text);
+    text-align: center;
+    line-height: 1.2;
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  /* ── Small: מחביא אייקון ── */
+  &--small &__icon,
+  &--small &__icon-placeholder { width: 45%; }
+  &--small &__text { font-size: 0.7rem; }
+}
+
+/* ── Ripple effect בלחיצה ── */
+@keyframes ripple {
+  from { transform: scale(0); opacity: 0.4; }
+  to   { transform: scale(4); opacity: 0; }
+}

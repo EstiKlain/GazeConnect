@@ -1,0 +1,199 @@
+/* board.component.scss */
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+/* ── Shell ── */
+.board-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--gc-bg);
+  overflow: hidden;
+}
+
+/* ── Header ── */
+.board-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: var(--gc-surface);
+  border-bottom: 1px solid var(--gc-border);
+  flex-shrink: 0;
+  height: 52px;
+
+  &__logo { font-size: 1.4rem; line-height: 1; }
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--gc-primary);
+    font-family: var(--gc-font-mono);
+  }
+
+  &__status { margin-inline-start: auto; }
+}
+
+/* Status dot */
+.status-dot {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+
+  &--ok      { background: var(--gc-green); box-shadow: 0 0 8px var(--gc-green-glow); }
+  &--loading { background: var(--gc-amber); animation: pulse-dot 1s ease-in-out infinite; }
+  &--error   { background: var(--gc-red); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.7); }
+}
+
+/* ── Body ── */
+.board-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  gap: 0;
+}
+
+/* ── Grid wrap ── */
+.board-grid-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* ── Grid ── */
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), 1fr);
+  gap: 14px;
+  width: 100%;
+  max-width: 780px;
+  max-height: 100%;
+
+  /* מצב Scanning – מסגרת עדינה סביב כל הגריד */
+  &--scanning {
+    outline: 2px solid var(--gc-amber);
+    outline-offset: 6px;
+    border-radius: var(--gc-radius);
+  }
+}
+
+/* ── תא בודד ── */
+.board-cell {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  transition: transform var(--gc-transition);
+
+  /* Contextual button – גלאו סגול עדין */
+  &--contextual::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: calc(var(--gc-radius) + 3px);
+    background: transparent;
+    box-shadow: 0 0 18px var(--gc-purple);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Scanning highlight */
+  &--scanning-active {
+    z-index: 1;
+    transform: scale(1.04);
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: calc(var(--gc-radius) + 4px);
+      border: 3px solid var(--gc-amber);
+      box-shadow: 0 0 22px var(--gc-amber-glow);
+      pointer-events: none;
+      animation: scan-pulse 0.6s ease-in-out infinite alternate;
+    }
+  }
+
+  /* תא ריק */
+  &--empty {
+    background: var(--gc-surface);
+    border-radius: var(--gc-radius);
+    border: 2px dashed var(--gc-border);
+    opacity: 0.4;
+  }
+}
+
+@keyframes scan-pulse {
+  from { box-shadow: 0 0 12px var(--gc-amber-glow); }
+  to   { box-shadow: 0 0 28px var(--gc-amber-glow); }
+}
+
+/* ── State: Loading / Error ── */
+.board-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: var(--gc-text-muted);
+  font-size: 1.1rem;
+
+  &__spinner {
+    width: 44px; height: 44px;
+    border: 3px solid var(--gc-border);
+    border-top-color: var(--gc-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  &__icon { font-size: 2.5rem; }
+
+  &__retry {
+    padding: 10px 24px;
+    background: var(--gc-surface-2);
+    border: 1px solid var(--gc-border);
+    border-radius: var(--gc-radius-sm);
+    color: var(--gc-text);
+    font-family: var(--gc-font);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background var(--gc-transition), border-color var(--gc-transition);
+
+    &:hover {
+      background: var(--gc-primary);
+      border-color: var(--gc-primary);
+    }
+  }
+
+  &--error { color: var(--gc-red); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Sidebar ── */
+.board-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  border-inline-start: 1px solid var(--gc-border);
+  background: var(--gc-surface);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ── Responsive: מסך קטן – sidebar מתקפל לתחתית ── */
+@media (max-width: 640px) {
+  .board-body    { flex-direction: column; }
+  .board-sidebar { width: 100%; height: 140px; border-inline-start: none; border-top: 1px solid var(--gc-border); }
+  .board-grid    { gap: 8px; }
+  .board-cell--empty { display: none; }
+}

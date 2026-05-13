@@ -1,1 +1,50 @@
-<p>scanning-mode works!</p>
+<!-- scanning-mode.component.html -->
+<!--
+  תפקיד: indicator קטן בפינת המסך שמראה שמצב Scanning פעיל.
+  הכפתור המודגש מטופל ב-board.component (class board-cell--scanning-active).
+  כאן: פס עדין + כפתור הפעלה/כיבוי.
+-->
+
+@if (isActive$ | async) {
+  <div
+    class="scanning-bar"
+    role="status"
+    aria-live="assertive"
+    aria-atomic="true"
+  >
+    <!-- Progress bar – מתקדם עם כל שלב -->
+    <div
+      class="scanning-bar__progress"
+      [style.animation-duration.ms]="(scanInterval$ | async) ?? 1500"
+      aria-hidden="true"
+    ></div>
+
+    <span class="scanning-bar__icon" aria-hidden="true">⟳</span>
+    <span class="scanning-bar__label">
+      סריקה – כפתור {{ ((activeIndex$ | async) ?? 0) + 1 }}
+    </span>
+
+    <!-- כפתור עצור -->
+    <button
+      class="scanning-bar__stop"
+      (click)="stopScanning()"
+      aria-label="עצור סריקה"
+      type="button"
+    >
+      ✕
+    </button>
+  </div>
+}
+
+<!-- כפתור הפעלת Scanning – גלוי כשלא פעיל -->
+@if (!(isActive$ | async)) {
+  <button
+    class="scanning-trigger"
+    (click)="startScanning()"
+    aria-label="הפעל מצב סריקה"
+    title="הפעל מצב סריקה"
+    type="button"
+  >
+    <span aria-hidden="true">⟳</span>
+  </button>
+}

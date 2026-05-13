@@ -5,23 +5,18 @@ import { Component, inject, OnInit, OnDestroy, ChangeDetectionStrategy } from '@
 import { AsyncPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { Subscription, interval } from 'rxjs';
-import { withLatestFrom } from 'rxjs/operators';
+import { switchMap, withLatestFrom } from 'rxjs/operators';
 import { ScanningActions, selectScanningActive, selectActiveIndex, selectScanInterval } from '../../../../store/scanning/scanning.reducer';
 import { selectVisibleButtons } from '../../../../store/board/board.selectors';
 import { TtsService } from '../../../../shared/services/tts.service';
- 
+
 @Component({
   selector: 'gc-scanning-mode',
   standalone: true,
   imports: [AsyncPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="scanning-indicator" aria-live="assertive" aria-atomic="true">
-      @if (isActive$ | async) {
-        <span>סריקה פעילה — כפתור {{ (activeIndex$ | async)! + 1 }}</span>
-      }
-    </div>
-  `,
+  templateUrl: './scanning-mode.component.html',
+  styleUrl:    './scanning-mode.component.scss',
 })
 export class ScanningModeComponent implements OnInit, OnDestroy {
   private store = inject(Store);
@@ -30,30 +25,46 @@ export class ScanningModeComponent implements OnInit, OnDestroy {
  
   isActive$    = this.store.select(selectScanningActive);
   activeIndex$ = this.store.select(selectActiveIndex);
+  scanInterval$ = this.store.select(selectScanInterval);
+
  
   ngOnInit(): void {
-    // כל intervalMs — מתקדם לכפתור הבא + AudioScanning
-    this.sub = this.store.select(selectScanInterval).pipe(
-      withLatestFrom(this.isActive$)
-    ).subscribe(([intervalMs, isActive]) => {
-      if (!isActive) return;
-      this.sub?.unsubscribe();
-      this.sub = interval(intervalMs).pipe(
-        withLatestFrom(
-          this.store.select(selectVisibleButtons),
-          this.store.select(selectActiveIndex)
-        )
-      ).subscribe(([, buttons, currentIndex]) => {
-        const nextIndex = (currentIndex + 1) % buttons.length;
-        this.store.dispatch(ScanningActions.nextButtonHighlighted({ index: nextIndex }));
-        // AudioScanning — קורא את שם הכפתור
-        const btn = buttons[nextIndex];
-        if (btn) this.tts.speakButton(btn.text, btn.ttsText);
-      });
+    // כשהסריקה פעילה – מפעיל interval לפי scanInterval
+    this.sub = this.store.select(selectScanningActive).pipe(
+      switchMap(isActive => {
+        if (!isActive) return [];
+        return this.store.select(selectScanInterval).pipe(
+          switchMap(ms =>
+            interval(ms).pipe(
+              withLatestFrom(
+                this.store.select(selectVisibleButtons),
+                this.store.select(selectActiveIndex),
+              )
+            )
+          )
+        );
+      })
+    ).subscribe(([, buttons, currentIndex]) => {
+      if (!buttons.length) return;
+      const nextIndex = (currentIndex + 1) % buttons.length;
+      this.store.dispatch(ScanningActions.nextButtonHighlighted({ index: nextIndex }));
+ 
+      // AudioScanning – קורא את שם הכפתור
+      const btn = buttons[nextIndex];
+      if (btn) this.tts.speakButton(btn.text, btn.ttsText);
     });
   }
  
   ngOnDestroy(): void { this.sub?.unsubscribe(); }
+
+   startScanning(): void {
+    this.store.dispatch(ScanningActions.scanningStarted({}));
+  }
+ 
+  stopScanning(): void {
+    this.store.dispatch(ScanningActions.scanningStopped({}));
+  }
+
 }
  
  
