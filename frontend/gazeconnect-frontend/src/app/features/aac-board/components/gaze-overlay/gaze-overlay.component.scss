@@ -1,0 +1,74 @@
+// ============================================================
+// gaze-overlay.component.scss
+// נקודת המבט האדומה שזה בזמן אמת על המסך
+// z-index גבוה מאוד – תמיד מעל הכל
+// ============================================================
+
+@use '../../../../../styles/variables' as *;
+
+:host {
+    display: contents; // לא תופס מקום בlayout
+}
+
+// ============================================================
+// נקודת המבט
+// ============================================================
+.gaze-dot {
+    position: fixed;
+    width: $gaze-size;
+    height: $gaze-size;
+    border-radius: 50%;
+    background: $gaze-color;
+    border: 2.5px solid rgba(255, 255, 255, 0.9);
+    pointer-events: none; // לא חוסם קליקים
+    z-index: $z-gaze;
+    transform: translate(-50%, -50%);
+
+    // אנימציית פעימה
+    animation: gaze-pulse 1.4s ease-in-out infinite;
+
+    // מעבר חלק בין מיקומים (Kalman filter כבר מחליק)
+    transition: left 30ms linear, top 30ms linear;
+}
+
+// עיגול חיצוני (ripple) – מראה את אזור ה-dwell
+.gaze-ring {
+    position: fixed;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 100, 0, 0.4);
+    pointer-events: none;
+    z-index: calc(#{$z-gaze} - 1);
+    transform: translate(-50%, -50%);
+    transition: left 30ms linear, top 30ms linear;
+
+    // גדל בהדרגה בזמן dwell
+    &--dwelling {
+        animation: dwell-ring-expand var(--dwell-duration, 800ms) ease-out forwards;
+    }
+}
+
+@keyframes gaze-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 60, 0, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 0 6px rgba(255, 60, 0, 0);
+    }
+}
+
+@keyframes dwell-ring-expand {
+    from {
+        width: 24px;
+        height: 24px;
+        opacity: 0.8;
+    }
+
+    to {
+        width: 70px;
+        height: 70px;
+        opacity: 0;
+    }
+}

@@ -20,7 +20,7 @@ export class BoardEffects {
             switchMap(({ userId }) =>
                 this.aacBoardService.getActiveBoard(userId).pipe(
                     map(board => BoardActions.loadBoardSuccess({ board })),
-                    catchError(err => {                                          // ← החלף את השורה הזו
+                    catchError(err => {                                         
                         const error = err instanceof Error ? err.message : 'שגיאה בטעינת המוח';
                         return of(BoardActions.loadBoardFailure({ error }));
                     }

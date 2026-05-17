@@ -1,0 +1,2480 @@
+﻿--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\aac-button\aac-button.component.html ---
+<!-- aac-button.component.html -->
+<button
+  class="aac-btn"
+  [class]="'aac-btn aac-btn--' + size"
+  [attr.aria-label]="button.text"
+  [attr.data-category]="button.category"
+  [attr.data-contextual]="button.isContextual"
+  (click)="buttonClick.emit(button)"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
+  (keydown.enter)="buttonClick.emit(button)"
+  (keydown.space)="$event.preventDefault(); buttonClick.emit(button)"
+  type="button"
+>
+  <!-- ׳׳™׳™׳§׳•׳ -->
+  @if (button.icon) {
+    <img
+      class="aac-btn__icon"
+      [src]="button.icon"
+      [alt]="button.text"
+      loading="lazy"
+      draggable="false"
+    />
+  } @else {
+    <span class="aac-btn__icon-placeholder" aria-hidden="true">
+      {{ button.text.charAt(0) }}
+    </span>
+  }
+
+  <!-- ׳˜׳§׳¡׳˜ ׳×׳—׳×׳•׳ -->
+  <span class="aac-btn__text">{{ button.text }}</span>
+
+  <!-- ׳₪׳¡ dwell ג€” ׳׳×׳׳׳ ׳‘׳–׳׳ hover -->
+  <div class="aac-btn__dwell" [class.aac-btn__dwell--active]="isDwelling"></div>
+</button>
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\aac-button\aac-button.component.scss ---
+// aac-button.component.scss
+@use '../../../../../styles/variables' as *;
+
+// ג”€ג”€ Helper: ׳¦׳‘׳¢ ׳׳₪׳™ ׳§׳˜׳’׳•׳¨׳™׳” ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+@mixin category-colors($bg, $border, $text) {
+  background-color: $bg;
+  border-color: $border;
+  color: $text;
+
+  .aac-btn__icon-placeholder {
+    background: rgba($border, 0.18);
+    color: $text;
+    border: 2px solid rgba($border, 0.35);
+  }
+
+  .aac-btn__dwell {
+    background: #ff6600; // ג† ׳×׳׳™׳“ ׳›׳×׳•׳, ׳׳ ׳׳₪׳™ ׳§׳˜׳’׳•׳¨׳™׳”
+  }
+
+  &:hover {
+    outline: 3px solid #ff6600; // ג† ׳×׳׳™׳“ ׳›׳×׳•׳
+  }
+
+  // ׳׳¡׳’׳¨׳× ׳›׳×׳•׳׳” ׳‘׳–׳׳ hover
+  &:hover:not(:disabled) {
+    outline: 3px solid darken($border, 10%);
+    outline-offset: 2px;
+  }
+}
+
+// ג”€ג”€ ׳›׳₪׳×׳•׳¨ ׳‘׳¡׳™׳¡׳™ ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+.aac-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  height: 100%;
+  min-height: $btn-large-height;
+
+  border-radius: $radius-btn;
+  border: 2.5px solid $cat-misc-border;
+  background-color: $cat-misc-bg;
+  color: $cat-misc-text;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  font-family: $font-primary;
+  font-weight: 700;
+
+  transition: transform 120ms ease, filter 120ms ease;
+
+  position: relative;
+  overflow: hidden;
+
+  // ג”€ג”€ ׳’׳“׳׳™׳ ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  &--small {
+    min-height: $btn-small-height;
+
+    .aac-btn__icon,
+    .aac-btn__icon-placeholder {
+      width: $btn-small-icon;
+      height: $btn-small-icon;
+    }
+
+    .aac-btn__icon-placeholder {
+      font-size: 18px;
+    }
+
+    .aac-btn__text {
+      font-size: $font-size-label-sm;
+    }
+  }
+
+  &--medium {
+    min-height: $btn-medium-height;
+
+    .aac-btn__icon,
+    .aac-btn__icon-placeholder {
+      width: $btn-medium-icon;
+      height: $btn-medium-icon;
+    }
+
+    .aac-btn__icon-placeholder {
+      font-size: 22px;
+    }
+
+    .aac-btn__text {
+      font-size: $font-size-label-md;
+    }
+  }
+
+  &--large {
+    min-height: $btn-large-height;
+
+    .aac-btn__icon,
+    .aac-btn__icon-placeholder {
+      width: $btn-large-icon;
+      height: $btn-large-icon;
+    }
+
+    .aac-btn__icon-placeholder {
+      font-size: 28px;
+    }
+
+    .aac-btn__text {
+      font-size: $font-size-label-lg;
+    }
+  }
+
+  // ג”€ג”€ ׳׳™׳™׳§׳•׳ ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  &__icon {
+    display: block;
+    width: $btn-large-icon;
+    height: $btn-large-icon;
+    object-fit: contain;
+    border-radius: $radius-sm;
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+
+  &__icon-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $btn-large-icon;
+    height: $btn-large-icon;
+    border-radius: 50%;
+    font-size: 28px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  // ג”€ג”€ ׳˜׳§׳¡׳˜ ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  &__text {
+    font-size: $font-size-label-lg;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.15;
+    width: 100%;
+    padding: 0 4px;
+    word-break: break-word;
+  }
+
+  // ג”€ג”€ Dwell bar ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  // ׳₪׳¡ ׳›׳×׳•׳ ׳‘׳×׳—׳×׳™׳× ׳©׳׳×׳׳׳ ׳‘׳–׳׳ ׳©׳”׳™׳™׳”
+  &__dwell {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 5px;
+    width: 0%;
+    background: $scan-progress;
+    border-radius: 0 0 $radius-btn $radius-btn;
+    pointer-events: none;
+    transition: none; // ׳׳׳ transition ׳›׳©׳׳׳₪׳¡׳™׳
+
+    // ׳›׳©׳₪׳¢׳™׳ ג€” ׳׳×׳׳׳ ׳‘-900ms
+    &--active {
+      width: 100%;
+      transition: width 900ms linear;
+    }
+  }
+
+  // ג”€ג”€ Hover ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  &:hover:not(:disabled) {
+    transform: scale(1.03);
+    filter: brightness(0.94);
+    z-index: 2;
+    outline: 3px solid $scan-highlight;
+    outline-offset: 2px;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+    filter: brightness(0.85);
+  }
+
+  &:focus-visible {
+    outline: 3px solid $scan-highlight;
+    outline-offset: 2px;
+  }
+
+  // ג”€ג”€ Gaze active ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  &--gaze-active {
+    outline: 4px solid $scan-highlight;
+    outline-offset: 3px;
+    transform: scale(1.06);
+    z-index: 3;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  // ג”€ג”€ ׳¦׳‘׳¢׳™ ׳§׳˜׳’׳•׳¨׳™׳•׳× ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  &[data-category='verb'],
+  &[data-category='action'] {
+    @include category-colors($cat-verb-bg, $cat-verb-border, $cat-verb-text);
+  }
+
+  &[data-category='person'],
+  &[data-category='people'] {
+    @include category-colors($cat-person-bg, $cat-person-border, $cat-person-text);
+  }
+
+  &[data-category='noun'],
+  &[data-category='object'],
+  &[data-category='need'] {
+    @include category-colors($cat-noun-bg, $cat-noun-border, $cat-noun-text);
+  }
+
+  &[data-category='adjective'],
+  &[data-category='adj'],
+  &[data-category='response'] {
+    @include category-colors($cat-adj-bg, $cat-adj-border, $cat-adj-text);
+  }
+
+  &[data-category='misc'],
+  &[data-category='other'],
+  &[data-category='control'] {
+    @include category-colors($cat-misc-bg, $cat-misc-border, $cat-misc-text);
+  }
+
+  // contextual ג€” ׳׳¡׳’׳¨׳× ׳׳§׳•׳§׳•׳•׳× ׳›׳×׳•׳׳” (׳¨׳§ ׳¢׳ ׳”-cell, ׳׳ ׳›׳׳!)
+  // ׳”׳¡׳¨׳ ׳• ׳׳× data-contextual='true' ׳׳”׳›׳₪׳×׳•׳¨ ג€” ׳–׳” ׳‘-board-cell
+}
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\aac-button\aac-button.component.spec.ts ---
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { AacButtonComponent } from './aac-button.component';
+
+describe('AacButtonComponent', () => {
+  let component: AacButtonComponent;
+  let fixture: ComponentFixture<AacButtonComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [AacButtonComponent]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(AacButtonComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\aac-button\aac-button.component.ts ---
+// ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”
+// aac-button.component.ts ג€” ׳›׳₪׳×׳•׳¨ ׳‘׳•׳“׳“, ׳’׳“׳•׳, ׳ ׳’׳™׳© ׳׳™׳׳“׳™׳
+// ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy,inject, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ButtonDto } from '../../../../shared/models/board.dto.model';
+import { BoardLayout } from '../../../../shared/models/board-layout.model';
+
+const DWELL_MS = 900; // ׳–׳׳ ׳©׳”׳™׳™׳” ׳¢׳“ ׳‘׳—׳™׳¨׳”
+@Component({
+  selector: 'gc-aac-button',
+  standalone: true,
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './aac-button.component.html',
+  styleUrl: './aac-button.component.scss',
+})
+export class AacButtonComponent {
+  @Input({ required: true }) button!: ButtonDto;
+  @Input() size: BoardLayout['buttonSize'] = 'large';
+  @Output() buttonClick = new EventEmitter<ButtonDto>();
+
+  isDwelling = false;
+  private dwellTimer: ReturnType<typeof setTimeout> | null = null;
+  private cdr = inject(ChangeDetectorRef);
+ 
+  onMouseEnter(): void {
+    this.isDwelling = true;
+    this.cdr.markForCheck();
+ 
+    // ׳׳—׳¨׳™ DWELL_MS ג€” ׳‘׳—׳¨ ׳׳× ׳”׳›׳₪׳×׳•׳¨ ׳׳•׳˜׳•׳׳˜׳™׳×
+    this.dwellTimer = setTimeout(() => {
+      this.buttonClick.emit(this.button);
+      this.isDwelling = false;
+      this.cdr.markForCheck();
+    }, DWELL_MS);
+  }
+ 
+  onMouseLeave(): void {
+    this.isDwelling = false;
+    if (this.dwellTimer) {
+      clearTimeout(this.dwellTimer);
+      this.dwellTimer = null;
+    }
+    this.cdr.markForCheck();
+  }
+}
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\board\board.component.html ---
+<!-- board.component.html -->
+<!--
+  ׳₪׳¨׳™׳¡׳”:
+  ג”ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”¬ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”
+  ג”‚   Grid ׳›׳₪׳×׳•׳¨׳™׳ AAC  ג”‚   Contacts   ג”‚
+  ג”‚  (׳׳₪׳™ ׳”׳’׳“׳¨׳× ׳§׳׳™׳ ׳׳™׳×)ג”‚  (sidebar)  ג”‚
+  ג””ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”´ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”˜
+
+  Header ׳’׳׳•׳‘׳׳™ ג†’ app.component.html (׳׳ ׳›׳׳!)
+  ׳׳¡׳₪׳¨ ׳¢׳׳•׳“׳•׳× + maxButtons ג†’ ׳׳’׳™׳¢׳™׳ ׳׳”-DB ׳“׳¨׳ ׳”-store
+-->
+
+<div class="board-shell" dir="rtl">
+
+
+  <div class="board-shell" dir="rtl">
+
+    <!-- sentence bar -->
+    <div class="sentence-bar">
+      <button class="sentence-bar__speak-btn" (click)="speak()">ג–¶ ׳“׳‘׳¨</button>
+      <div class="sentence-bar__box">
+        <span class="sentence-bar__text">{{ sentence }}</span>
+      </div>
+      <button class="sentence-bar__undo-btn" (click)="undo()">ג†©</button>
+      <button class="sentence-bar__pin-btn">נ“</button>
+    </div>
+    <!-- ג”€ג”€ Body: Grid + Sidebar ג”€ג”€ -->
+    <div class="board-body">
+
+      <!-- ג”€ג”€ Grid ׳›׳₪׳×׳•׳¨׳™׳ ג”€ג”€ -->
+      <section class="board-grid-wrap" aria-label="׳׳•׳— ׳×׳§׳©׳•׳¨׳×" role="region">
+
+        <!-- Loading State -->
+        @if (loading$ | async) {
+        <div class="board-state" role="status" aria-live="polite">
+          <div class="board-state__spinner" aria-hidden="true"></div>
+          <span>׳˜׳•׳¢׳ ׳׳•׳—...</span>
+        </div>
+        }
+
+        <!-- Error State -->
+        @if (error$ | async; as error) {
+        <div class="board-state board-state--error" role="alert">
+          <span class="board-state__icon" aria-hidden="true">ג ן¸</span>
+          <span>{{ error }}</span>
+          <button class="board-state__retry" (click)="retry()">׳ ׳¡׳” ׳©׳•׳‘</button>
+        </div>
+        }
+
+        <!-- Grid ג€“ ׳׳₪׳™ layout ׳©׳׳’׳™׳¢ ׳׳”-DB -->
+        @if (layout$ | async; as layout) {
+        <!-- <div class="board-grid" [class.board-grid--scanning]="isScanningActive$ | async"
+        [ngStyle]="{'--cols': layout.columns}" [attr.aria-label]="'׳׳•׳— ׳×׳§׳©׳•׳¨׳×'" role="grid"> -->
+        <div class="board-grid" [class.board-grid--scanning]="isScanningActive$ | async"
+          [style.grid-template-columns]="'repeat(' + layout.columns + ', 1fr)'" [style.direction]="'rtl'" role="grid"
+          aria-label="׳׳•׳— ׳×׳§׳©׳•׳¨׳×">
+          @for (button of buttons$ | async; track button.id; let i = $index) {
+          <div class="board-cell" role="gridcell"
+            [class.board-cell--scanning-active]="(activeIndex$ | async) === i && (isScanningActive$ | async)"
+            [class.board-cell--contextual]="button.isContextual">
+            <gc-aac-button [button]="button" [size]="layout.buttonSize" (buttonClick)="onButtonClick($event)" />
+          </div>
+          }
+        </div>
+        }
+
+      </section>
+
+      <!-- ג”€ג”€ Contacts Sidebar ג”€ג”€ -->
+      <aside class="board-sidebar" aria-label="׳׳ ׳©׳™ ׳§׳©׳¨">
+        <!-- style="display:none" -->
+
+        <!-- ׳׳•׳¡׳×׳¨ ׳–׳׳ ׳™׳× ׳¢׳“ ׳©׳™׳”׳™׳• ׳׳ ׳©׳™ ׳§׳©׳¨ -->
+        <gc-contacts />
+      </aside>
+
+    </div>
+    <div class="board-footer">
+      <span class="board-version">GazeConnect AAC</span>
+      <button class="board-settings-btn" type="button" title="׳”׳’׳“׳¨׳•׳×">נ”§</button>
+    </div>
+  </div>
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\board\board.component.scss ---
+// board.component.scss
+@use '../../../../../styles/variables' as *;
+
+// ג”€ג”€ ׳׳¢׳˜׳₪׳× ׳¨׳׳©׳™׳× ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+.board-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: $bg-board;
+  border-radius: 18px;
+  padding: $pad-board;
+  gap: $gap-layout;
+  overflow: hidden;
+  direction: rtl;  // ג† ׳›׳ ׳”׳׳•׳— RTL ג€” ׳₪׳¢׳׳™׳ ׳׳™׳׳™׳!
+}
+
+// ג”€ג”€ Sentence Bar ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+.sentence-bar {
+  display: flex;
+  align-items: center;
+  gap: $gap-layout;
+  flex-shrink: 0;
+
+  &__speak-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: $speak-btn-bg;
+    color: $speak-btn-text;
+    border: none;
+    border-radius: 12px;
+    padding: 8px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: $font-primary;
+    cursor: pointer;
+    flex-shrink: 0;
+    min-width: 90px;
+    min-height: 46px;
+    justify-content: center;
+    box-shadow: 0 4px 0 $speak-btn-shadow;
+    transition: transform 100ms, box-shadow 100ms;
+
+    &:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 $speak-btn-shadow;
+    }
+  }
+
+  &__box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: $sentence-bg;
+    border: 2px solid $sentence-border;
+    border-radius: 10px;
+    padding: 6px 14px;
+    min-height: 46px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #222;
+    overflow: hidden;
+  }
+
+  &__text {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    direction: rtl;
+  }
+
+  &__undo-btn,
+  &__pin-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $cat-misc-bg;
+    border: 2px solid $cat-misc-border;
+    border-radius: $radius-sm;
+    min-width: 46px;
+    min-height: 46px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #555;
+    flex-shrink: 0;
+    transition: filter 120ms;
+
+    &:hover { filter: brightness(0.9); }
+    &:active { transform: scale(0.95); }
+  }
+}
+
+// ג”€ג”€ Body ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+.board-body {
+  display: flex;
+  flex: 1;
+  gap: $gap-layout;
+  overflow: hidden;
+  min-height: 0;
+}
+
+// ג”€ג”€ Grid wrap ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+.board-grid-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+// ג”€ג”€ ׳”׳’׳¨׳™׳“ ׳¢׳¦׳׳• ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+.board-grid {
+  display: grid;
+  gap: $gap-grid;
+  flex: 1;
+  align-content: start;  // ׳›׳₪׳×׳•׳¨׳™׳ ׳׳”׳©׳•׳¨׳” ׳”׳¨׳׳©׳•׳ ׳” ׳׳׳¢׳׳”
+  align-content: stretch;
+  overflow: hidden;
+  direction: rtl;        // ג† ׳₪׳¢׳׳™׳ ׳‘׳¢׳׳•׳“׳” ׳¨׳׳©׳•׳ ׳” ׳׳™׳׳™׳!
+  padding: 2px;          // ׳׳¨׳•׳•׳— ׳§׳˜׳ ׳׳”׳§׳¦׳”
+}
+
+// ג”€ג”€ ׳×׳ ׳‘׳’׳¨׳™׳“ ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+.board-cell {
+  display: flex;
+  align-items: stretch;
+
+  // contextual ג€” ׳׳¡׳’׳¨׳× ׳׳§׳•׳§׳•׳•׳× ׳›׳×׳•׳׳”
+  &--contextual {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: calc(#{$radius-btn} + 1px);
+      border: 2px dashed $cat-contextual-border;
+      pointer-events: none;
+      z-index: 1;
+    }
+  }
+
+  // ׳¡׳¨׳™׳§׳” ג€” ׳”׳“׳’׳©׳” ׳›׳×׳•׳׳”
+  &--scanning-active {
+    outline: $scan-ring;
+    outline-offset: 2px;
+    border-radius: $radius-btn;
+    z-index: 2;
+    animation: scan-pulse 0.3s ease-out;
+  }
+}
+
+@keyframes scan-pulse {
+  0%   { transform: scale(0.97); }
+  60%  { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+// ג”€ג”€ Loading / Error ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+.board-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+  color: rgba(255,255,255,0.85);
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  flex: 1;
+
+  &__spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+
+  &__icon { font-size: 32px; }
+
+  &__retry {
+    background: rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.6);
+    border-radius: $radius-sm;
+    padding: 8px 20px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: $font-primary;
+
+    &:hover { background: rgba(255,255,255,0.35); }
+  }
+
+  &--error { color: #ffccbc; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// ג”€ג”€ Sidebar ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+.board-sidebar {
+  width: $sidebar-width;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// ג”€ג”€ ׳›׳₪׳×׳•׳¨׳™ ׳¦׳“ (׳‘׳™׳˜׳•׳ / ׳”׳’׳“׳¨׳•׳×) ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+.board-side-actions {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-layout;
+  flex-shrink: 0;
+  width: 70px;
+}
+
+.board-side-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: $cat-misc-bg;
+  border: 2px solid $cat-misc-border;
+  border-radius: $radius-btn;
+  padding: 10px 4px;
+  cursor: pointer;
+  font-family: $font-primary;
+  font-size: 12px;
+  font-weight: 600;
+  color: $cat-misc-text;
+  flex: 1;
+  transition: filter 120ms;
+
+  &:hover { filter: brightness(0.9); }
+  &:active { transform: scale(0.97); }
+
+  .icon { font-size: 22px; }
+}
+
+// ג”€ג”€ Footer ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+.board-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 4px;
+  flex-shrink: 0;
+}
+
+.board-settings-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.4);
+  padding: 4px;
+  border-radius: $radius-sm;
+  transition: color 150ms;
+
+  &:hover { color: rgba(255,255,255,0.8); }
+}
+
+.board-version {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+}
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\board\board.component.spec.ts ---
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { BoardComponent } from './board.component';
+
+describe('BoardComponent', () => {
+  let component: BoardComponent;
+  let fixture: ComponentFixture<BoardComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [BoardComponent]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(BoardComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\board\board.component.ts ---
+// board.component.ts
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { AsyncPipe, CommonModule } from '@angular/common';
+import { Store } from '@ngrx/store';
+
+import { BoardActions } from '../../../../store/board/board.actions';
+import { selectVisibleButtons, selectLayout, selectLoading, selectError } from '../../../../store/board/board.selectors';
+import { AacButtonComponent } from '../aac-button/aac-button.component';
+import { ButtonDto } from '../../../../shared/models/board.dto.model';
+import { TtsService } from '../../../../shared/services/tts.service';
+import { map } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
+import { GazeActions } from '../../../../store/gaze/gaze.reducer';
+ import { selectScanningActive, selectActiveIndex }                        from '../../../../store/scanning/scanning.reducer';
+import { ContactsComponent }              from '../contacts/contacts.component';
+// userId ׳–׳׳ ׳™ ׳׳₪׳™׳×׳•׳— ג€” ׳™׳•׳—׳׳£ ׳‘-AuthService ׳‘׳©׳׳‘ 4
+const DEV_USER_ID = '00000000-0000-0000-0000-000000000001';
+
+@Component({
+  selector: 'gc-board',
+  standalone: true,
+  imports: [CommonModule, AsyncPipe, AacButtonComponent, ContactsComponent ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl:'./board.component.html' ,
+  styleUrl: './board.component.scss',
+})
+export class BoardComponent implements OnInit {
+  private store = inject(Store);
+  private tts   = inject(TtsService);
+
+  buttons$ = this.store.select(selectVisibleButtons);
+  layout$  = this.store.select(selectLayout);
+  loading$ = this.store.select(selectLoading);
+  error$   = this.store.select(selectError);
+  isScanningActive$ = this.store.select(selectScanningActive);
+  activeIndex$      = this.store.select(selectActiveIndex);
+  sentence = '';
+
+
+  // ngOnInit(): void {
+  //   this.store.dispatch(BoardActions.loadBoard({ userId: DEV_USER_ID }));
+  // }
+
+  //׳׳”׳¨׳¦׳” ׳¨׳§ ׳©׳ ׳׳ ׳’׳•׳׳¨ ׳‘׳׳™ backend
+ngOnInit(): void {
+  this.store.dispatch(BoardActions.loadBoardSuccess({
+    board: {
+      id: '1', userId: DEV_USER_ID, name: '׳׳•׳— ׳¨׳׳©׳™',
+      layout: JSON.stringify({ columns: 6, maxButtons: 30, buttonSize: 'large' }),
+      buttons: [
+        // ׳©׳•׳¨׳× ׳§׳˜׳’׳•׳¨׳™׳•׳×
+        { id: 'c1', boardId: '1', text: '׳₪׳¢׳׳™׳',      category: 'verb',   icon: 'https://static.arasaac.org/pictograms/6385/6385_300.png',  ttsText: '׳₪׳¢׳׳™׳',      isContextual: false, personId: null, createdAt: '' },
+        { id: 'c2', boardId: '1', text: '׳©׳׳•׳× ׳¢׳¦׳',   category: 'noun',   icon: 'https://static.arasaac.org/pictograms/2709/2709_300.png',  ttsText: '׳©׳׳•׳× ׳¢׳¦׳',   isContextual: false, personId: null, createdAt: '' },
+        { id: 'c3', boardId: '1', text: '׳׳ ׳©׳™׳',      category: 'person', icon: 'https://static.arasaac.org/pictograms/8418/8418_300.png',  ttsText: '׳׳ ׳©׳™׳',      isContextual: false, personId: null, createdAt: '' },
+        { id: 'c4', boardId: '1', text: '׳¨׳’׳©׳•׳×',      category: 'verb',   icon: 'https://static.arasaac.org/pictograms/5787/5787_300.png',  ttsText: '׳¨׳’׳©׳•׳×',      isContextual: false, personId: null, createdAt: '' },
+        { id: 'c5', boardId: '1', text: '׳׳§׳•׳׳•׳×',     category: 'noun',   icon: 'https://static.arasaac.org/pictograms/6564/6564_300.png',  ttsText: '׳׳§׳•׳׳•׳×',     isContextual: false, personId: null, createdAt: '' },
+        { id: 'c6', boardId: '1', text: '׳¢׳•׳“',        category: 'misc',   icon: 'https://static.arasaac.org/pictograms/7288/7288_300.png',  ttsText: '׳¢׳•׳“',        isContextual: false, personId: null, createdAt: '' },
+        // ׳©׳•׳¨׳” 1
+        { id: 'b1', boardId: '1', text: '׳׳׳›׳×',   category: 'verb',   icon: 'https://static.arasaac.org/pictograms/6385/6385_300.png',  ttsText: '׳׳׳›׳×',   isContextual: false, personId: null, createdAt: '' },
+        { id: 'b2', boardId: '1', text: '׳׳׳›׳•׳',  category: 'verb',   icon: 'https://static.arasaac.org/pictograms/27646/27646_300.png', ttsText: '׳׳׳›׳•׳',  isContextual: false, personId: null, createdAt: '' },
+        { id: 'b3', boardId: '1', text: '׳׳©׳×׳•׳×',  category: 'verb',   icon: 'https://static.arasaac.org/pictograms/28398/28398_300.png', ttsText: '׳׳©׳×׳•׳×',  isContextual: false, personId: null, createdAt: '' },
+        { id: 'b4', boardId: '1', text: '׳׳™׳©׳•׳',  category: 'verb',   icon: 'https://static.arasaac.org/pictograms/6645/6645_300.png',  ttsText: '׳׳™׳©׳•׳',  isContextual: false, personId: null, createdAt: '' },
+        { id: 'b5', boardId: '1', text: '׳׳©׳—׳§',   category: 'verb',   icon: 'https://static.arasaac.org/pictograms/6456/6456_300.png',  ttsText: '׳׳©׳—׳§',   isContextual: false, personId: null, createdAt: '' },
+        { id: 'b6', boardId: '1', text: '׳׳¢׳–׳•׳¨',  category: 'verb',   icon: 'https://static.arasaac.org/pictograms/6635/6635_300.png',  ttsText: '׳׳¢׳–׳•׳¨',  isContextual: false, personId: null, createdAt: '' },
+        // ׳©׳•׳¨׳” 2
+        { id: 'b7', boardId: '1', text: '׳׳™׳',    category: 'noun',   icon: 'https://static.arasaac.org/pictograms/2709/2709_300.png',  ttsText: '׳׳™׳',    isContextual: false, personId: null, createdAt: '' },
+        { id: 'b8', boardId: '1', text: '׳׳•׳›׳',   category: 'noun',   icon: 'https://static.arasaac.org/pictograms/6343/6343_300.png',  ttsText: '׳׳•׳›׳',   isContextual: false, personId: null, createdAt: '' },
+        { id: 'b9', boardId: '1', text: '׳‘׳™׳×',    category: 'noun',   icon: 'https://static.arasaac.org/pictograms/6564/6564_300.png',  ttsText: '׳‘׳™׳×',    isContextual: false, personId: null, createdAt: '' },
+        { id: 'b10', boardId: '1', text: '׳‘׳™׳× ׳¡׳₪׳¨', category: 'noun', icon: 'https://static.arasaac.org/pictograms/6439/6439_300.png',  ttsText: '׳‘׳™׳× ׳¡׳₪׳¨', isContextual: false, personId: null, createdAt: '' },
+        { id: 'b11', boardId: '1', text: '׳›׳“׳•׳¨',  category: 'noun',   icon: 'https://static.arasaac.org/pictograms/6456/6456_300.png',  ttsText: '׳›׳“׳•׳¨',   isContextual: false, personId: null, createdAt: '' },
+        { id: 'b12', boardId: '1', text: '׳¡׳₪׳¨',   category: 'noun',   icon: 'https://static.arasaac.org/pictograms/6439/6439_300.png',  ttsText: '׳¡׳₪׳¨',    isContextual: false, personId: null, createdAt: '' },
+        // ׳©׳•׳¨׳” 3 ג€” ׳׳ ׳©׳™׳
+        { id: 'b13', boardId: '1', text: '׳׳׳',   category: 'person', icon: 'https://static.arasaac.org/pictograms/8418/8418_300.png',  ttsText: '׳׳׳',    isContextual: true,  personId: null, createdAt: '' },
+        { id: 'b14', boardId: '1', text: '׳׳‘׳',   category: 'person', icon: 'https://static.arasaac.org/pictograms/8417/8417_300.png',  ttsText: '׳׳‘׳',    isContextual: true,  personId: null, createdAt: '' },
+        { id: 'b15', boardId: '1', text: '׳׳•׳¨׳”',  category: 'person', icon: 'https://static.arasaac.org/pictograms/6635/6635_300.png',  ttsText: '׳׳•׳¨׳”',   isContextual: false, personId: null, createdAt: '' },
+        { id: 'b16', boardId: '1', text: '׳—׳‘׳¨',   category: 'person', icon: 'https://static.arasaac.org/pictograms/8418/8418_300.png',  ttsText: '׳—׳‘׳¨',    isContextual: false, personId: null, createdAt: '' },
+        { id: 'b17', boardId: '1', text: '׳׳ ׳™',   category: 'person', icon: 'https://static.arasaac.org/pictograms/5787/5787_300.png',  ttsText: '׳׳ ׳™',    isContextual: false, personId: null, createdAt: '' },
+        { id: 'b18', boardId: '1', text: '׳׳×/׳”',  category: 'person', icon: 'https://static.arasaac.org/pictograms/5787/5787_300.png',  ttsText: '׳׳×׳”',    isContextual: false, personId: null, createdAt: '' },
+        // ׳©׳•׳¨׳” 4 ג€” ׳¨׳’׳©׳•׳×
+        { id: 'b19', boardId: '1', text: '׳©׳׳—',   category: 'verb',   icon: 'https://static.arasaac.org/pictograms/5787/5787_300.png',  ttsText: '׳©׳׳—',    isContextual: false, personId: null, createdAt: '' },
+        { id: 'b20', boardId: '1', text: '׳¢׳¦׳•׳‘',  category: 'verb',   icon: 'https://static.arasaac.org/pictograms/5790/5790_300.png',  ttsText: '׳¢׳¦׳•׳‘',   isContextual: false, personId: null, createdAt: '' },
+        { id: 'b21', boardId: '1', text: '׳›׳•׳׳‘',  category: 'verb',   icon: 'https://static.arasaac.org/pictograms/6343/6343_300.png',  ttsText: '׳›׳•׳׳‘',   isContextual: false, personId: null, createdAt: '' },
+        { id: 'b22', boardId: '1', text: '׳¢׳™׳™׳£',  category: 'verb',   icon: 'https://static.arasaac.org/pictograms/6645/6645_300.png',  ttsText: '׳¢׳™׳™׳£',   isContextual: false, personId: null, createdAt: '' },
+        { id: 'b23', boardId: '1', text: '׳›׳',    category: 'misc',   icon: 'https://static.arasaac.org/pictograms/7288/7288_300.png',  ttsText: '׳›׳',     isContextual: false, personId: null, createdAt: '' },
+        { id: 'b24', boardId: '1', text: '׳׳',    category: 'misc',   icon: 'https://static.arasaac.org/pictograms/7288/7288_300.png',  ttsText: '׳׳',     isContextual: false, personId: null, createdAt: '' },
+      ],
+      createdAt: '', updatedAt: ''
+    }
+  }));
+
+  // ׳ ׳§׳•׳“׳” ׳׳“׳•׳׳” ג€” mock gaze ׳©׳׳×׳ ׳•׳¢׳¢
+  let x = 200, y = 300;
+  setInterval(() => {
+    x = Math.random() * window.innerWidth;
+    y = Math.random() * window.innerHeight;
+    this.store.dispatch(GazeActions.gazePointReceived({ x, y, confidence: 0.9 }));
+  }, 1000);
+}
+
+  onButtonClick(button: ButtonDto): void {
+    // 1. TTS ׳׳™׳™׳“׳™ ג€” ׳׳ ׳׳—׳›׳” ׳׳×׳’׳•׳‘׳× ׳”׳©׳¨׳×
+    this.sentence = (this.sentence + ' ' + button.text).trim();
+    this.tts.speakButton(button.text, button.ttsText);
+
+    // 2. dispatch ׳store ג†’ effect ׳©׳•׳׳— ׳׳©׳¨׳×
+    this.store.dispatch(BoardActions.buttonPressed({
+      buttonId: button.id,
+      userId:   DEV_USER_ID,
+    }));
+  }
+
+  retry(): void {
+    this.store.dispatch(BoardActions.loadBoard({ userId: DEV_USER_ID }));
+  }
+
+  undo(): void {
+  const words = this.sentence.trim().split(' ');
+  words.pop();
+  this.sentence = words.join(' ');
+}
+
+speak(): void {
+  if (!this.sentence) return;
+  const utt = new SpeechSynthesisUtterance(this.sentence);
+  utt.lang = 'he-IL';
+  speechSynthesis.speak(utt);
+}
+
+}
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\contacts\contacts.component.html ---
+<!-- contacts.component.html -->
+<!-- 
+  ׳׳‘׳ ׳” ׳”׳“׳£:
+  1. Popup ג€” ׳׳•׳˜׳•׳׳˜׳™ ׳›׳©׳ ׳›׳ ׳¡ ׳׳“׳ ׳—׳“׳© ׳׳—׳“׳¨
+  2. "׳‘׳—׳“׳¨ ׳¢׳›׳©׳™׳•" ג€” ׳¨׳©׳™׳׳” ׳§׳˜׳ ׳” ׳©׳ ׳׳™ ׳–׳•׳”׳”
+  3. "׳›׳ ׳׳ ׳©׳™ ׳”׳§׳©׳¨" ג€” ׳’׳¨׳™׳“ ׳׳׳ ׳׳”-UPS
+-->
+<div class="contacts-page" dir="rtl">
+
+  <!-- ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג• -->
+  <!-- POPUP ג€” ׳§׳•׳₪׳¥ ׳›׳©׳ ׳›׳ ׳¡ ׳׳“׳ ׳—׳“׳©                           -->
+  <!-- ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג• -->
+  @if (popupPerson()) {
+    <div
+      class="person-popup"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="popupPerson()!.name + ' ׳ ׳›׳ ׳¡ ׳׳—׳“׳¨'"
+    >
+      <div class="person-popup__card">
+        <!-- Avatar ג€” ׳¨׳׳©׳™׳× ׳”׳©׳ ׳›-placeholder -->
+        <div class="person-popup__avatar" aria-hidden="true">
+          {{ popupPerson()!.name.charAt(0) }}
+        </div>
+        <div class="person-popup__info">
+          <span class="person-popup__name">{{ popupPerson()!.name }}</span>
+          <span class="person-popup__label">׳ ׳›׳ ׳¡ ׳׳—׳“׳¨ נ‘‹</span>
+        </div>
+        <button
+          class="person-popup__close"
+          aria-label="׳¡׳’׳•׳¨"
+          (click)="closePopup()"
+        >ג•</button>
+      </div>
+    </div>
+  }
+
+  <!-- ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג• -->
+  <!-- "׳‘׳—׳“׳¨ ׳¢׳›׳©׳™׳•" ג€” ׳׳™ ׳ ׳׳¦׳ ׳›׳¨׳’׳¢                           -->
+  <!-- ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג• -->
+  @if ((detectedPersons$ | async)?.length) {
+    <section class="contacts-section" aria-label="׳‘׳—׳“׳¨ ׳¢׳›׳©׳™׳•">
+      <h2 class="contacts-section__title">׳‘׳—׳“׳¨ ׳¢׳›׳©׳™׳•</h2>
+      <div class="contacts-grid" role="list">
+        @for (person of detectedPersons$ | async; track person.personId) {
+          <button
+            class="contact-btn contact-btn--present"
+            role="listitem"
+            [attr.aria-label]="'׳“׳‘׳¨ ׳¢׳ ' + person.name"
+            (click)="speakPerson(person)"
+          >
+            <span class="contact-btn__avatar" aria-hidden="true">
+              {{ person.name.charAt(0) }}
+            </span>
+            <span class="contact-btn__name">{{ person.name }}</span>
+            <span class="contact-btn__badge" aria-label="׳ ׳•׳›׳—">ג—</span>
+          </button>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג• -->
+  <!-- ׳›׳ ׳׳ ׳©׳™ ׳”׳§׳©׳¨ ג€” ׳׳”-User Profile Service                 -->
+  <!-- ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג•ג• -->
+  <section class="contacts-section" aria-label="׳›׳ ׳׳ ׳©׳™ ׳”׳§׳©׳¨">
+    <h2 class="contacts-section__title">׳׳ ׳©׳™ ׳§׳©׳¨</h2>
+
+    @if (loadingContacts()) {
+      <div class="contacts-status" role="status" aria-live="polite">
+        ׳˜׳•׳¢׳ ׳׳ ׳©׳™ ׳§׳©׳¨...
+      </div>
+    }
+
+    @if (loadError()) {
+      <div class="contacts-status contacts-status--error" role="alert">
+        {{ loadError() }}
+      </div>
+    }
+
+    @if (!loadingContacts() && !loadError()) {
+      <div class="contacts-grid" role="list">
+        @for (contact of allContacts(); track contact.id) {
+          <button
+            class="contact-btn"
+            role="listitem"
+            [attr.aria-label]="'׳“׳‘׳¨ ׳¢׳ ' + contact.name"
+            (click)="speakContact(contact)"
+          >
+            <!-- ׳×׳׳•׳ ׳” ׳׳׳™׳×׳™׳× ׳׳ ׳§׳™׳™׳׳×, ׳׳—׳¨׳× ׳¨׳׳©׳™׳× ׳©׳ -->
+            @if (contact.avatarUrl) {
+              <img
+                class="contact-btn__avatar contact-btn__avatar--img"
+                [src]="contact.avatarUrl"
+                [alt]="contact.name"
+              />
+            } @else {
+              <span class="contact-btn__avatar" aria-hidden="true">
+                {{ contact.name.charAt(0) }}
+              </span>
+            }
+            <span class="contact-btn__name">{{ contact.name }}</span>
+            @if (contact.role) {
+              <span class="contact-btn__role">{{ contact.role }}</span>
+            }
+          </button>
+        }
+      </div>
+    }
+  </section>
+
+</div>
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\contacts\contacts.component.scss ---
+// ============================================================
+// contacts.component.scss
+// Sidebar ׳׳ ׳©׳™ ׳§׳©׳¨ + Popup "׳ ׳›׳ ׳¡ ׳׳—׳“׳¨"
+// HTML: .contacts-page > .person-popup + .contacts-section
+// ============================================================
+
+@use '../../../../../styles/variables' as *;
+
+// ============================================================
+// ׳¢׳׳•׳“/׳’׳•׳£ ׳”׳§׳•׳׳₪׳•׳ ׳ ׳˜
+// ============================================================
+.contacts-page {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-layout;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none; // Firefox
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// ============================================================
+// POPUP ג€“ "׳ ׳›׳ ׳¡ ׳׳—׳“׳¨" (׳׳•׳₪׳™׳¢ ׳‘׳¨׳׳© ׳”׳¡׳™׳™׳“׳‘׳¨)
+// ============================================================
+.person-popup {
+  animation: popup-slide-in 0.35s ease-out;
+
+  &__card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff3e0;
+    border: 2.5px solid $cat-contextual-border;
+    border-radius: $radius-btn;
+    padding: 8px 10px;
+    position: relative;
+  }
+
+  &__avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: $cat-person-bg;
+    border: 2px solid $cat-person-border;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: $cat-person-text;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #bf360c;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__label {
+    font-size: 10px;
+    color: #ef6c00;
+    font-weight: 600;
+  }
+
+  &__close {
+    position: absolute;
+    top: 4px;
+    left: 4px; // RTL ג€“ ׳©׳׳׳ = ֳ—
+    background: none;
+    border: none;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    color: #999;
+    padding: 2px;
+    border-radius: 4px;
+    transition: color 120ms;
+
+    &:hover {
+      color: #333;
+    }
+  }
+}
+
+@keyframes popup-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// ============================================================
+// Section: "׳‘׳—׳“׳¨ ׳¢׳›׳©׳™׳•" ג€“ ׳׳™ ׳ ׳•׳›׳— ׳›׳¨׳’׳¢
+// ============================================================
+.contacts-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &__title {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// ============================================================
+// ׳’׳¨׳™׳“ ׳›׳₪׳×׳•׳¨׳™ ׳׳ ׳©׳™ ׳§׳©׳¨
+// ============================================================
+.contacts-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+// ============================================================
+// ׳›׳₪׳×׳•׳¨ ׳׳™׳© ׳§׳©׳¨ ׳™׳—׳™׳“
+// ============================================================
+.contact-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  min-height: $contact-btn-size;
+  padding: 6px 4px;
+  border-radius: $radius-btn;
+  border: 2.5px solid $cat-person-border;
+  background: $cat-person-bg;
+  color: $cat-person-text;
+  cursor: pointer;
+  font-family: $font-primary;
+  font-weight: 700;
+  transition: transform 120ms, filter 120ms;
+  position: relative;
+
+  &:hover {
+    transform: scale(1.04);
+    filter: brightness(0.92);
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  &:focus-visible {
+    outline: 3px solid #ff6600;
+    outline-offset: 2px;
+  }
+
+  // Avatar ׳¨׳׳©׳™ ׳×׳™׳‘׳•׳×
+  &__avatar {
+    width: $contact-avatar;
+    height: $contact-avatar;
+    border-radius: 50%;
+    background: rgba($cat-person-border, 0.2);
+    border: 2px solid $cat-person-border;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  &__name {
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.1;
+    word-break: break-word;
+  }
+
+  // ׳×׳’ "׳ ׳•׳›׳—" (׳™׳¨׳•׳§)
+  &__badge {
+    position: absolute;
+    top: 4px;
+    right: 4px; // RTL
+    font-size: 10px;
+    color: #43a047;
+    line-height: 1;
+  }
+
+  // ׳•׳¨׳™׳׳ ׳˜ "׳ ׳•׳›׳—" ג€“ ׳”׳“׳’׳©׳” ׳׳™׳•׳—׳“׳×
+  &--present {
+    border-style: solid;
+    border-width: 2.5px;
+    animation: contact-appear 0.4s ease-out;
+  }
+}
+
+@keyframes contact-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.85) translateX(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+}
+
+// ============================================================
+// ׳׳₪׳¨׳™׳“ ׳‘׳™׳ sections
+// ============================================================
+.contacts-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 4px 0;
+}
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\contacts\contacts.component.spec.ts ---
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ContactsComponent } from './contacts.component';
+
+describe('ContactsComponent', () => {
+  let component: ContactsComponent;
+  let fixture: ComponentFixture<ContactsComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ContactsComponent]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(ContactsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\contacts\contacts.component.ts ---
+// features/aac-board/components/contacts/contacts.component.ts
+//
+// ׳׳” ׳”׳§׳•׳׳₪׳•׳ ׳ ׳˜ ׳”׳–׳” ׳¢׳•׳©׳”:
+// 1. "׳‘׳—׳“׳¨ ׳¢׳›׳©׳™׳•" ג€” popup ׳׳•׳˜׳•׳׳˜׳™ ׳›׳©׳׳’׳™׳¢ PersonDetected ׳—׳“׳©
+//    ׳׳•׳¦׳’ ׳׳׳©׳ 4 ׳©׳ ׳™׳•׳× (׳׳• ׳¢׳“ ׳׳—׳™׳¦׳”) ג€” ׳›׳¨׳˜׳™׳¡ ׳¢׳ ׳©׳ ׳•-avatar
+//
+// 2. ׳¨׳©׳™׳׳× ׳›׳ ׳׳ ׳©׳™ ׳§׳©׳¨ ג€” ׳ ׳˜׳¢׳ ׳× ׳-User Profile Service (HTTP)
+//    ׳׳•׳¦׳’׳× ׳›׳’׳¨׳™׳“ ׳©׳ ׳›׳₪׳×׳•׳¨׳™׳ (׳›׳׳• ׳׳•׳— ׳”-AAC)
+//    ׳׳—׳™׳¦׳” ׳¢׳ ׳›׳₪׳×׳•׳¨ ג†’ TTS ׳׳“׳‘׳¨ ׳׳× ׳”׳©׳
+//
+// ׳׳§׳•׳¨ ׳”׳ ׳×׳•׳ ׳™׳:
+//   "׳‘׳—׳“׳¨ ׳¢׳›׳©׳™׳•" ג† PersonsState (store, ׳׳’׳™׳¢ ׳-SignalR)
+//   "׳›׳ ׳׳ ׳©׳™ ׳§׳©׳¨" ג† HTTP GET /contacts (User Profile Service :5004)
+
+import {
+  Component, OnInit, OnDestroy, inject,
+  ChangeDetectionStrategy, signal
+} from '@angular/core';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Store } from '@ngrx/store';
+import { Subscription, distinctUntilChanged, map } from 'rxjs';
+
+import { selectDetectedPersons, DetectedPerson } from '../../../../store/persons/persons.reducer';
+import { ContactDto } from '../../../../shared/models/contact.model';
+import { TtsService } from '../../../../shared/services/tts.service';
+import { API_URLS } from '../../../../shared/config/api-urls';
+
+// userId ׳–׳׳ ׳™ ג€” ׳™׳•׳—׳׳£ ׳‘-AuthService ׳‘׳©׳׳‘ 4
+const DEV_USER_ID = '00000000-0000-0000-0000-000000000001';
+
+// ׳›׳׳” ׳©׳ ׳™׳•׳× ׳”-popup ׳ ׳©׳׳¨ ׳₪׳×׳•׳— ׳׳—׳¨׳™ ׳©׳׳ ׳׳–׳•׳”׳” ׳©׳•׳‘
+const POPUP_DURATION_MS = 8000;
+
+@Component({
+  selector: 'gc-contacts  ',
+  standalone: true,
+  imports: [AsyncPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './contacts.component.html',
+  styleUrl: './contacts.component.scss',
+})
+export class ContactsComponent implements OnInit, OnDestroy {
+  private store  = inject(Store);
+  private http   = inject(HttpClient);
+  private tts    = inject(TtsService);
+
+  // ג”€ג”€ "׳‘׳—׳“׳¨ ׳¢׳›׳©׳™׳•" ג€” ׳׳’׳™׳¢ ׳׳”store ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  detectedPersons$ = this.store.select(selectDetectedPersons);
+
+  // ג”€ג”€ ׳›׳ ׳׳ ׳©׳™ ׳”׳§׳©׳¨ ג€” ׳ ׳˜׳¢׳ ׳™׳ ׳׳”׳©׳¨׳× ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  allContacts = signal<ContactDto[]>([]);
+  loadingContacts = signal(true);
+  loadError = signal<string | null>(null);
+
+  // ג”€ג”€ Popup ג€” ׳›׳©׳ ׳›׳ ׳¡ ׳׳“׳ ׳—׳“׳© ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  popupPerson = signal<DetectedPerson | null>(null);
+  private popupTimer?: ReturnType<typeof setTimeout>;
+  private sub?: Subscription;
+
+  ngOnInit(): void {
+    // ׳˜׳¢׳ ׳¨׳©׳™׳׳× ׳׳ ׳©׳™ ׳§׳©׳¨ ׳׳”׳©׳¨׳×
+    this.loadContacts();
+
+    // ׳”׳׳–׳ ׳׳©׳™׳ ׳•׳™׳™׳ ׳‘-detected persons ג†’ ׳”׳¦׳’ popup ׳׳׳—׳¨׳•׳ ׳©׳ ׳•׳¡׳£
+    this.sub = this.store.select(selectDetectedPersons).pipe(
+      // ׳¨׳§ ׳›׳©׳׳¡׳₪׳¨ ׳”׳׳ ׳©׳™׳ ׳’׳“׳ (׳”׳’׳™׳¢ ׳׳“׳ ׳—׳“׳©)
+      map(persons => persons[persons.length - 1]),
+      distinctUntilChanged((a, b) => a?.personId === b?.personId)
+    ).subscribe(latestPerson => {
+      if (!latestPerson) return;
+      this.showPopup(latestPerson);
+    });
+  }
+
+  // ג”€ג”€ ׳˜׳¢׳™׳ ׳× ׳׳ ׳©׳™ ׳§׳©׳¨ ׳׳”-UPS ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  private loadContacts(): void {
+    this.http.get<ContactDto[]>(
+      `${API_URLS.userProfile}/contacts/${DEV_USER_ID}`
+    ).subscribe({
+      next: contacts => {
+        this.allContacts.set(contacts);
+        this.loadingContacts.set(false);
+      },
+      error: () => {
+        // ׳‘׳₪׳™׳×׳•׳— ג€” ׳׳₪׳©׳¨ ׳©׳”׳©׳¨׳× ׳¢׳•׳“ ׳׳ ׳¨׳¥
+        this.loadError.set('׳׳ ׳ ׳™׳×׳ ׳׳˜׳¢׳•׳ ׳׳ ׳©׳™ ׳§׳©׳¨');
+        this.loadingContacts.set(false);
+      }
+    });
+  }
+
+  // ג”€ג”€ Popup ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  private showPopup(person: DetectedPerson): void {
+    clearTimeout(this.popupTimer);
+    this.popupPerson.set(person);
+    // TTS ג€” ׳׳§׳¨׳™׳ ׳׳× ׳”׳©׳ ׳׳•׳˜׳•׳׳˜׳™׳× ׳›׳©׳׳™׳©׳”׳• ׳ ׳›׳ ׳¡
+    // this.tts.speak(person.name);
+    // ׳¡׳•׳’׳¨ ׳׳—׳¨׳™ POPUP_DURATION_MS
+    this.popupTimer = setTimeout(() => {
+      this.popupPerson.set(null);
+    }, POPUP_DURATION_MS);
+  }
+
+  closePopup(): void {
+    clearTimeout(this.popupTimer);
+    this.popupPerson.set(null);
+  }
+
+  // ג”€ג”€ ׳׳—׳™׳¦׳” ׳¢׳ ׳›׳₪׳×׳•׳¨ ׳׳™׳© ׳§׳©׳¨ ג†’ TTS ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  speakContact(contact: ContactDto): void {
+    this.tts.speak(contact.name);
+  }
+
+  // ג”€ג”€ ׳׳—׳™׳¦׳” ׳¢׳ ׳›׳₪׳×׳•׳¨ "׳ ׳•׳›׳— ׳‘׳—׳“׳¨" ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  speakPerson(person: DetectedPerson): void {
+    this.tts.speak(person.name);
+  }
+
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
+    clearTimeout(this.popupTimer);
+  }
+}
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\gaze-overlay\gaze-overlay.component.html ---
+<p>gaze-overlay works!</p>
+
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\gaze-overlay\gaze-overlay.component.scss ---
+// ============================================================
+// gaze-overlay.component.scss
+// ׳ ׳§׳•׳“׳× ׳”׳׳‘׳˜ ׳”׳׳“׳•׳׳” ׳©׳–׳” ׳‘׳–׳׳ ׳׳׳× ׳¢׳ ׳”׳׳¡׳
+// z-index ׳’׳‘׳•׳” ׳׳׳•׳“ ג€“ ׳×׳׳™׳“ ׳׳¢׳ ׳”׳›׳
+// ============================================================
+
+@use '../../../../../styles/variables' as *;
+
+:host {
+    display: contents; // ׳׳ ׳×׳•׳₪׳¡ ׳׳§׳•׳ ׳‘layout
+}
+
+// ============================================================
+// ׳ ׳§׳•׳“׳× ׳”׳׳‘׳˜
+// ============================================================
+.gaze-dot {
+    position: fixed;
+    width: $gaze-size;
+    height: $gaze-size;
+    border-radius: 50%;
+    background: $gaze-color;
+    border: 2.5px solid rgba(255, 255, 255, 0.9);
+    pointer-events: none; // ׳׳ ׳—׳•׳¡׳ ׳§׳׳™׳§׳™׳
+    z-index: $z-gaze;
+    transform: translate(-50%, -50%);
+
+    // ׳׳ ׳™׳׳¦׳™׳™׳× ׳₪׳¢׳™׳׳”
+    animation: gaze-pulse 1.4s ease-in-out infinite;
+
+    // ׳׳¢׳‘׳¨ ׳—׳׳§ ׳‘׳™׳ ׳׳™׳§׳•׳׳™׳ (Kalman filter ׳›׳‘׳¨ ׳׳—׳׳™׳§)
+    transition: left 30ms linear, top 30ms linear;
+}
+
+// ׳¢׳™׳’׳•׳ ׳—׳™׳¦׳•׳ ׳™ (ripple) ג€“ ׳׳¨׳׳” ׳׳× ׳׳–׳•׳¨ ׳”-dwell
+.gaze-ring {
+    position: fixed;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 100, 0, 0.4);
+    pointer-events: none;
+    z-index: calc(#{$z-gaze} - 1);
+    transform: translate(-50%, -50%);
+    transition: left 30ms linear, top 30ms linear;
+
+    // ׳’׳“׳ ׳‘׳”׳“׳¨׳’׳” ׳‘׳–׳׳ dwell
+    &--dwelling {
+        animation: dwell-ring-expand var(--dwell-duration, 800ms) ease-out forwards;
+    }
+}
+
+@keyframes gaze-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 60, 0, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 0 6px rgba(255, 60, 0, 0);
+    }
+}
+
+@keyframes dwell-ring-expand {
+    from {
+        width: 24px;
+        height: 24px;
+        opacity: 0.8;
+    }
+
+    to {
+        width: 70px;
+        height: 70px;
+        opacity: 0;
+    }
+}
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\gaze-overlay\gaze-overlay.component.spec.ts ---
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { GazeOverlayComponent } from './gaze-overlay.component';
+
+describe('GazeOverlayComponent', () => {
+  let component: GazeOverlayComponent;
+  let fixture: ComponentFixture<GazeOverlayComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [GazeOverlayComponent]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(GazeOverlayComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\gaze-overlay\gaze-overlay.component.ts ---
+
+// gaze-overlay.component.ts ג€” ׳ ׳§׳•׳“׳” ׳׳“׳•׳׳” ׳©׳׳¨׳׳” ׳׳™׳§׳•׳ ׳”׳׳‘׳˜
+// ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { selectGazePoint, selectGazeActive } from '../../../../store/gaze/gaze.reducer';
+ 
+@Component({
+  selector: 'gc-gaze-overlay',
+  standalone: true,
+  imports: [AsyncPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    @if (isActive$ | async) {
+      @if (gazePoint$ | async; as pt) {
+        <div
+          class="gaze-dot"
+          [style.left.px]="pt.x"
+          [style.top.px]="pt.y"
+          aria-hidden="true"
+          role="presentation"
+        ></div>
+      }
+    }
+  `,
+  styles: [`
+    :host { position: fixed; inset: 0; pointer-events: none; z-index: 9999; }
+    .gaze-dot {
+      position: absolute;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: rgba(220, 38, 38, 0.85);
+      border: 2px solid white;
+      transform: translate(-50%, -50%);
+      transition: left 33ms linear, top 33ms linear;
+    }
+  `],
+})
+export class GazeOverlayComponent {
+  private store = inject(Store);
+  gazePoint$ = this.store.select(selectGazePoint);
+  isActive$  = this.store.select(selectGazeActive);
+}
+ 
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\scanning-mode\scanning-mode.component.html ---
+<!-- scanning-mode.component.html -->
+<!--
+  ׳×׳₪׳§׳™׳“: indicator ׳§׳˜׳ ׳‘׳₪׳™׳ ׳× ׳”׳׳¡׳ ׳©׳׳¨׳׳” ׳©׳׳¦׳‘ Scanning ׳₪׳¢׳™׳.
+  ׳”׳›׳₪׳×׳•׳¨ ׳”׳׳•׳“׳’׳© ׳׳˜׳•׳₪׳ ׳‘-board.component (class board-cell--scanning-active).
+  ׳›׳׳: ׳₪׳¡ ׳¢׳“׳™׳ + ׳›׳₪׳×׳•׳¨ ׳”׳₪׳¢׳׳”/׳›׳™׳‘׳•׳™.
+-->
+
+@if (isActive$ | async) {
+  <div
+    class="scanning-bar"
+    role="status"
+    aria-live="assertive"
+    aria-atomic="true"
+  >
+    <!-- Progress bar ג€“ ׳׳×׳§׳“׳ ׳¢׳ ׳›׳ ׳©׳׳‘ -->
+    <div
+      class="scanning-bar__progress"
+      [style.animation-duration.ms]="(scanInterval$ | async) ?? 1500"
+      aria-hidden="true"
+    ></div>
+
+    <span class="scanning-bar__icon" aria-hidden="true">ג³</span>
+    <span class="scanning-bar__label">
+      ׳¡׳¨׳™׳§׳” ג€“ ׳›׳₪׳×׳•׳¨ {{ ((activeIndex$ | async) ?? 0) + 1 }}
+    </span>
+
+    <!-- ׳›׳₪׳×׳•׳¨ ׳¢׳¦׳•׳¨ -->
+    <button
+      class="scanning-bar__stop"
+      (click)="stopScanning()"
+      aria-label="׳¢׳¦׳•׳¨ ׳¡׳¨׳™׳§׳”"
+      type="button"
+    >
+      ג•
+    </button>
+  </div>
+}
+
+<!-- ׳›׳₪׳×׳•׳¨ ׳”׳₪׳¢׳׳× Scanning ג€“ ׳’׳׳•׳™ ׳›׳©׳׳ ׳₪׳¢׳™׳ -->
+@if (!(isActive$ | async)) {
+  <button
+    class="scanning-trigger"
+    (click)="startScanning()"
+    aria-label="׳”׳₪׳¢׳ ׳׳¦׳‘ ׳¡׳¨׳™׳§׳”"
+    title="׳”׳₪׳¢׳ ׳׳¦׳‘ ׳¡׳¨׳™׳§׳”"
+    type="button"
+  >
+    <span aria-hidden="true">ג³</span>
+  </button>
+}
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\scanning-mode\scanning-mode.component.scss ---
+// ============================================================
+// scanning-mode.component.scss
+
+// ============================================================
+
+// ============================================================
+// Bar ׳¢׳׳™׳•׳ ג€“ ׳׳¦׳‘ ׳¡׳¨׳™׳§׳” ׳₪׳¢׳™׳
+// ============================================================
+@use '../../../../../styles/variables' as *;
+
+.scanning-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  background: rgba(30, 30, 30, 0.92);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  z-index: $z-scanning;
+  direction: rtl;
+
+  // Progress bar ׳©׳¨׳¥ ׳׳™׳׳™׳ ׳׳©׳׳׳
+  &__progress {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 3px;
+    background: $scan-progress;
+    animation: scan-progress-run var(--scan-interval, 1500ms) linear infinite;
+    border-radius: 2px 0 0 2px;
+  }
+
+  &__icon {
+    font-size: 18px;
+    color: #ff9800;
+    flex-shrink: 0;
+    animation: scan-icon-blink 1s ease-in-out infinite;
+  }
+
+  &__label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    flex: 1;
+  }
+
+  &__stop {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    border-radius: $radius-pill;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 150ms;
+    flex-shrink: 0;
+
+    &:hover {
+      background: rgba(255, 100, 0, 0.5);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #ff6600;
+      outline-offset: 2px;
+    }
+  }
+}
+
+@keyframes scan-progress-run {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
+}
+
+@keyframes scan-icon-blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+// ============================================================
+// ׳›׳₪׳×׳•׳¨ ׳”׳₪׳¢׳׳× Scanning (׳׳•׳₪׳™׳¢ ׳›׳©׳¡׳¨׳™׳§׳” ׳›׳‘׳•׳™׳”)
+// ============================================================
+.scanning-trigger {
+  position: fixed;
+  bottom: 16px;
+  left: 16px; // RTL ג€“ ׳©׳׳׳ = ׳₪׳™׳ ׳” ׳©׳׳׳׳™׳× ׳×׳—׳×׳•׳ ׳”
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(30, 30, 30, 0.75);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  color: #ccc;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: $z-scanning;
+  transition: background 150ms, transform 150ms;
+
+  &:hover {
+    background: rgba(255, 100, 0, 0.7);
+    color: #fff;
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:focus-visible {
+    outline: 3px solid #ff6600;
+    outline-offset: 3px;
+  }
+}
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\scanning-mode\scanning-mode.component.spec.ts ---
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ScanningModeComponent } from './scanning-mode.component';
+
+describe('ScanningModeComponent', () => {
+  let component: ScanningModeComponent;
+  let fixture: ComponentFixture<ScanningModeComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ScanningModeComponent]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(ScanningModeComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\components\scanning-mode\scanning-mode.component.ts ---
+
+// scanning-mode.component.ts ג€” ׳”׳“׳’׳©׳× ׳׳—׳¦׳ ׳™׳ ׳׳—׳“ ׳׳—׳“
+// ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”
+import { Component, inject, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { Subscription, interval } from 'rxjs';
+import { switchMap, withLatestFrom } from 'rxjs/operators';
+import { ScanningActions, selectScanningActive, selectActiveIndex, selectScanInterval } from '../../../../store/scanning/scanning.reducer';
+import { selectVisibleButtons } from '../../../../store/board/board.selectors';
+import { TtsService } from '../../../../shared/services/tts.service';
+
+@Component({
+  selector: 'gc-scanning-mode',
+  standalone: true,
+  imports: [AsyncPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './scanning-mode.component.html',
+  styleUrl:    './scanning-mode.component.scss',
+})
+export class ScanningModeComponent implements OnInit, OnDestroy {
+  private store = inject(Store);
+  private tts   = inject(TtsService);
+  private sub?: Subscription;
+ 
+  isActive$    = this.store.select(selectScanningActive);
+  activeIndex$ = this.store.select(selectActiveIndex);
+  scanInterval$ = this.store.select(selectScanInterval);
+
+ 
+  ngOnInit(): void {
+    // ׳›׳©׳”׳¡׳¨׳™׳§׳” ׳₪׳¢׳™׳׳” ג€“ ׳׳₪׳¢׳™׳ interval ׳׳₪׳™ scanInterval
+    this.sub = this.store.select(selectScanningActive).pipe(
+      switchMap(isActive => {
+        if (!isActive) return [];
+        return this.store.select(selectScanInterval).pipe(
+          switchMap(ms =>
+            interval(ms).pipe(
+              withLatestFrom(
+                this.store.select(selectVisibleButtons),
+                this.store.select(selectActiveIndex),
+              )
+            )
+          )
+        );
+      })
+    ).subscribe(([, buttons, currentIndex]) => {
+      if (!buttons.length) return;
+      const nextIndex = (currentIndex + 1) % buttons.length;
+      this.store.dispatch(ScanningActions.nextButtonHighlighted({ index: nextIndex }));
+ 
+      // AudioScanning ג€“ ׳§׳•׳¨׳ ׳׳× ׳©׳ ׳”׳›׳₪׳×׳•׳¨
+      const btn = buttons[nextIndex];
+      if (btn) this.tts.speakButton(btn.text, btn.ttsText);
+    });
+  }
+ 
+  ngOnDestroy(): void { this.sub?.unsubscribe(); }
+
+   startScanning(): void {
+    this.store.dispatch(ScanningActions.scanningStarted({}));
+  }
+ 
+  stopScanning(): void {
+    this.store.dispatch(ScanningActions.scanningStopped({}));
+  }
+
+}
+ 
+ 
+// // ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”
+// // contacts.component.ts ג€” ׳׳ ׳©׳™ ׳§׳©׳¨ ׳׳–׳•׳”׳™׳
+// // ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”ג”
+// import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+// import { AsyncPipe } from '@angular/common';
+// import { Store } from '@ngrx/store';
+// import { selectDetectedPersons } from '../../../../store/persons/persons.reducer';
+// import { TtsService } from '../../../../shared/services/tts.service';
+ 
+// @Component({
+//   selector: 'gc-contacts',
+//   standalone: true,
+//   imports: [AsyncPipe],
+//   changeDetection: ChangeDetectionStrategy.OnPush,
+//   template: `
+//     @if ((persons$ | async)?.length) {
+//       <div class="contacts-bar" role="list" aria-label="׳׳ ׳©׳™׳ ׳‘׳—׳“׳¨">
+//         @for (person of persons$ | async; track person.personId) {
+//           <button
+//             class="contact-btn"
+//             role="listitem"
+//             [attr.aria-label]="'׳“׳‘׳¨ ׳¢׳ ' + person.name"
+//             (click)="speakName(person.name)"
+//           >
+//             <span class="contact-btn__name">{{ person.name }}</span>
+//           </button>
+//         }
+//       </div>
+//     }
+//   `,
+//   styleUrl: './contacts.component.scss',
+// })
+// export class ContactsComponent {
+//   private store = inject(Store);
+//   private tts   = inject(TtsService);
+//   persons$ = this.store.select(selectDetectedPersons);
+ 
+//   speakName(name: string): void {
+//     this.tts.speak(name);
+//   }
+// }
+ 
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\features\aac-board\services\aac-board.service.ts ---
+import { Injectable, inject, OnDestroy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import * as signalR from '@microsoft/signalr';
+
+import { LogButtonPressRequest } from '../../../shared/models/board-requests.model';
+import { BoardDto, ButtonDto } from '../../../shared/models/board.dto.model';
+import { BoardActions } from '../../../store/board/board.actions';
+import { API_URLS } from '../../../shared/config/api-urls';
+
+
+
+@Injectable({ providedIn: 'root' })
+export class AacBoardService implements OnDestroy {
+  private http = inject(HttpClient);
+  private store = inject(Store);
+
+  private hubConnection: signalR.HubConnection;
+
+  constructor() {
+    const SIGNALR_HUB = `${API_URLS.aacBoard}/hubs/board`;
+    this.hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl(SIGNALR_HUB)
+      .withAutomaticReconnect()
+      .build();
+
+    this.registerSignalREvents();
+    this.startHub();
+  }
+
+  // ג”€ג”€ HTTP calls ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+
+  getActiveBoard(userId: string): Observable<BoardDto> {
+    return this.http.get<BoardDto>(`${API_URLS.aacBoard}/boards/${userId}/active`);
+  }
+
+  pressButton(buttonId: string, userId: string): Observable<void> {
+    const body: LogButtonPressRequest = { userId, context: '{}' };
+    return this.http.post<void>(
+      `${API_URLS.aacBoard}/boards/buttons/${buttonId}/press`,
+      body
+    );
+  }
+
+  // ג”€ג”€ SignalR ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+
+  private async startHub(): Promise<void> {
+    try {
+      await this.hubConnection.start();
+      console.log('AAC Board SignalR connected');
+    } catch (err) {
+      console.warn('AAC Board SignalR connection failed (Hub not yet implemented on server):', err);
+      // ׳׳ ׳–׳•׳¨׳§׳™׳ ׳©׳’׳™׳׳” ג€” ׳”Hub ׳¢׳“׳™׳™׳ ׳׳ ׳׳׳•׳׳© ׳‘׳©׳¨׳×
+    }
+  }
+
+  private registerSignalREvents(): void {
+    // ׳”׳©׳¨׳× ׳™׳©׳׳— "BoardUpdated" ׳›׳©׳׳•׳— ׳׳©׳×׳ ׳”
+    this.hubConnection.on('BoardUpdated', (board: BoardDto) => {
+      this.store.dispatch(BoardActions.boardUpdatedViaSignalR({ board }));
+    });
+
+    // ׳”׳©׳¨׳× ׳™׳©׳׳— "ButtonAdded" ׳›׳©׳›׳₪׳×׳•׳¨ contextual ׳ ׳•׳¡׳£ (SmartBundle)
+    this.hubConnection.on('ButtonAdded', (button: ButtonDto) => {
+      this.store.dispatch(BoardActions.buttonAddedViaSignalR({ button }));
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.hubConnection.stop();
+  }
+}
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\store\board\board.actions.ts ---
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
+import { BoardDto, ButtonDto } from '../../shared/models/board.dto.model';
+
+export const BoardActions = createActionGroup({
+  source: 'Board',
+  events: {
+    // ג”€ג”€ ׳˜׳¢׳™׳ ׳× ׳׳•׳— ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+    'Load Board':         props<{ userId: string }>(),
+    'Load Board Success': props<{ board: BoardDto }>(),
+    'Load Board Failure': props<{ error: string }>(),
+
+    // ג”€ג”€ ׳׳—׳™׳¦׳× ׳›׳₪׳×׳•׳¨ ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+    'Button Pressed':         props<{ buttonId: string; userId: string }>(),
+    'Button Pressed Success': emptyProps(),
+    'Button Pressed Failure': props<{ error: string }>(),
+
+    // ג”€ג”€ ׳¢׳“׳›׳•׳ ׳-SignalR ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+    'Board Updated Via SignalR': props<{ board: BoardDto }>(),
+    'Button Added Via SignalR':  props<{ button: ButtonDto }>(),
+  },
+});
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\store\board\board.effects.ts ---
+import { Injectable, inject } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+import { AacBoardService } from '../../features/aac-board/services/aac-board.service';
+import { TtsService } from '../../shared/services/tts.service';
+import { BoardActions } from './board.actions';
+
+@Injectable()
+export class BoardEffects {
+    private actions$ = inject(Actions);
+    private aacBoardService = inject(AacBoardService);
+    private ttsService = inject(TtsService);
+
+    // ג”€ג”€ ׳˜׳¢׳™׳ ׳× ׳׳•׳— ׳₪׳¢׳™׳ ׳׳”׳©׳¨׳× ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+    loadBoard$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(BoardActions.loadBoard),
+            switchMap(({ userId }) =>
+                this.aacBoardService.getActiveBoard(userId).pipe(
+                    map(board => BoardActions.loadBoardSuccess({ board })),
+                    catchError(err => {                                         
+                        const error = err instanceof Error ? err.message : '׳©׳’׳™׳׳” ׳‘׳˜׳¢׳™׳ ׳× ׳”׳׳•׳—';
+                        return of(BoardActions.loadBoardFailure({ error }));
+                    }
+                    )
+                )
+            )
+        )
+    );
+
+    // ג”€ג”€ ׳׳—׳™׳¦׳× ׳›׳₪׳×׳•׳¨ ג†’ ׳©׳׳™׳—׳” ׳׳©׳¨׳× + TTS ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+    buttonPressed$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(BoardActions.buttonPressed),
+            switchMap(({ buttonId, userId }) =>
+                this.aacBoardService.pressButton(buttonId, userId).pipe(
+                    map(() => BoardActions.buttonPressedSuccess()),
+                    catchError(err => {                                          // ג† ׳”׳—׳׳£ ׳׳× ׳”׳©׳•׳¨׳” ׳”׳–׳•
+                        const error = err instanceof Error ? err.message : '׳©׳’׳™׳׳” ׳‘׳©׳׳™׳—׳× ׳׳—׳™׳¦׳”';
+                        return of(BoardActions.buttonPressedFailure({ error }));
+                    })))
+        )
+    );
+   
+}
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\store\board\board.reducer.ts ---
+import { createReducer, on } from '@ngrx/store';
+import {  BoardLayout, DEFAULT_LAYOUT } from '../../shared/models/board-layout.model';
+import{BoardDto} from '../../shared/models/board.dto.model';
+import { BoardActions } from './board.actions';
+
+export interface BoardState {
+  board:    BoardDto | null;
+  layout:   BoardLayout;          // ׳׳’׳™׳¢ ׳׳”-board.layout JSON, ׳׳•׳’׳“׳¨ ׳¢"׳™ ׳§׳׳™׳ ׳׳™׳×
+  loading:  boolean;
+  error:    string | null;
+  lastPressedButtonId: string | null;
+}
+
+const initialState: BoardState = {
+  board:               null,
+  layout:              DEFAULT_LAYOUT,
+  loading:             false,
+  error:               null,
+  lastPressedButtonId: null,
+};
+
+// parse ׳©׳ layout JSON ׳׳”׳©׳¨׳× ג€” ׳¢׳ fallback ׳-default
+function parseLayout(layoutJson: string): BoardLayout {
+  try {
+    const parsed = JSON.parse(layoutJson);
+    return {
+      maxButtons: parsed.maxButtons ?? DEFAULT_LAYOUT.maxButtons,
+      columns:    parsed.columns    ?? DEFAULT_LAYOUT.columns,
+      buttonSize: parsed.buttonSize ?? DEFAULT_LAYOUT.buttonSize,
+    };
+  } catch {
+    return DEFAULT_LAYOUT;
+  }
+}
+
+export const boardReducer = createReducer(
+  initialState,
+
+  on(BoardActions.loadBoard, (state) => ({
+    ...state,
+    loading: true,
+    error:   null,
+  })),
+
+  on(BoardActions.loadBoardSuccess, (state, { board }) => ({
+    ...state,
+    board,
+    layout:  parseLayout(board.layout),
+    loading: false,
+    error:   null,
+  })),
+
+  on(BoardActions.loadBoardFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+
+  on(BoardActions.buttonPressed, (state, { buttonId }) => ({
+    ...state,
+    lastPressedButtonId: buttonId,
+  })),
+
+  // ׳¢׳“׳›׳•׳ ׳-SignalR ג€” ׳׳—׳׳™׳£ ׳׳× ׳”׳׳•׳— ׳›׳•׳׳•
+  on(BoardActions.boardUpdatedViaSignalR, (state, { board }) => ({
+    ...state,
+    board,
+    layout: parseLayout(board.layout),
+  })),
+
+  // ׳›׳₪׳×׳•׳¨ ׳—׳“׳© ׳”׳’׳™׳¢ ׳-SignalR ג€” ׳׳•׳¡׳™׳£ ׳׳¨׳©׳™׳׳”
+  on(BoardActions.buttonAddedViaSignalR, (state, { button }) => ({
+    ...state,
+    board: state.board
+      ? { ...state.board, buttons: [...state.board.buttons, button] }
+      : state.board,
+  })),
+);
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\store\board\board.selectors.ts ---
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { BoardState } from './board.reducer';
+
+export const selectBoardState = createFeatureSelector<BoardState>('board');
+// Selectors
+export const selectBoard        = createSelector(selectBoardState, s => s.board);//׳”׳¡׳׳§׳˜׳•׳¨ ׳”׳–׳” ׳׳—׳–׳™׳¨ ׳׳× ׳›׳ ׳”-board, ׳›׳•׳׳ ׳”-buttons ׳©׳‘׳×׳•׳›׳•
+export const selectLayout       = createSelector(selectBoardState, s => s.layout);//׳”׳¡׳׳§׳˜׳•׳¨ ׳”׳–׳” ׳׳—׳–׳™׳¨ ׳׳× ׳”-layout ׳©׳ ׳”׳׳•׳—, ׳©׳׳’׳™׳¢ ׳׳”׳©׳¨׳× ׳•׳׳•׳’׳“׳¨ ׳¢"׳™ ׳§׳׳™׳ ׳׳™׳× ׳”׳×׳§׳©׳•׳¨׳×
+export const selectLoading      = createSelector(selectBoardState, s => s.loading);//׳”׳¡׳׳§׳˜׳•׳¨ ׳”׳–׳” ׳׳—׳–׳™׳¨ ׳׳ ׳”׳׳•׳— ׳‘׳˜׳¢׳™׳ ׳” ׳׳• ׳׳, ׳›׳“׳™ ׳©׳”׳§׳•׳׳₪׳•׳ ׳ ׳˜׳” ׳×׳•׳›׳ ׳׳”׳¨׳׳•׳× "׳˜׳•׳¢׳..." ׳‘׳–׳׳ ׳”׳˜׳¢׳™׳ ׳”  
+export const selectError        = createSelector(selectBoardState, s => s.error);//׳”׳¡׳׳§׳˜׳•׳¨ ׳”׳–׳” ׳׳—׳–׳™׳¨ ׳׳× ׳”׳•׳“׳¢׳× ׳”׳©׳’׳™׳׳” ׳׳ ׳˜׳¢׳™׳ ׳× ׳”׳׳•׳— ׳ ׳›׳©׳׳”, ׳›׳“׳™ ׳©׳”׳§׳•׳׳₪׳•׳ ׳ ׳˜׳” ׳×׳•׳›׳ ׳׳”׳¨׳׳•׳× ׳׳× ׳”׳”׳•׳“׳¢׳” ׳׳׳©׳×׳׳©
+export const selectLastPressed  = createSelector(selectBoardState, s => s.lastPressedButtonId);//׳”׳¡׳׳§׳˜׳•׳¨ ׳”׳–׳” ׳׳—׳–׳™׳¨ ׳׳× ׳”-ID ׳©׳ ׳”׳›׳₪׳×׳•׳¨ ׳©׳ ׳׳—׳¥ ׳׳׳—׳¨׳•׳ ׳”, ׳›׳“׳™ ׳©׳”׳§׳•׳׳₪׳•׳ ׳ ׳˜׳” ׳×׳•׳›׳ ׳׳”׳¨׳׳•׳× ׳•׳™׳–׳•׳׳׳™׳× ׳׳™׳–׳” ׳›׳₪׳×׳•׳¨ ׳ ׳׳—׳¥ (׳׳׳©׳, ׳¢׳ ׳׳ ׳™׳׳¦׳™׳” ׳§׳¦׳¨׳” ׳׳• ׳©׳™׳ ׳•׳™ ׳¦׳‘׳¢)
+
+// ׳›׳₪׳×׳•׳¨׳™׳ ׳׳•׳’׳‘׳׳™׳ ׳׳₪׳™ maxButtons ׳׳”-layout ג€” ׳–׳” ׳”-selector ׳©׳”-BoardComponent ׳׳©׳×׳׳© ׳‘׳•
+export const selectVisibleButtons = createSelector(
+  selectBoard,
+  selectLayout,
+  (board, layout) => board?.buttons.slice(0, layout.maxButtons) ?? []
+);
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\store\gaze\gaze.reducer.ts ---
+import { createActionGroup, props, createReducer, on,
+         createFeatureSelector, createSelector } from '@ngrx/store';
+ 
+// Actions
+export const GazeActions = createActionGroup({
+  source: 'Gaze',
+  events: {
+    // ׳™׳’׳™׳¢ ׳-WebGazer ׳‘׳©׳׳‘ 3.3 ג€” ׳›׳¨׳’׳¢ ׳׳’׳™׳¢ ׳-MouseSimulator
+    'Gaze Point Received': props<{ x: number; y: number; confidence: number }>(),
+    'Gaze Lost': props<Record<string, never>>(),
+  },
+});
+ 
+// State
+export interface GazeState {
+  x:          number;
+  y:          number;
+  confidence: number;
+  isActive:   boolean;
+}
+ 
+const gazeInitial: GazeState = { x: 0, y: 0, confidence: 0, isActive: false };
+ 
+export const gazeReducer = createReducer(
+  gazeInitial,
+  on(GazeActions.gazePointReceived, (_, { x, y, confidence }) =>
+    ({ x, y, confidence, isActive: true })),
+  on(GazeActions.gazeLost, (state) =>
+    ({ ...state, isActive: false })),
+);
+ 
+// Selectors
+const selectGazeState = createFeatureSelector<GazeState>('gaze');
+export const selectGazePoint  = createSelector(selectGazeState, s => ({ x: s.x, y: s.y }));
+export const selectGazeActive = createSelector(selectGazeState, s => s.isActive);
+ 
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\store\persons\persons.effects.ts ---
+// store/persons/persons.effects.ts
+// 
+// ׳–׳¨׳™׳׳”:
+// CameraHub ׳©׳•׳׳— "FaceDetected" ג†’ CameraService.faceEvents$ ׳ ׳•׳¨׳”
+// ג†’ effect ׳׳§׳‘׳ ג†’ ׳׳¡׳ ׳ (isKnown + confidence ג‰¥ 0.5)
+// ג†’ dispatch PersonsActions.personDetected({ person })
+//
+// ׳׳׳” Effect ׳•׳׳ ׳™׳©׳™׳¨׳•׳× ׳‘-CameraService?
+// ׳›׳™ NgRx Effect = ׳׳§׳•׳ ׳”׳ ׳›׳•׳ ׳׳×׳•׳₪׳¢׳•׳× ׳׳•׳•׳׳™ ׳׳¡׳™׳ ׳›׳¨׳•׳ ׳™׳•׳×.
+// CameraService ׳׳ ׳¦׳¨׳™׳ ׳׳“׳¢׳× ׳¢׳ ׳”-store.
+
+import { Injectable, inject } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { EMPTY, timer } from 'rxjs';
+import { switchMap, filter, map, withLatestFrom } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
+
+import { CameraService } from '../../features/camera/camera.service';
+import { PersonsActions, selectDetectedPersons } from './persons.reducer';
+import { FaceDetectionResultDto } from '../../shared/models/face-detection.model';
+
+// ׳¡׳£ confidence ג€” ׳׳×׳—׳× ׳-0.5 = ׳׳ ׳׳¦׳™׳’׳™׳ (׳׳•׳’׳“׳¨ ׳’׳ ׳‘Python)
+const CONFIDENCE_THRESHOLD = 0.5;
+
+// ׳›׳׳” ׳©׳ ׳™׳•׳× ׳‘׳׳™ ׳–׳™׳”׳•׳™ ׳—׳•׳–׳¨ ג†’ ׳”׳׳“׳ "׳¢׳–׳‘"
+const PERSON_TTL_MS = 5000;
+
+@Injectable()
+export class PersonsEffects {
+  private cameraService = inject(CameraService);
+  private store         = inject(Store);
+
+  // ג”€ג”€ ׳–׳™׳”׳•׳™ ׳₪׳ ׳™׳ ג†’ dispatch personDetected ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  // faceEvents$ ׳”׳•׳ Observable ג€” ׳׳₪׳©׳¨ ׳׳”׳©׳×׳׳© ׳‘׳• ׳‘-effect ׳™׳©׳™׳¨׳•׳×
+  faceDetected$ = createEffect(() =>
+    this.cameraService.faceEvents$.pipe(
+      // ׳¨׳§ ׳₪׳ ׳™׳ ׳׳•׳›׳¨׳•׳× ׳׳¢׳ ׳¡׳£
+      filter((r: FaceDetectionResultDto) =>
+        r.isKnown &&
+        r.confidence >= CONFIDENCE_THRESHOLD &&
+        r.personId !== null
+      ),
+      map((r: FaceDetectionResultDto) => PersonsActions.personDetected({
+        person: {
+          personId:   r.personId!,
+          name:       r.personName ?? '׳׳•׳¨׳—',
+          confidence: r.confidence,
+          detectedAt: r.timestampMs,
+        }
+      }))
+    )
+  );
+
+  // ג”€ג”€ ׳׳“׳ ׳׳ ׳™׳“׳•׳¢ ג†’ dispatch ׳¢׳ ׳©׳ "׳׳™ ׳–׳”?" ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+  unknownFace$ = createEffect(() =>
+    this.cameraService.faceEvents$.pipe(
+      filter((r: FaceDetectionResultDto) =>
+        !r.isKnown && r.confidence >= CONFIDENCE_THRESHOLD
+      ),
+      map(() => PersonsActions.personDetected({
+        person: {
+          personId:   'unknown-' + Date.now(),
+          name:       '׳׳™ ׳–׳”? נ₪”',
+          confidence: 0,
+          detectedAt: Date.now(),
+        }
+      }))
+    )
+  );
+}
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\store\persons\persons.reducer.ts ---
+import { createActionGroup, props, createReducer, on,
+         createFeatureSelector, createSelector } from '@ngrx/store';
+
+export interface DetectedPerson {
+  personId:   string;
+  name:       string;
+  confidence: number;
+  detectedAt: number;   // timestamp
+}
+ 
+export const PersonsActions = createActionGroup({
+  source: 'Persons',
+  events: {
+    // ׳™׳’׳™׳¢ ׳-SignalR ׳©׳ CameraHub ׳‘׳©׳׳‘ ׳׳׳•׳—׳¨ ׳™׳•׳×׳¨
+    'Person Detected': props<{ person: DetectedPerson }>(),
+    'Person Left':     props<{ personId: string }>(),
+    'Persons Cleared': props<Record<string, never>>(),
+  },
+});
+ 
+export interface PersonsState {
+  persons: DetectedPerson[];
+}
+ 
+const personsInitial: PersonsState = { persons: [] };
+ 
+export const personsReducer = createReducer(
+  personsInitial,
+  on(PersonsActions.personDetected, (state, { person }) => ({
+    persons: [
+      ...state.persons.filter(p => p.personId !== person.personId),
+      person,
+    ],
+  })),
+  on(PersonsActions.personLeft, (state, { personId }) => ({
+    persons: state.persons.filter(p => p.personId !== personId),
+  })),
+  on(PersonsActions.personsCleared, () => personsInitial),
+);
+ 
+const selectPersonsState = createFeatureSelector<PersonsState>('persons');
+export const selectDetectedPersons = createSelector(selectPersonsState, s => s.persons);
+ 
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\app\store\scanning\scanning.reducer.ts ---
+import {
+    createActionGroup, props, createReducer, on,
+    createFeatureSelector, createSelector
+} from '@ngrx/store';
+export const ScanningActions = createActionGroup({
+    source: 'Scanning',
+    events: {
+        'Scanning Started': props<Record<string, never>>(),
+        'Scanning Stopped': props<Record<string, never>>(),
+        'Next Button Highlighted': props<{ index: number }>(),
+        'Active Button Selected': props<Record<string, never>>(),
+    },
+});
+
+export interface ScanningState {
+    isActive: boolean;
+    activeIndex: number;       // ׳׳™׳ ׳“׳§׳¡ ׳”׳›׳₪׳×׳•׳¨ ׳”׳׳•׳“׳’׳© ׳›׳¨׳’׳¢
+    intervalMs: number;       // ׳§׳¦׳‘ ׳¡׳¨׳™׳§׳” ג€” default 1500ms ׳׳”׳׳₪׳™׳•׳
+}
+
+const scanningInitial: ScanningState = {
+    isActive: false,
+    activeIndex: -1,
+    intervalMs: 1500,
+};
+
+export const scanningReducer = createReducer(
+    scanningInitial,
+    on(ScanningActions.scanningStarted, (state) =>
+        ({ ...state, isActive: true, activeIndex: 0 })),
+    on(ScanningActions.scanningStopped, () => scanningInitial),
+    on(ScanningActions.nextButtonHighlighted, (state, { index }) =>
+        ({ ...state, activeIndex: index })),
+);
+
+const selectScanningState = createFeatureSelector<ScanningState>('scanning');
+export const selectScanningActive = createSelector(selectScanningState, s => s.isActive);
+export const selectActiveIndex = createSelector(selectScanningState, s => s.activeIndex);
+export const selectScanInterval = createSelector(selectScanningState, s => s.intervalMs);
+
+
+--- FILE: E:\B\Project\GazeConnect\frontend\gazeconnect-frontend\src\styles\_variables.scss ---
+// // ============================================================
+// // _variables.scss ג€“ GazeConnect Design Tokens
+// // ׳¢׳™׳¦׳•׳‘ ׳׳•׳×׳׳ ׳׳׳™׳§׳•׳“ ׳׳‘׳˜: ׳›׳₪׳×׳•׳¨׳™׳ ׳’׳“׳•׳׳™׳, ׳ ׳™׳’׳•׳“׳™׳•׳× ׳’׳‘׳•׳”׳”
+// // ============================================================
+
+// // --- ׳¦׳‘׳¢׳™ ׳¨׳§׳¢ ---
+// $bg-board:        #8d7b6e;   // ׳¨׳§׳¢ ׳”׳׳•׳— ג€“ ׳—׳•׳ ׳—׳
+// $bg-header:       #6d5c50;   // ׳›׳•׳×׳¨׳×
+// $bg-shell:        #7a6a5e;   // ׳׳¢׳˜׳₪׳× ׳›׳׳׳™׳×
+
+// // --- ׳¦׳‘׳¢׳™ ׳§׳˜׳’׳•׳¨׳™׳•׳× (Fitzgerald Key ׳™׳©׳¨׳׳׳™) ---
+// // ׳™׳¨׳•׳§ = ׳₪׳¢׳׳™׳
+// $cat-verb-bg:     #c8e6c9;
+// $cat-verb-border: #66bb6a;
+// $cat-verb-text:   #1b5e20;
+
+// // ׳•׳¨׳•׳“ = ׳׳ ׳©׳™׳ / ׳©׳׳•׳× ׳₪׳¨׳˜׳™׳™׳
+// $cat-person-bg:   #f8bbd0;
+// $cat-person-border:#e91e63;
+// $cat-person-text: #880e4f;
+
+// // ׳›׳—׳•׳ = ׳©׳׳•׳× ׳¢׳¦׳
+// $cat-noun-bg:     #bbdefb;
+// $cat-noun-border: #1e88e5;
+// $cat-noun-text:   #0d47a1;
+
+// // ׳¦׳”׳•׳‘/׳‘׳–' = ׳×׳׳¨׳™׳ / ׳׳™׳׳•׳× ׳™׳—׳¡
+// $cat-adj-bg:      #fff9c4;
+// $cat-adj-border:  #f9a825;
+// $cat-adj-text:    #e65100;
+
+// // ׳׳₪׳•׳¨ = ׳©׳•׳ ׳•׳× / ׳‘׳§׳¨׳”
+// $cat-misc-bg:     #eceff1;
+// $cat-misc-border: #90a4ae;
+// $cat-misc-text:   #263238;
+
+// // ׳›׳×׳•׳ = contextual (׳”׳•׳¡׳£ ׳¢"׳™ AI)
+// $cat-contextual-bg:     #ffe0b2;
+// $cat-contextual-border: #ef6c00;
+// $cat-contextual-text:   #bf360c;
+
+// // --- Sentence bar ---
+// $sentence-bg:     #ffffff;
+// $sentence-border: #d0c4bc;
+// $speak-btn-bg:    #f5c842;
+// $speak-btn-shadow:#b8960a;
+// $speak-btn-text:  #5a3e00;
+
+// // --- Scanning ---
+// $scan-highlight:  #ff6600;
+// $scan-ring:       4px solid #ff6600;
+// $scan-progress:   #ff6600;
+
+// // --- Gaze dot ---
+// $gaze-color:      rgba(255, 60, 0, 0.75);
+// $gaze-size:       22px;
+
+// // --- Typography ---
+// $font-primary:    'Segoe UI', Arial, sans-serif;
+// $font-size-label-sm:   11px;
+// $font-size-label-md:   13px;
+// $font-size-label-lg:   15px;
+
+// // --- Radii ---
+// $radius-btn:      14px;
+// $radius-sm:       8px;
+// $radius-pill:     999px;
+
+// // --- Dwell time indicator ---
+// $dwell-bar-height: 5px;
+// $dwell-duration:   800ms;  
+
+// // --- Spacing ---
+// $gap-grid:     6px;
+// $gap-layout:   8px;
+// $pad-board:    10px;
+// $pad-btn-v:    6px;
+// $pad-btn-h:    4px;
+
+// // --- Button sizes ---
+// $btn-small-height:  54px;
+// $btn-small-icon:    26px;
+// $btn-medium-height: 72px;
+// $btn-medium-icon:   36px;
+// $btn-large-height:  90px;
+// $btn-large-icon:    48px;
+
+// // --- Contacts sidebar ---
+// $sidebar-width:    130px;
+// $contact-btn-size: 56px;
+// $contact-avatar:   36px;
+
+// // --- Z-index ---
+// $z-board:    1;
+// $z-popup:    100;
+// $z-scanning: 200;
+// $z-gaze:     9999;
+// _variables.scss ג€“ GazeConnect Design Tokens
+
+// ג”€ג”€ ׳¦׳‘׳¢׳™ ׳¨׳§׳¢ ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+$bg-board:        #a08878;   // ׳—׳•׳ ׳‘׳”׳™׳¨ ׳™׳•׳×׳¨ (׳”׳™׳” #8d7b6e)
+$bg-header:       #7a6458;   // ׳›׳•׳×׳¨׳×
+$bg-shell:        #a08878;   // ׳׳¢׳˜׳₪׳× ג€” ׳׳•׳×׳• ׳›׳׳• ׳”׳׳•׳—
+
+// ג”€ג”€ ׳¦׳‘׳¢׳™ ׳§׳˜׳’׳•׳¨׳™׳•׳× ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+// ׳¦׳”׳•׳‘ = ׳₪׳¢׳׳™׳ (׳›׳׳• ׳‘׳×׳׳•׳ ׳× ׳”׳”׳©׳¨׳׳”!)
+$cat-verb-bg:     #fff9c4;
+$cat-verb-border: #f9a825;
+$cat-verb-text:   #e65100;
+
+// ׳•׳¨׳•׳“ = ׳׳ ׳©׳™׳
+$cat-person-bg:   #f8bbd0;
+$cat-person-border:#e91e63;
+$cat-person-text: #880e4f;
+
+// ׳›׳—׳•׳ = ׳©׳׳•׳× ׳¢׳¦׳
+$cat-noun-bg:     #bbdefb;
+$cat-noun-border: #1e88e5;
+$cat-noun-text:   #0d47a1;
+
+// ׳™׳¨׳•׳§ = ׳¨׳’׳©׳•׳× / need
+$cat-adj-bg:      #c8e6c9;
+$cat-adj-border:  #43a047;
+$cat-adj-text:    #1b5e20;
+
+// ׳׳₪׳•׳¨ = ׳©׳•׳ ׳•׳×
+$cat-misc-bg:     #eceff1;
+$cat-misc-border: #90a4ae;
+$cat-misc-text:   #263238;
+
+// ׳›׳×׳•׳ = contextual (AI)
+$cat-contextual-bg:     #ffe0b2;
+$cat-contextual-border: #ef6c00;
+$cat-contextual-text:   #bf360c;
+
+// ג”€ג”€ Sentence bar ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+$sentence-bg:     #ffffff;
+$sentence-border: #d0c4bc;
+$speak-btn-bg:    #f5c842;
+$speak-btn-shadow:#b8960a;
+$speak-btn-text:  #5a3e00;
+
+// ג”€ג”€ Scanning / Gaze ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+$scan-highlight:  #ff6600;
+$scan-ring:       4px solid #ff6600;
+$scan-progress:   #ff6600;
+$gaze-color:      rgba(255, 60, 0, 0.75);
+$gaze-size:       22px;
+
+// ג”€ג”€ Typography ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+$font-primary:         'Segoe UI', Arial, sans-serif;
+$font-size-label-sm:   11px;
+$font-size-label-md:   13px;
+$font-size-label-lg:   15px;
+
+// ג”€ג”€ Radii ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+$radius-btn:  14px;
+$radius-sm:   8px;
+$radius-pill: 999px;
+
+// ג”€ג”€ Dwell ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+$dwell-bar-height: 5px;
+$dwell-duration:   900ms;
+
+// ג”€ג”€ Spacing ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+$gap-grid:    6px;
+$gap-layout:  8px;
+$pad-board:   10px;
+$pad-btn-v:   6px;
+$pad-btn-h:   4px;
+
+// ג”€ג”€ Button sizes ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+$btn-small-height:  54px;
+$btn-small-icon:    26px;
+$btn-medium-height: 72px;
+$btn-medium-icon:   36px;
+$btn-large-height:  90px;
+$btn-large-icon:    44px;   // ׳§׳¦׳× ׳§׳˜׳ ׳™׳•׳×׳¨ ׳׳₪׳™ ׳”׳”׳©׳¨׳׳”
+
+// ג”€ג”€ Contacts sidebar ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+$sidebar-width:    130px;
+$contact-btn-size: 56px;
+$contact-avatar:   36px;
+
+// ג”€ג”€ Z-index ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+$z-board:    1;
+$z-popup:    100;
+$z-scanning: 200;
+$z-gaze:     9999;
+

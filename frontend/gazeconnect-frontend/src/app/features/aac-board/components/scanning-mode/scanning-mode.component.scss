@@ -1,101 +1,134 @@
-/* scanning-mode.component.scss */
+// ============================================================
+// scanning-mode.component.scss
 
-:host {
-  /* תמיד בפינה שמאל-עליונה, מעל הכל */
-  position: fixed;
-  top: 58px;
-  inset-inline-end: 16px;
-  z-index: 1000;
-  pointer-events: none; /* הילד מקבל events בנפרד */
-}
+// ============================================================
 
-/* ── פס Scanning פעיל ── */
+// ============================================================
+// Bar עליון – מצב סריקה פעיל
+// ============================================================
+@use '../../../../../styles/variables' as *;
+
 .scanning-bar {
-  pointer-events: all;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  background: rgba(30, 30, 30, 0.92);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  background: var(--gc-surface-2);
-  border: 1.5px solid var(--gc-amber);
-  border-radius: 100px;
-  box-shadow: 0 0 20px var(--gc-amber-glow);
-  position: relative;
-  overflow: hidden;
-  min-width: 180px;
+  gap: 12px;
+  padding: 0 16px;
+  z-index: $z-scanning;
+  direction: rtl;
 
-  /* progress bar מונפשת ברקע */
+  // Progress bar שרץ מימין לשמאל
   &__progress {
     position: absolute;
-    inset-inline-start: 0;
-    top: 0;
     bottom: 0;
-    width: 0%;
-    background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.15));
-    animation: scan-progress linear infinite;
-    pointer-events: none;
+    right: 0;
+    height: 3px;
+    background: $scan-progress;
+    animation: scan-progress-run var(--scan-interval, 1500ms) linear infinite;
+    border-radius: 2px 0 0 2px;
   }
 
   &__icon {
-    font-size: 1rem;
-    color: var(--gc-amber);
-    animation: spin-slow 1.5s linear infinite;
+    font-size: 18px;
+    color: #ff9800;
     flex-shrink: 0;
+    animation: scan-icon-blink 1s ease-in-out infinite;
   }
 
   &__label {
-    font-family: var(--gc-font);
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--gc-amber);
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
     flex: 1;
-    white-space: nowrap;
   }
 
   &__stop {
-    pointer-events: all;
-    background: transparent;
-    border: none;
-    color: var(--gc-text-muted);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    border-radius: $radius-pill;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #fff;
     cursor: pointer;
-    font-size: 0.9rem;
-    padding: 2px 4px;
-    border-radius: 4px;
-    line-height: 1;
-    transition: color var(--gc-transition);
+    transition: background 150ms;
     flex-shrink: 0;
 
-    &:hover { color: var(--gc-red); }
+    &:hover {
+      background: rgba(255, 100, 0, 0.5);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #ff6600;
+      outline-offset: 2px;
+    }
   }
 }
 
-@keyframes scan-progress {
-  from { width: 0%; }
-  to   { width: 100%; }
+@keyframes scan-progress-run {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
 }
 
-@keyframes spin-slow {
-  to { transform: rotate(360deg); }
+@keyframes scan-icon-blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
-/* ── כפתור הפעלת Scanning (כשלא פעיל) ── */
+// ============================================================
+// כפתור הפעלת Scanning (מופיע כשסריקה כבויה)
+// ============================================================
 .scanning-trigger {
-  pointer-events: all;
+  position: fixed;
+  bottom: 16px;
+  left: 16px; // RTL – שמאל = פינה שמאלית תחתונה
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(30, 30, 30, 0.75);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  color: #ccc;
+  font-size: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px; height: 40px;
-  background: var(--gc-surface-2);
-  border: 1px solid var(--gc-border);
-  border-radius: 50%;
-  color: var(--gc-text-muted);
-  font-size: 1.1rem;
   cursor: pointer;
-  transition: color var(--gc-transition), border-color var(--gc-transition), box-shadow var(--gc-transition);
+  z-index: $z-scanning;
+  transition: background 150ms, transform 150ms;
 
   &:hover {
-    color: var(--gc-amber);
-    border-color: var(--gc-amber);
-    box-shadow: 0 0 12px var(--gc-amber-glow);
+    background: rgba(255, 100, 0, 0.7);
+    color: #fff;
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:focus-visible {
+    outline: 3px solid #ff6600;
+    outline-offset: 3px;
   }
 }

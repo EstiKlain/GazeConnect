@@ -3,6 +3,7 @@ using System;
 using GazeConnect.AACBoard.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GazeConnect.AACBoard.Data.Migrations
 {
     [DbContext(typeof(AACBoardContext))]
-    partial class AACBoardContextModelSnapshot : ModelSnapshot
+    [Migration("20260513223955_FixInitialModel")]
+    partial class FixInitialModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

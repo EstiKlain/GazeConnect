@@ -24,7 +24,8 @@ COPY . .
 
 # Build + Publish
 RUN dotnet publish "Services/GazeConnect.AACBoard/GazeConnect.AACBoard.Api/GazeConnect.AACBoard.Api.csproj" \
-    -c Release -o /app/publish --no-restore
+    -c Release -o /app/publish 
+    # --no-restore
 
 # ── שלב 2: Runtime ────────────────────────────────────────────────────────────
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime

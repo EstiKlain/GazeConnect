@@ -1,0 +1,188 @@
+// // ============================================================
+// // _variables.scss – GazeConnect Design Tokens
+// // עיצוב מותאם למיקוד מבט: כפתורים גדולים, ניגודיות גבוהה
+// // ============================================================
+
+// // --- צבעי רקע ---
+// $bg-board:        #8d7b6e;   // רקע הלוח – חום חם
+// $bg-header:       #6d5c50;   // כותרת
+// $bg-shell:        #7a6a5e;   // מעטפת כללית
+
+// // --- צבעי קטגוריות (Fitzgerald Key ישראלי) ---
+// // ירוק = פעלים
+// $cat-verb-bg:     #c8e6c9;
+// $cat-verb-border: #66bb6a;
+// $cat-verb-text:   #1b5e20;
+
+// // ורוד = אנשים / שמות פרטיים
+// $cat-person-bg:   #f8bbd0;
+// $cat-person-border:#e91e63;
+// $cat-person-text: #880e4f;
+
+// // כחול = שמות עצם
+// $cat-noun-bg:     #bbdefb;
+// $cat-noun-border: #1e88e5;
+// $cat-noun-text:   #0d47a1;
+
+// // צהוב/בז' = תארים / מילות יחס
+// $cat-adj-bg:      #fff9c4;
+// $cat-adj-border:  #f9a825;
+// $cat-adj-text:    #e65100;
+
+// // אפור = שונות / בקרה
+// $cat-misc-bg:     #eceff1;
+// $cat-misc-border: #90a4ae;
+// $cat-misc-text:   #263238;
+
+// // כתום = contextual (הוסף ע"י AI)
+// $cat-contextual-bg:     #ffe0b2;
+// $cat-contextual-border: #ef6c00;
+// $cat-contextual-text:   #bf360c;
+
+// // --- Sentence bar ---
+// $sentence-bg:     #ffffff;
+// $sentence-border: #d0c4bc;
+// $speak-btn-bg:    #f5c842;
+// $speak-btn-shadow:#b8960a;
+// $speak-btn-text:  #5a3e00;
+
+// // --- Scanning ---
+// $scan-highlight:  #ff6600;
+// $scan-ring:       4px solid #ff6600;
+// $scan-progress:   #ff6600;
+
+// // --- Gaze dot ---
+// $gaze-color:      rgba(255, 60, 0, 0.75);
+// $gaze-size:       22px;
+
+// // --- Typography ---
+// $font-primary:    'Segoe UI', Arial, sans-serif;
+// $font-size-label-sm:   11px;
+// $font-size-label-md:   13px;
+// $font-size-label-lg:   15px;
+
+// // --- Radii ---
+// $radius-btn:      14px;
+// $radius-sm:       8px;
+// $radius-pill:     999px;
+
+// // --- Dwell time indicator ---
+// $dwell-bar-height: 5px;
+// $dwell-duration:   800ms;  
+
+// // --- Spacing ---
+// $gap-grid:     6px;
+// $gap-layout:   8px;
+// $pad-board:    10px;
+// $pad-btn-v:    6px;
+// $pad-btn-h:    4px;
+
+// // --- Button sizes ---
+// $btn-small-height:  54px;
+// $btn-small-icon:    26px;
+// $btn-medium-height: 72px;
+// $btn-medium-icon:   36px;
+// $btn-large-height:  90px;
+// $btn-large-icon:    48px;
+
+// // --- Contacts sidebar ---
+// $sidebar-width:    130px;
+// $contact-btn-size: 56px;
+// $contact-avatar:   36px;
+
+// // --- Z-index ---
+// $z-board:    1;
+// $z-popup:    100;
+// $z-scanning: 200;
+// $z-gaze:     9999;
+// _variables.scss – GazeConnect Design Tokens
+
+// ── צבעי רקע ─────────────────────────────────────────────────
+$bg-board:        #a08878;   // חום בהיר יותר (היה #8d7b6e)
+$bg-header:       #7a6458;   // כותרת
+$bg-shell:        #a08878;   // מעטפת — אותו כמו הלוח
+
+// ── צבעי קטגוריות ────────────────────────────────────────────
+// צהוב = פעלים (כמו בתמונת ההשראה!)
+$cat-verb-bg:     #fff9c4;
+$cat-verb-border: #f9a825;
+$cat-verb-text:   #e65100;
+
+// ורוד = אנשים
+$cat-person-bg:   #f8bbd0;
+$cat-person-border:#e91e63;
+$cat-person-text: #880e4f;
+
+// כחול = שמות עצם
+$cat-noun-bg:     #bbdefb;
+$cat-noun-border: #1e88e5;
+$cat-noun-text:   #0d47a1;
+
+// ירוק = רגשות / need
+$cat-adj-bg:      #c8e6c9;
+$cat-adj-border:  #43a047;
+$cat-adj-text:    #1b5e20;
+
+// אפור = שונות
+$cat-misc-bg:     #eceff1;
+$cat-misc-border: #90a4ae;
+$cat-misc-text:   #263238;
+
+// כתום = contextual (AI)
+$cat-contextual-bg:     #ffe0b2;
+$cat-contextual-border: #ef6c00;
+$cat-contextual-text:   #bf360c;
+
+// ── Sentence bar ──────────────────────────────────────────────
+$sentence-bg:     #ffffff;
+$sentence-border: #d0c4bc;
+$speak-btn-bg:    #f5c842;
+$speak-btn-shadow:#b8960a;
+$speak-btn-text:  #5a3e00;
+
+// ── Scanning / Gaze ───────────────────────────────────────────
+$scan-highlight:  #ff6600;
+$scan-ring:       4px solid #ff6600;
+$scan-progress:   #ff6600;
+$gaze-color:      rgba(255, 60, 0, 0.75);
+$gaze-size:       22px;
+
+// ── Typography ────────────────────────────────────────────────
+$font-primary:         'Segoe UI', Arial, sans-serif;
+$font-size-label-sm:   11px;
+$font-size-label-md:   13px;
+$font-size-label-lg:   15px;
+
+// ── Radii ─────────────────────────────────────────────────────
+$radius-btn:  14px;
+$radius-sm:   8px;
+$radius-pill: 999px;
+
+// ── Dwell ─────────────────────────────────────────────────────
+$dwell-bar-height: 5px;
+$dwell-duration:   900ms;
+
+// ── Spacing ───────────────────────────────────────────────────
+$gap-grid:    6px;
+$gap-layout:  8px;
+$pad-board:   10px;
+$pad-btn-v:   6px;
+$pad-btn-h:   4px;
+
+// ── Button sizes ──────────────────────────────────────────────
+$btn-small-height:  54px;
+$btn-small-icon:    26px;
+$btn-medium-height: 72px;
+$btn-medium-icon:   36px;
+$btn-large-height:  80px;
+$btn-large-icon:    44px;   
+// ── Contacts sidebar ──────────────────────────────────────────
+$sidebar-width:    130px;
+$contact-btn-size: 56px;
+$contact-avatar:   36px;
+
+// ── Z-index ───────────────────────────────────────────────────
+$z-board:    1;
+$z-popup:    100;
+$z-scanning: 200;
+$z-gaze:     9999;

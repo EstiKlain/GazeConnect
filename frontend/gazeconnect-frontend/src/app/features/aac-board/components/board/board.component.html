@@ -12,66 +12,71 @@
 
 <div class="board-shell" dir="rtl">
 
-  <!-- ── Body: Grid + Sidebar ── -->
-  <div class="board-body">
 
-    <!-- ── Grid כפתורים ── -->
-    <section
-      class="board-grid-wrap"
-      aria-label="לוח תקשורת"
-      role="region"
-    >
+  <div class="board-shell" dir="rtl">
 
-      <!-- Loading State -->
-      @if (loading$ | async) {
+    <!-- sentence bar -->
+    <div class="sentence-bar">
+      <button class="sentence-bar__speak-btn" (click)="speak()">▶ דבר</button>
+      <div class="sentence-bar__box">
+        <span class="sentence-bar__text">{{ sentence }}</span>
+      </div>
+      <button class="sentence-bar__undo-btn" (click)="undo()">↩</button>
+      <button class="sentence-bar__pin-btn">📌</button>
+    </div>
+    <!-- ── Body: Grid + Sidebar ── -->
+    <div class="board-body">
+
+      <!-- ── Grid כפתורים ── -->
+      <section class="board-grid-wrap" aria-label="לוח תקשורת" role="region">
+
+        <!-- Loading State -->
+        @if (loading$ | async) {
         <div class="board-state" role="status" aria-live="polite">
           <div class="board-state__spinner" aria-hidden="true"></div>
           <span>טוען לוח...</span>
         </div>
-      }
+        }
 
-      <!-- Error State -->
-      @if (error$ | async; as error) {
+        <!-- Error State -->
+        @if (error$ | async; as error) {
         <div class="board-state board-state--error" role="alert">
           <span class="board-state__icon" aria-hidden="true">⚠️</span>
           <span>{{ error }}</span>
           <button class="board-state__retry" (click)="retry()">נסה שוב</button>
         </div>
-      }
+        }
 
-      <!-- Grid – לפי layout שמגיע מה-DB -->
-      @if (layout$ | async; as layout) {
-        <div
-          class="board-grid"
-          [class.board-grid--scanning]="isScanningActive$ | async"
-          [style.--cols]="layout.columns"
-          [attr.aria-label]="'לוח תקשורת'"
-          role="grid"
-        >
+        <!-- Grid – לפי layout שמגיע מה-DB -->
+        @if (layout$ | async; as layout) {
+        <!-- <div class="board-grid" [class.board-grid--scanning]="isScanningActive$ | async"
+        [ngStyle]="{'--cols': layout.columns}" [attr.aria-label]="'לוח תקשורת'" role="grid"> -->
+        <div class="board-grid" [class.board-grid--scanning]="isScanningActive$ | async"
+          [style.grid-template-columns]="'repeat(' + layout.columns + ', 1fr)'" [style.direction]="'rtl'" role="grid"
+          aria-label="לוח תקשורת">
           @for (button of buttons$ | async; track button.id; let i = $index) {
-            <div
-              class="board-cell"
-              role="gridcell"
-              [class.board-cell--scanning-active]="(activeIndex$ | async) === i && (isScanningActive$ | async)"
-              [class.board-cell--contextual]="button.isContextual"
-            >
-              <gc-aac-button
-                [button]="button"
-                [size]="layout.buttonSize"
-                (buttonClick)="onButtonClick($event)"
-              />
-            </div>
+          <div class="board-cell" role="gridcell"
+            [class.board-cell--scanning-active]="(activeIndex$ | async) === i && (isScanningActive$ | async)"
+            [class.board-cell--contextual]="button.isContextual">
+            <gc-aac-button [button]="button" [size]="layout.buttonSize" (buttonClick)="onButtonClick($event)" />
+          </div>
           }
         </div>
-      }
+        }
 
-    </section>
+      </section>
 
-    <!-- ── Contacts Sidebar ── -->
-    <aside class="board-sidebar" aria-label="אנשי קשר">
-      <gc-contacts />
-    </aside>
+      <!-- ── Contacts Sidebar ── -->
+      <aside class="board-sidebar" aria-label="אנשי קשר">
+        <!-- style="display:none" -->
 
+        <!-- מוסתר זמנית עד שיהיו אנשי קשר -->
+        <gc-contacts />
+      </aside>
+
+    </div>
+    <div class="board-footer">
+      <span class="board-version">GazeConnect AAC</span>
+      <button class="board-settings-btn" type="button" title="הגדרות">🔧</button>
+    </div>
   </div>
-
-</div>

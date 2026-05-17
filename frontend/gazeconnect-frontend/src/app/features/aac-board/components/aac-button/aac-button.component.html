@@ -1,11 +1,4 @@
 <!-- aac-button.component.html -->
-<!--
-  כפתור AAC בודד.
-  @Input button: ButtonDto – כולל text, icon, ttsText, isContextual, category
-  @Input size: 'small' | 'medium' | 'large'
-  @Output buttonClick – נשלח ל-board.component → TTS + dispatch
--->
-
 <button
   class="aac-btn"
   [class]="'aac-btn aac-btn--' + size"
@@ -13,11 +6,13 @@
   [attr.data-category]="button.category"
   [attr.data-contextual]="button.isContextual"
   (click)="buttonClick.emit(button)"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
   (keydown.enter)="buttonClick.emit(button)"
   (keydown.space)="$event.preventDefault(); buttonClick.emit(button)"
   type="button"
 >
-  <!-- אייקון – ARASAAC URL או placeholder ראשון תיבה -->
+  <!-- אייקון -->
   @if (button.icon) {
     <img
       class="aac-btn__icon"
@@ -34,4 +29,7 @@
 
   <!-- טקסט תחתון -->
   <span class="aac-btn__text">{{ button.text }}</span>
+
+  <!-- פס dwell — מתמלא בזמן hover -->
+  <div class="aac-btn__dwell" [class.aac-btn__dwell--active]="isDwelling"></div>
 </button>
