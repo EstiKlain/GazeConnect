@@ -140,6 +140,7 @@ import { Store } from '@ngrx/store';
 import { GazeActions } from '../../store/gaze/gaze.reducer';
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 import { CalibrationService } from './calibration.service';
+import { GazeKalmanFilter } from './gaze-kalman';
 
 @Injectable({ providedIn: 'root' })
 export class EyeTrackingService implements OnDestroy {
@@ -150,6 +151,12 @@ export class EyeTrackingService implements OnDestroy {
   private video: HTMLVideoElement | null = null;
   private rafId: number | null = null;
   private running = false;
+
+  // Kalman Filter — מחליק את הנקודה בין frames
+  private kalman = new GazeKalmanFilter(
+    0.02,   // processNoise — כמה מהר המבט יכול לזוז
+    0.4,    // measureNoise — כמה סומכים על MediaPipe
+  );
 
   // Iris landmark indices — זהים ל-Python gaze_estimator.py
   private readonly LI = 473; private readonly RI = 468;
@@ -176,7 +183,7 @@ export class EyeTrackingService implements OnDestroy {
           modelAssetPath:
             // 'https://storage.googleapis.com/mediapipe-models/' +
             // 'face_landmarker/face_landmarker/float16/1/face_landmarker.task',
-             '/assets/mediapipe/models/face_landmarker.task',
+            '/assets/mediapipe/models/face_landmarker.task',
           delegate: 'CPU',
         },
         runningMode: 'VIDEO',
@@ -207,6 +214,7 @@ export class EyeTrackingService implements OnDestroy {
     (this.video?.srcObject as MediaStream | null)
       ?.getTracks().forEach(t => t.stop());
     this.video = null;
+    this.kalman.reset();
     this.store.dispatch(GazeActions.trackingStopped());
   }
 
@@ -234,79 +242,80 @@ export class EyeTrackingService implements OnDestroy {
 
     const results = this.lander.detectForVideo(this.video, performance.now());
     const lm = results.faceLandmarks?.[0];
-
     if (lm) {
-      // קוראים את נתוני הכיול בכל frame — כך כל שינוי מיידי
       const calibData = this.calib.getCalibration();
       const gaze = this.computeGaze(lm, calibData);
-      if (gaze) {
-        this.store.dispatch(GazeActions.gazePointReceived({
-          x: gaze.x, y: gaze.y, confidence: gaze.confidence,
-        }));
-      }
-    }
 
+      if (gaze) {
+        // ── Kalman smoothing ──────────────────────────
+        const smooth = this.kalman.update(gaze.x, gaze.y);
+        // ─────────────────────────────────────────────
+
+        this.store.dispatch(GazeActions.gazePointReceived({
+          x: smooth.x,
+          y: smooth.y,
+          confidence: gaze.confidence,
+        }));
+      } else {
+        // אין תוצאה טובה — מאפסים את הפילטר
+        this.kalman.reset();
+      }
+    } else {
+      // אין פנים בפריים — מאפסים
+      this.kalman.reset();
+    }
     this.rafId = requestAnimationFrame(() => this.loop());
   }
 
   /** מחשב nx, ny גולמיים לפני mapping לכיול */
-  private computeRawNorm(
-    lm: { x: number; y: number }[]
-  ): { nx: number; ny: number } | null {
-    const d = (a: { x: number, y: number }, b: { x: number, y: number }) =>
+private computeRawNorm(lm: { x: number; y: number }[]): { nx: number; ny: number } | null {
+    const d = (a: { x: number; y: number }, b: { x: number; y: number }) =>
       Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
-
-    const leftEyeW = d(lm[this.LIN], lm[this.LO]);
+ 
+    const leftEyeW  = d(lm[this.LIN], lm[this.LO]);
     const rightEyeW = d(lm[this.RIN], lm[this.RO]);
     if (leftEyeW < 0.005 || rightEyeW < 0.005) return null;
-
-    const lc = {
-      x: (lm[this.LIN].x + lm[this.LO].x) / 2,
-      y: (lm[this.LIN].y + lm[this.LO].y) / 2
-    };
-    const rc = {
-      x: (lm[this.RIN].x + lm[this.RO].x) / 2,
-      y: (lm[this.RIN].y + lm[this.RO].y) / 2
-    };
-
-    const avgX = ((lm[this.LI].x - lc.x) / (leftEyeW / 2) +
-      (lm[this.RI].x - rc.x) / (rightEyeW / 2)) / 2;
-    const avgY = ((lm[this.LI].y - lc.y) / (leftEyeW / 2) +
-      (lm[this.RI].y - rc.y) / (rightEyeW / 2)) / 2;
-
+ 
+    const lc = { x: (lm[this.LIN].x + lm[this.LO].x) / 2,
+                 y: (lm[this.LIN].y + lm[this.LO].y) / 2 };
+    const rc = { x: (lm[this.RIN].x + lm[this.RO].x) / 2,
+                 y: (lm[this.RIN].y + lm[this.RO].y) / 2 };
+ 
+    const avgX = ((lm[this.LI].x - lc.x) / (leftEyeW  / 2) +
+                  (lm[this.RI].x - rc.x) / (rightEyeW / 2)) / 2;
+    const avgY = ((lm[this.LI].y - lc.y) / (leftEyeW  / 2) +
+                  (lm[this.RI].y - rc.y) / (rightEyeW / 2)) / 2;
+ 
     const confidence = Math.min(1,
       ((d(lm[this.LT], lm[this.LB]) + d(lm[this.RT], lm[this.RB])) / 2) / 0.02
     );
     if (confidence < 0.15) return null;
-
-    // כיוון X: מצלמה היא mirror
-    const nx = (-avgX * 0.5 + 0.5);
-    const ny = (avgY * 0.5 + 0.5);
-
-    return { nx, ny };
+ 
+    return {
+      nx: (-avgX * 0.5 + 0.5),
+      ny: ( avgY * 0.5 + 0.5),
+    };
   }
-
-  /** מחשב gaze מלא עם נתוני כיול */
+ 
   private computeGaze(
     lm: { x: number; y: number }[],
     c: { xMin: number; xMax: number; yMin: number; yMax: number }
   ): { x: number; y: number; confidence: number } | null {
-    const d = (a: { x: number, y: number }, b: { x: number, y: number }) =>
+    const d = (a: { x: number; y: number }, b: { x: number; y: number }) =>
       Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
-
+ 
     const raw = this.computeRawNorm(lm);
     if (!raw) return null;
-
+ 
     const confidence = Math.min(1,
       ((d(lm[this.LT], lm[this.LB]) + d(lm[this.RT], lm[this.RB])) / 2) / 0.02
     );
-
-    // mapping לפי כיול
-    let nx = (raw.nx - c.xMin) / (c.xMax - c.xMin);
-    let ny = (raw.ny - c.yMin) / (c.yMax - c.yMin);
-
+ 
+    const nx = (raw.nx - c.xMin) / (c.xMax - c.xMin);
+    const ny = (raw.ny - c.yMin) / (c.yMax - c.yMin);
+ 
     return {
-      x: Math.max(0, Math.min(window.innerWidth, nx * window.innerWidth)),
+      x: Math.max(0, Math.min(window.innerWidth,  nx * window.innerWidth)),
       y: Math.max(0, Math.min(window.innerHeight, ny * window.innerHeight)),
       confidence,
     };
