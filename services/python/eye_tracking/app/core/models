@@ -1,0 +1,29 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# core/models.py
+#
+# מטרה: הגדרת מבני הנתונים (Pydantic models) של השירות.
+#   אותו פטרן כמו face_recognition/app/core/models.py.
+#   מגדיר מה נשלח ל-Angular ב-WebSocket.
+# ──────────────────────────────────────────────────────────────────────────────
+
+from pydantic import BaseModel, Field
+
+
+class GazePoint(BaseModel):
+    """
+    נקודת מבט שנשלחת ל-Angular דרך WebSocket.
+    כל שדה מתועד — Angular יודע בדיוק מה לצפות.
+    """
+
+    x:          float = Field(..., description="מיקום X על המסך (פיקסלים)")
+    y:          float = Field(..., description="מיקום Y על המסך (פיקסלים)")
+    confidence: float = Field(..., ge=0.0, le=1.0, description="רמת ביטחון (0–1)")
+    ts:         int   = Field(..., description="timestamp Unix milliseconds")
+
+
+class HealthResponse(BaseModel):
+    """תשובת health check."""
+
+    status:    str  = "ok"
+    camera_ok: bool = False
+    clients:   int  = 0

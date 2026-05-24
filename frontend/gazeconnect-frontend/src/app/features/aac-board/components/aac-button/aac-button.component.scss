@@ -1,173 +1,394 @@
+// // aac-button.component.scss
+// // ─────────────────────────────────────────────────────────────────────────────
+// // עיצוב כפתורי AAC עם אנימציית Dwell מרהיבה
+// // ─────────────────────────────────────────────────────────────────────────────
+
+// :host {
+//   display: contents;
+// }
+
+// // ── ניתוח קטגוריות לצבעים ───────────────────────────────────────────────────
+// $categories: (
+//   'verb':   (#3b82f6, #1d4ed8),   // כחול
+//   'noun':   (#10b981, #047857),   // ירוק
+//   'person': (#f59e0b, #b45309),   // כתום
+//   'misc':   (#8b5cf6, #6d28d9),   // סגול
+// );
+
+// // ── משתני עיצוב בסיסיים ──────────────────────────────────────────────────────
+// .aac-btn {
+//   --btn-bg:        #ffffff;
+//   --btn-border:    #e2e8f0;
+//   --btn-shadow:    rgba(0, 0, 0, 0.08);
+//   --btn-dwell:     #3b82f6;
+//   --btn-dwell-bg:  rgba(59, 130, 246, 0.12);
+//   --btn-radius:    16px;
+//   --btn-pad:       12px;
+
+//   position: relative;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   gap: 8px;
+//   overflow: hidden;
+
+//   width: 100%;
+//   aspect-ratio: 1 / 1.1;
+//   padding: var(--btn-pad);
+//   border: 2px solid var(--btn-border);
+//   border-radius: var(--btn-radius);
+//   background: var(--btn-bg);
+//   box-shadow: 0 2px 8px var(--btn-shadow);
+
+//   cursor: pointer;
+//   user-select: none;
+//   -webkit-tap-highlight-color: transparent;
+//   transition:
+//     transform       120ms ease,
+//     box-shadow      120ms ease,
+//     border-color    120ms ease;
+
+//   // קטגוריה → צבע border עליון
+//   &[data-category='verb']   { border-top: 4px solid #3b82f6; }
+//   &[data-category='noun']   { border-top: 4px solid #10b981; }
+//   &[data-category='person'] { border-top: 4px solid #f59e0b; }
+//   &[data-category='misc']   { border-top: 4px solid #8b5cf6; }
+
+//   // כפתור קונטקסטואלי (מוסיף סמן)
+//   &[data-contextual='true']::after {
+//     content: '●';
+//     position: absolute;
+//     top: 6px;
+//     left: 8px;
+//     font-size: 8px;
+//     color: #f59e0b;
+//   }
+
+//   // ── גדלים ────────────────────────────────────────────────────────────────
+//   &--large  { --btn-pad: 14px; --btn-radius: 18px; font-size: 1rem; }
+//   &--medium { --btn-pad: 10px; --btn-radius: 14px; font-size: 0.875rem; }
+//   &--small  { --btn-pad: 8px;  --btn-radius: 10px; font-size: 0.75rem; }
+
+//   // ── Hover / Focus ──────────────────────────────────────────────────────────
+//   &:hover:not(:disabled) {
+//     transform: translateY(-2px) scale(1.02);
+//     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+//     border-color: #94a3b8;
+//   }
+
+//   &:focus-visible {
+//     outline: 3px solid #3b82f6;
+//     outline-offset: 2px;
+//   }
+
+//   &:active {
+//     transform: scale(0.97);
+//   }
+
+//   // ── מצב Gaze-Mode (כשהעיניים פעילות) ────────────────────────────────────
+//   &--gaze-mode {
+//     cursor: none; // מסתיר את הסמן הרגיל
+
+//     &:hover {
+//       // ב-gaze mode אין hover effect של עכבר
+//       transform: none;
+//       box-shadow: 0 2px 8px var(--btn-shadow);
+//     }
+//   }
+
+//   // ── מצב Dwelling (מבט שוהה) ──────────────────────────────────────────────
+//   &--dwelling {
+//     border-color: var(--btn-dwell);
+//     box-shadow:
+//       0 0 0 3px rgba(59, 130, 246, 0.25),
+//       0 4px 16px rgba(59, 130, 246, 0.2);
+//     transform: scale(1.03);
+//   }
+
+//   // ── תוכן ──────────────────────────────────────────────────────────────────
+//   &__icon {
+//     width: 54%;
+//     height: 54%;
+//     object-fit: contain;
+//     border-radius: 8px;
+//     pointer-events: none;
+//     flex-shrink: 0;
+//   }
+
+//   &__icon-placeholder {
+//     font-size: 2rem;
+//     line-height: 1;
+//   }
+
+//   &__label {
+//     font-size: 0.8em;
+//     font-weight: 600;
+//     color: #1e293b;
+//     text-align: center;
+//     line-height: 1.2;
+//     max-width: 100%;
+//     overflow: hidden;
+//     text-overflow: ellipsis;
+//     white-space: nowrap;
+//     letter-spacing: 0.01em;
+//   }
+
+//   // ── Dwell Fill Overlay (מלא מלמטה) ───────────────────────────────────────
+//   &__dwell-fill {
+//     position: absolute;
+//     inset: 0;
+//     background: var(--btn-dwell-bg);
+//     transform: scaleY(0);
+//     transform-origin: bottom center;
+//     border-radius: var(--btn-radius);
+//     pointer-events: none;
+//     will-change: transform;
+//     transition: none; // מתעדכן ישירות מהקוד
+//   }
+
+//   // ── Dwell Ring SVG (טבעת סביב הכפתור) ───────────────────────────────────
+//   &__dwell-ring {
+//     position: absolute;
+//     inset: -4px;
+//     width: calc(100% + 8px);
+//     height: calc(100% + 8px);
+//     pointer-events: none;
+//     overflow: visible;
+
+//     // הופך את ה-0° לשעה 12 (הסינוס מתחיל מ-3 אחה"צ)
+//     transform: rotate(-90deg);
+//   }
+
+//   &__dwell-track {
+//     stroke: rgba(59, 130, 246, 0.15);
+//   }
+
+//   &__dwell-progress {
+//     stroke: #3b82f6;
+//     filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.6));
+//     transition: stroke-dashoffset 33ms linear;
+//     will-change: stroke-dashoffset;
+//   }
+// }
+
+// // ── תאורת לילה (dark mode) ───────────────────────────────────────────────────
+// @media (prefers-color-scheme: dark) {
+//   .aac-btn {
+//     --btn-bg:     #1e293b;
+//     --btn-border: #334155;
+//     --btn-shadow: rgba(0, 0, 0, 0.3);
+
+//     &__label { color: #f1f5f9; }
+//   }
+// }
 // aac-button.component.scss
+// ============================================================
+// עיצוב כפתורי AAC — מבוסס על variables.scss של הפרויקט
+// צבעי קטגוריה (Fitzgerald Key), פס dwell, מסגרת כתומה
+// ============================================================
 @use '../../../../../styles/variables' as *;
 
-@mixin category-colors($bg, $border, $text) {
-  background-color: $bg;
-  border-color: $border;
-  color: $text;
-
-  .aac-btn__icon-placeholder {
-    background: rgba($border, 0.18);
-    color: $text;
-    border: 2px solid rgba($border, 0.35);
-  }
-  // פס dwell וmסגרת — תמיד כתום, לא לפי קטגוריה
+:host {
+  display: contents;
 }
 
+// ── הכפתור הבסיסי ─────────────────────────────────────────────
 .aac-btn {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 4px;
+  overflow: hidden;
+// aspect-ratio: 1 / 1;    // ← הוסיפי שורה זו — עושה מרובע
+  // min-height: unset;
   width: 100%;
-  height: 100%;        // ← ממלא את כל גובה ה-cell!
+  height: 100%;
+  min-height: $btn-large-height;
+  padding: $pad-btn-v $pad-btn-h;
 
+  border-width: 2px;
+  border-style: solid;
   border-radius: $radius-btn;
-  border: 2.5px solid $cat-misc-border;
-  background-color: $cat-misc-bg;
+
+  // ברירת מחדל — אפור (misc)
+  background: $cat-misc-bg;
+  border-color: $cat-misc-border;
   color: $cat-misc-text;
+
   cursor: pointer;
   user-select: none;
-  font-family: $font-primary;
-  font-weight: 700;
-  transition: transform 120ms ease, filter 120ms ease;
-  position: relative;
-  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 
-  // ── גדלים ────────────────────────────────────────────────
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    border-color 120ms ease,
+    outline 80ms ease;
+
+  // ── צבעי קטגוריה ──────────────────────────────────────────
+  &[data-category='verb'] {
+    background: $cat-verb-bg;
+    border-color: $cat-verb-border;
+    color: $cat-verb-text;
+  }
+
+  &[data-category='noun'] {
+    background: $cat-noun-bg;
+    border-color: $cat-noun-border;
+    color: $cat-noun-text;
+  }
+
+  &[data-category='person'] {
+    background: $cat-person-bg;
+    border-color: $cat-person-border;
+    color: $cat-person-text;
+  }
+
+  &[data-category='adj'],
+  &[data-category='feeling'] {
+    background: $cat-adj-bg;
+    border-color: $cat-adj-border;
+    color: $cat-adj-text;
+  }
+
+  &[data-category='misc'] {
+    background: $cat-misc-bg;
+    border-color: $cat-misc-border;
+    color: $cat-misc-text;
+  }
+
+  // contextual — גבול מקווקו כתום
+  &[data-contextual='true'] {
+    background: $cat-contextual-bg;
+    border-color: $cat-contextual-border;
+    border-style: dashed;
+    color: $cat-contextual-text;
+  }
+
+  // ── גדלים ──────────────────────────────────────────────────
   &--small {
-    .aac-btn__icon,
-    .aac-btn__icon-placeholder { width: $btn-small-icon; height: $btn-small-icon; }
-    .aac-btn__icon-placeholder { font-size: 18px; }
-    .aac-btn__text { font-size: $font-size-label-sm; }
+    min-height: $btn-small-height;
   }
 
   &--medium {
-    .aac-btn__icon,
-    .aac-btn__icon-placeholder { width: $btn-medium-icon; height: $btn-medium-icon; }
-    .aac-btn__icon-placeholder { font-size: 22px; }
-    .aac-btn__text { font-size: $font-size-label-md; }
+    min-height: $btn-medium-height;
   }
 
   &--large {
-    .aac-btn__icon,
-    .aac-btn__icon-placeholder { width: $btn-large-icon; height: $btn-large-icon; }
-    .aac-btn__icon-placeholder { font-size: 28px; }
-    .aac-btn__text { font-size: $font-size-label-lg; }
+    min-height: $btn-large-height;
   }
 
-  // ── אייקון ────────────────────────────────────────────────
+  // ── hover ──────────────────────────────────────────────────
+  &:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.18);
+    outline: 3px solid $scan-highlight; // ← הוסיפי
+    outline-offset: 2px;
+  }
+
+  // ── focus visible — מסגרת כתומה! ──────────────────────────
+  &:focus-visible {
+    outline: 3px solid $scan-highlight;
+    outline-offset: 2px;
+  }
+
+  // ── גאייז מוד ─────────────────────────────────────────────
+  &--gaze-mode {
+    cursor: none;
+
+    &:hover {
+      transform: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  // ── Dwelling — מסגרת כתומה עבה ──────────────────────────────
+  &--dwelling {
+    outline: 3px solid $scan-highlight;
+    outline-offset: 2px;
+    transform: scale(1.03);
+    box-shadow:
+      0 0 0 4px rgba(255, 102, 0, 0.25),
+      0 4px 14px rgba(0, 0, 0, 0.18);
+  }
+
+  // ── תוכן ───────────────────────────────────────────────────
   &__icon {
-    display: block;
     width: $btn-large-icon;
     height: $btn-large-icon;
     object-fit: contain;
-    border-radius: $radius-sm;
+    border-radius: 6px;
     pointer-events: none;
     flex-shrink: 0;
   }
 
+  &--small &__icon {
+    width: $btn-small-icon;
+    height: $btn-small-icon;
+  }
+
+  &--medium &__icon {
+    width: $btn-medium-icon;
+    height: $btn-medium-icon;
+  }
+
   &__icon-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: $btn-large-icon;
-    height: $btn-large-icon;
-    border-radius: 50%;
-    font-size: 28px;
-    font-weight: 700;
+    font-size: 1.6rem;
+    line-height: 1;
     flex-shrink: 0;
   }
 
-  // ── טקסט ──────────────────────────────────────────────────
   &__text {
-    font-size: $font-size-label-lg;
+    font-size: $font-size-label-md;
     font-weight: 700;
+    font-family: $font-primary;
     text-align: center;
-    line-height: 1.15;
-    width: 100%;
-    padding: 0 4px;
-    word-break: break-word;
+    line-height: 1.2;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  // ── Dwell bar — תמיד כתום ─────────────────────────────────
+  &--large &__text {
+    font-size: $font-size-label-lg;
+  }
+
+  &--small &__text {
+    font-size: $font-size-label-sm;
+  }
+
+  // ── פס Dwell ─────────────────────────────────────────────────
+  // נמצא בתחתית הכפתור, מתמלא מימין לשמאל
   &__dwell {
     position: absolute;
     bottom: 0;
     left: 0;
-    height: 5px;
-    width: 0%;
-    background: #ff6600;   // ← כתום אחיד לכל הכפתורים
+    right: 0;
+    height: $dwell-bar-height;
+    background: $scan-highlight; // כתום — מתאים לצבע ה-dwell
     border-radius: 0 0 $radius-btn $radius-btn;
+    transform: scaleX(0);
+    transform-origin: right center; // מתמלא מימין לשמאל (RTL)
     pointer-events: none;
-    transition: none;
+    will-change: transform;
 
+    // טרנזישן רק כשפעיל — מבטיח אנימציה חלקה
     &--active {
-      width: 100%;
-      // משך האנימציה תואם את dwellMs מה-store
-      // מוגדר דרך CSS custom property ב-TS בשלב 3.3
-      transition: width var(--dwell-ms, 900ms) linear;
+      transition: none; // מתעדכן ישירות מה-TS (requestAnimationFrame)
     }
   }
+}
 
-  // ── Hover — מסגרת כתומה אחידה ────────────────────────────
-  &:hover:not(:disabled) {
-    outline: 3px solid #ff6600;   // ← כתום אחיד!
-    outline-offset: 2px;
-    transform: scale(1.03);
-    filter: brightness(0.94);
-    z-index: 2;
-  }
-
-  &:active:not(:disabled) {
-    transform: scale(0.97);
-    filter: brightness(0.85);
-  }
-
-  &:focus-visible {
-    outline: 3px solid #ff6600;
-    outline-offset: 2px;
-  }
-
-  &--gaze-active {
-    outline: 4px solid #ff6600;
-    outline-offset: 3px;
-    transform: scale(1.06);
-    z-index: 3;
-  }
-
-  &:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-  }
-
-  // ── צבעי קטגוריות ────────────────────────────────────────
-  &[data-category='verb'],
-  &[data-category='action'] {
-    @include category-colors($cat-verb-bg, $cat-verb-border, $cat-verb-text);
-  }
-
-  &[data-category='person'],
-  &[data-category='people'] {
-    @include category-colors($cat-person-bg, $cat-person-border, $cat-person-text);
-  }
-
-  &[data-category='noun'],
-  &[data-category='object'],
-  &[data-category='need'] {
-    @include category-colors($cat-noun-bg, $cat-noun-border, $cat-noun-text);
-  }
-
-  &[data-category='adjective'],
-  &[data-category='adj'],
-  &[data-category='response'] {
-    @include category-colors($cat-adj-bg, $cat-adj-border, $cat-adj-text);
-  }
-
-  &[data-category='misc'],
-  &[data-category='other'],
-  &[data-category='control'] {
-    @include category-colors($cat-misc-bg, $cat-misc-border, $cat-misc-text);
+// ── dark mode ──────────────────────────────────────────────────
+@media (prefers-color-scheme: dark) {
+  .aac-btn {
+    &__text {
+      opacity: 0.95;
+    }
   }
 }

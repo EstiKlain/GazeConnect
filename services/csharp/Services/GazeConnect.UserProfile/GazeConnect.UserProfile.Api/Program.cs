@@ -8,6 +8,7 @@ using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
+using GazeConnect.UserProfile.Api.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,5 +50,5 @@ using (var scope = app.Services.CreateScope())
 
 // --- Health Check ---
 app.MapGet("/health", () => Results.Ok(new { status = "Healthy", service = "UserProfile" }));
-
+app.MapUserSettingsRoutes();
 app.Run();

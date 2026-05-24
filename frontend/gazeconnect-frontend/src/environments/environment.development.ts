@@ -2,9 +2,11 @@
 export const environment = {
   production: false,
   apiUrls: {
-    aacBoard:    'http://localhost:5002',
-    cameraHub:   'http://localhost:5001',
+    aacBoard: 'http://localhost:5002',
+    cameraHub: 'http://localhost:5001',
     userProfile: 'http://localhost:5004',
-    tts:         'http://localhost:5003',
+    tts: 'http://localhost:5003',
+
+    eyeTracking: 'ws://localhost:8010/ws/gaze',
   }
 };

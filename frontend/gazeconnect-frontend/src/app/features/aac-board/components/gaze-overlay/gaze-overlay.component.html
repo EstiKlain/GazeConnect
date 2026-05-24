@@ -1,1 +1,21 @@
-<p>gaze-overlay works!</p>
+@if (vm$ | async; as vm) {
+  @if (vm.isActive && vm.isVisible) {
+    <div class="gaze-dot"
+         [style.left.px]="vm.x"
+         [style.top.px]="vm.y"
+         [style.opacity]="vm.confidence"
+         aria-hidden="true">
+      <div class="gaze-ring"></div>
+    </div>
+    <div class="gaze-status">
+      <span class="gaze-status__dot"></span>
+      <span>עיניים פעילות</span>
+    </div>
+  }
+  @if (!vm.isActive && vm.isVisible) {
+    <div class="gaze-status gaze-status--inactive">
+      <span class="gaze-status__dot gaze-status__dot--off"></span>
+      <span>מחפש מצלמה...</span>
+    </div>
+  }
+}

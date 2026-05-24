@@ -35,6 +35,16 @@ export const routes: Routes = [
     title: 'אנשי קשר — GazeConnect',
   },
 
+  // *** חדש: כיול אוטומטי ***
+  // הקלינאית נכנסת ל-/calibration מהגדרות או מכפתור
+  {
+    path: 'calibration',
+    loadComponent: () =>
+      import('./features/calibration/calibration/calibration.component')
+        .then(m => m.CalibrationComponent),
+    title: 'כיול מבט — GazeConnect',
+  },
+
   // ── fallback ──────────────────────────────────────────────
   {
     path: '**',

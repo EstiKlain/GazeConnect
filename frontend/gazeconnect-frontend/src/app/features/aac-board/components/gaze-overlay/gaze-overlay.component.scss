@@ -72,3 +72,91 @@
         opacity: 0;
     }
 }
+
+
+
+
+:host {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── נקודת מבט ─────────────────────────────────────────── */
+    .gaze-dot {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      transform: translate(-50%, -50%);
+      transition: left 33ms linear, top 33ms linear;
+      will-change: left, top;
+    }
+
+    .gaze-dot::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.9);
+      border: 2px solid white;
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+    }
+
+    /* טבעת חיצונית */
+    .gaze-dot__ring {
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid rgba(239, 68, 68, 0.4);
+      animation: gaze-pulse 1.2s ease-out infinite;
+    }
+
+    @keyframes gaze-pulse {
+      0%   { transform: scale(1);   opacity: 0.8; }
+      100% { transform: scale(2);   opacity: 0; }
+    }
+
+    /* ── סטטוס ─────────────────────────────────────────────── */
+    .gaze-status {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: white;
+      font-size: 13px;
+      font-weight: 500;
+      direction: rtl;
+    }
+
+    .gaze-status--inactive {
+      opacity: 0.6;
+    }
+
+    .gaze-status__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 6px #22c55e;
+      animation: status-blink 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    .gaze-status__dot--off {
+      background: #f59e0b;
+      box-shadow: 0 0 6px #f59e0b;
+      animation: none;
+    }
+
+    @keyframes status-blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }

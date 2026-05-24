@@ -1,0 +1,62 @@
+<!-- ============================================================
+  calibration.component.html
+
+  מיקום בפרויקט:
+    src/app/features/calibration/calibration.component.html
+
+  מה רואים:
+    - מסך שחור מלא (fullscreen)
+    - נקודה אדומה מהבהבת שמשנה מיקום
+    - progress bar שמתמלא תוך כדי הסתכלות
+    - כפתור "סיים" לקלינאית — מופיע רק אחרי שכל 5 הנקודות הסתיימו
+    - הודעת סיום עם הערכים שחושבו
+============================================================ -->
+
+<div class="calib-overlay" [class.calib-overlay--done]="isDone">
+
+  <!-- שלב: בתהליך -->
+  @if (!isDone) {
+
+    <!-- הנקודה האדומה — מיקום מחושב ב-TS -->
+    <div
+      class="calib-dot"
+      [class.calib-dot--collecting]="isCollecting"
+      [style.left.%]="currentPoint.x"
+      [style.top.%]="currentPoint.y"
+    ></div>
+
+    <!-- Progress bar לנקודה הנוכחית -->
+    <div class="calib-progress-wrap">
+      <div
+        class="calib-progress-fill"
+        [style.width.%]="pointProgressPercent"
+      ></div>
+    </div>
+
+    <!-- מונה נקודות לקלינאית -->
+    <div class="calib-counter">
+      נקודה {{ completedPoints + 1 }} מתוך {{ totalPoints }}
+    </div>
+
+    <!-- הנחיה לקלינאית -->
+    <div class="calib-hint">
+      בקשו מהמשתמש להסתכל על הנקודה האדומה
+    </div>
+
+  }
+
+  <!-- שלב: הכיול הושלם -->
+  @if (isDone) {
+
+    <div class="calib-done">
+      <div class="calib-done__icon">✓</div>
+      <div class="calib-done__title">הכיול הושלם!</div>
+      <div class="calib-done__subtitle">המערכת כוילה לפי מבט המשתמש</div>
+      <button class="calib-done__btn" (click)="onDoneClick()">
+        חזור ללוח
+      </button>
+    </div>
+
+  }
+
+</div>

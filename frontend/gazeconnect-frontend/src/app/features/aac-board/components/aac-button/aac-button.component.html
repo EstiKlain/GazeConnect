@@ -31,5 +31,7 @@
   <span class="aac-btn__text">{{ button.text }}</span>
 
   <!-- פס dwell — מתמלא בזמן hover -->
-  <div class="aac-btn__dwell" [class.aac-btn__dwell--active]="isDwelling"></div>
+  <div class="aac-btn__dwell" [class.aac-btn__dwell--active]="isDwelling" 
+   [style.transform]="'scaleX(' + dwellProgress + ')'"
+   aria-hidden="true" ></div>
 </button>

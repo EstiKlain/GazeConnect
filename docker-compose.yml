@@ -197,6 +197,54 @@ services:
       timeout: 10s
       retries: 3
 
+  # eye-tracking:
+  #   build:
+  #     context: ./services/python/eye_tracking
+  #     dockerfile: Dockerfile
+  #   container_name: gazeconnect-eye-tracking
+  #   ports:
+  #     - "8010:8010"
+  #   env_file:
+  #     - ./services/python/eye_tracking/.env
+  #   environment:
+  #     - EYE_CAMERA_INDEX=0
+  #     - EYE_FRAME_WIDTH=640
+  #     - EYE_FRAME_HEIGHT=480
+  #     - EYE_PORT=8010
+  #     - EYE_KALMAN_PROCESS_NOISE=0.02
+  #     - EYE_KALMAN_MEASURE_NOISE=0.4
+  #   # ⚠️ Windows: גישת מצלמה מ-Docker מורכבת!
+  #   # מומלץ להריץ את השירות ישירות (python -m app.main) בזמן פיתוח
+  #   # devices:
+  #   #   - /dev/video0:/dev/video0   # Linux בלבד!
+  #   networks:
+  #     - gazeconnect-network
+  #   mem_limit: 512m
+  #   cpus: '1.0'
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8010/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+
+
+  eye-tracking:
+    image: alpine
+    container_name: gazeconnect-eye-tracking
+    command: /bin/sh -c "while true; do sleep 3600; done"
+    ports:
+      - "8010:8010"
+    networks:
+      - gazeconnect-network
+    mem_limit: 64m
+    restart: unless-stopped
+
+
+
+
+
+
   object-detection:
     image: alpine
     container_name: gazeconnect-object-detection
